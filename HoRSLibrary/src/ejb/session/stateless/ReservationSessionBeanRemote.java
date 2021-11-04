@@ -19,8 +19,8 @@ import util.exception.DoesNotExistException;
 @Remote
 public interface ReservationSessionBeanRemote {
 
-    public ReservationEntity walkInReserveRoomsByRoomType(ReservationEntity reservationLineItem, String roomTypeName, Long roomQuantity) throws DoesNotExistException;
+    public void walkInReserveRoomsByRoomType(ReservationEntity reservation, String roomTypeName, Long roomQuantity) throws DoesNotExistException;
 
-    public ReservationEntity reserveRoomsByRoomType(ReservationEntity reservationLineItem, String roomTypeName, boolean walkIn, Long roomQuantity) throws DoesNotExistException;
+    public void reserveRoomsByRoomType(ReservationEntity reservation, String roomTypeName, boolean walkIn, Long roomQuantity) throws DoesNotExistException;
 
 }
