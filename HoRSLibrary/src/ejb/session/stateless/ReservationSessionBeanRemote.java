@@ -1,0 +1,26 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package ejb.session.stateless;
+
+import entity.ReservationEntity;
+import java.time.LocalDate;
+import java.util.Date;
+import java.util.Map;
+import javax.ejb.Remote;
+import util.exception.DoesNotExistException;
+
+/**
+ *
+ * @author enkav
+ */
+@Remote
+public interface ReservationSessionBeanRemote {
+
+    public ReservationEntity walkInReserveRoomsByRoomType(ReservationEntity reservationLineItem, String roomTypeName, Long roomQuantity) throws DoesNotExistException;
+
+    public ReservationEntity reserveRoomsByRoomType(ReservationEntity reservationLineItem, String roomTypeName, boolean walkIn, Long roomQuantity) throws DoesNotExistException;
+
+}
