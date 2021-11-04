@@ -6,13 +6,14 @@
 package ejb.session.singleton;
 
 import ejb.session.stateless.EmployeeSessionBeanLocal;
+import ejb.session.stateless.PartnerSessionBeanLocal;
 import ejb.session.stateless.RoomRateSessionBeanLocal;
 import ejb.session.stateless.RoomSessionBeanLocal;
 import ejb.session.stateless.RoomTypeSessionBeanLocal;
 import entity.EmployeeEntity;
 import entity.NormalRateEntity;
+import entity.PartnerEntity;
 import entity.PublishedRateEntity;
-import entity.ReservationEntity;
 import entity.RoomConfig;
 import entity.RoomEntity;
 import entity.RoomRateAbsEntity;
@@ -43,6 +44,8 @@ import util.exception.UnknownPersistenceException;
 @Startup
 public class DataInitSessionBean {
 
+    @EJB
+    private PartnerSessionBeanLocal partnerSessionBean;
     @EJB
     private RoomSessionBeanLocal roomSessionBean;
     @EJB
@@ -76,6 +79,8 @@ public class DataInitSessionBean {
         employeeSessionBean.createNewEmployee(new EmployeeEntity(EmployeeRoleEnum.OPERATION_MANAGER, "operation", "password"));
         employeeSessionBean.createNewEmployee(new EmployeeEntity(EmployeeRoleEnum.SALES_MANAGER, "sales", "password"));
         employeeSessionBean.createNewEmployee(new EmployeeEntity(EmployeeRoleEnum.GUEST_RELATION_OFFICER, "guest", "password"));
+        partnerSessionBean.createNewPartner(new PartnerEntity("partner", "password"));
+        
 
         List<String> amenities = new ArrayList<>();
         amenities.add("Wifi");

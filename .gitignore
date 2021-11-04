@@ -40,10 +40,13 @@ HoRSReservationClient/nbproject/private/
 HoRSReservationClient/build/
 HoRSReservationClient/dist/
 
+HotelReservationSystem/nbproject/private/
+HotelReservationSystem/build/
+HotelReservationSystem/dist/
+
 HoRSLibrary/nbproject/private/
 HoRSLibrary/build/
 HoRSLibrary/dist/
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
-
