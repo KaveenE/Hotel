@@ -19,7 +19,7 @@ import javax.ejb.EJB;
 public class Main {
 
     @EJB
-    private static GuestSessionBeanRemote GuestSessionBean;
+    private static GuestSessionBeanRemote guestSessionBean;
     @EJB
     private static RoomSessionBeanRemote roomSessionBean;
     @EJB
@@ -30,7 +30,7 @@ public class Main {
     private static ReservationSessionBeanRemote reservationSessionBean;
 
     public static void main(String[] args) {
-        MainApp mainApp = new MainApp(GuestSessionBean, roomSessionBean, roomTypeSessionBean, roomRateSessionBean, reservationSessionBean);
+        MainApp mainApp = new MainApp(guestSessionBean, roomSessionBean, roomTypeSessionBean, roomRateSessionBean, reservationSessionBean);
         mainApp.runApp();
         
         //hiiiiiiii
