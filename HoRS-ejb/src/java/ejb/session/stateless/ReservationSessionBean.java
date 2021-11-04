@@ -11,6 +11,7 @@ import entity.PeakRateEntity;
 import entity.PromoRateEntity;
 
 import entity.ReservationEntity;
+import entity.RoomEntity;
 import entity.RoomRateAbsEntity;
 import entity.RoomTypeEntity;
 import java.math.BigDecimal;
@@ -18,10 +19,17 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
@@ -32,6 +40,7 @@ import javax.ejb.Stateful;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import util.enumeration.RoomStatusEnum;
 import util.exception.DoesNotExistException;
 import util.exception.RoomRateDoesNotExistException;
 import util.helper.BossHelper;
@@ -55,8 +64,8 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
 
     @Override
     public void walkInReserveRoomsByRoomType(ReservationEntity reservation, String roomTypeName, Long roomQuantity) throws DoesNotExistException {
-         this.reserveRoomsByRoomType(reservation, roomTypeName, true, roomQuantity);
-         return;
+        this.reserveRoomsByRoomType(reservation, roomTypeName, true, roomQuantity);
+        return;
     }
 
     @Override
@@ -64,11 +73,16 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
         Set<ReservationEntity> reservations = Stream.generate(() -> new ReservationEntity(reservation.getCheckInDate(), reservation.getCheckOutDate()))
                 .limit(roomQuantity)
                 .collect(Collectors.toSet());
-        
+
+        //Associate RT
         RoomTypeEntity roomTypeToReserve = roomTypeSessionBean.retrieveRoomTypeByName(roomTypeName);
         roomTypeToReserve.associateReservationEntity(reservations);
 
+        //Associate RR
         computeAndAssociatePriceOfReservation(roomTypeToReserve, reservations, walkIn);
+        
+        //Associate Rooms
+        associateToPotentialFreeRooms(reservations, roomTypeName);
 
         LocalDateTime checkInDateTime = BossHelper.dateToLocalDateTime(reservation.getCheckInDate());
         if (checkInDateTime.toLocalDate().equals(LocalDate.now()) && checkInDateTime.getHour() > 2) {
@@ -76,8 +90,6 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
         }
 
         this.createReservaton(reservations);
-
-        return;
 
     }
 
@@ -111,11 +123,40 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
             }
 
         }
-        
-        for(ReservationEntity re: reservations) {
+
+        for (ReservationEntity re : reservations) {
             re.setPriceOfStay(priceOfStay);
         }
 
+    }
+
+    private void associateToPotentialFreeRooms(Set<ReservationEntity> reservations, String roomTypeName) throws DoesNotExistException {
+        Queue<ReservationEntity> reservationQueue = new ArrayDeque<>(reservations);
+
+        ReservationEntity reservation = reservations.iterator().next();
+        LocalDate checkIn = BossHelper.dateToLocalDate(reservation.getCheckInDate());
+        LocalDate checkOut = BossHelper.dateToLocalDate(reservation.getCheckOutDate());
+
+        RoomTypeEntity selectedRoomType = roomTypeSessionBean.retrieveRoomTypeByName(roomTypeName);
+
+        Set<RoomEntity> availableAndEnabledRooms = selectedRoomType.getRoomEntities()
+                .stream()
+                .filter(room -> !room.getIsDisabled() && room.getRoomStatusEnum() == RoomStatusEnum.AVAILABLE)
+                .collect(Collectors.toSet());
+
+        boolean free;
+        for (RoomEntity potentialFreeRoom : availableAndEnabledRooms) {
+
+            //Room is not free if any of its RLE coincides with guest's period of stay
+            free = potentialFreeRoom.getReservationEntities()
+                    .stream()
+                    .allMatch(rle -> isBeforeInclusive(rle.getCheckOutDate(), checkIn) && isAfterInclusive(rle.getCheckInDate(), checkOut));
+
+            if (free && !reservationQueue.isEmpty()) {
+                potentialFreeRoom.associateReservationEntities(reservationQueue.poll());
+            }
+
+        }
     }
 
     /**
@@ -187,6 +228,14 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
 
     private boolean isAfterInclusive(LocalDate checkIn, LocalDate checkOut) {
         return checkIn.compareTo(checkOut) >= 0;
+    }
+
+    private boolean isBeforeInclusive(Date basisDate, LocalDate otherDate) {
+        return BossHelper.dateToLocalDate(basisDate).compareTo(otherDate) <= 0;
+    }
+
+    private boolean isAfterInclusive(Date basisDate, LocalDate otherDate) {
+        return BossHelper.dateToLocalDate(basisDate).compareTo(otherDate) >= 0;
     }
 
 }

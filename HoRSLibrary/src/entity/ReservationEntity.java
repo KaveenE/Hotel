@@ -49,6 +49,7 @@ public class ReservationEntity implements Serializable {
     private BigDecimal priceOfStay;
     @Column(nullable = false)
     private Boolean online;
+    private Boolean isAllocated;
 
    
     @ManyToOne(optional = true, fetch = FetchType.LAZY)

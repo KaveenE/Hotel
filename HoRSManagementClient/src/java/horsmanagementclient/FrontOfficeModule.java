@@ -142,7 +142,6 @@ public class FrontOfficeModule {
         ReservationEntity reservation = new ReservationEntity(new Date(), BossHelper.localDatetoDate(checkOut));
         try {
            reservationSessionBean.walkInReserveRoomsByRoomType(reservation, bookingRoomType, bookingRoomTypeQuantity);
-            System.out.println(reservation);
         } catch (DoesNotExistException ex) {
             bufferScreenForUser(ex.getMessage());
         }
