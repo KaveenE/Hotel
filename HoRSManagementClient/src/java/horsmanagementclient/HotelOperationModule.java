@@ -294,12 +294,6 @@ public class HotelOperationModule {
             roomType.setRanking(Integer.valueOf(input));
         }
 
-        System.out.print("Enter Room's disabled status (blank if no change)> ");
-        input = scanner.nextLine();
-        if (input.length() != 0) {
-            roomType.setIsDisabled(Boolean.valueOf(input));
-        }
-
         try {
             roomTypeSessionBean.updateRoomType(roomType);
             System.out.println("Room Type updated successfully!\n");
@@ -585,12 +579,6 @@ public class HotelOperationModule {
             input = scanner.nextLine();
             if (input.length() > 0) {
                 roomRateAbsEntity.setRatePerNight(BigDecimal.valueOf(Double.valueOf(input)));
-            }
-
-            System.out.print("Enter RoomRate's disabled status (blank if no change)> ");
-            input = scanner.nextLine();
-            if (input.length() != 0) {
-                roomRateAbsEntity.setIsDisabled(Boolean.valueOf(input));
             }
 
             if (roomRateAbsEntity instanceof PromoRateEntity) {
