@@ -101,7 +101,9 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
             while (isBeforeInclusive(counterCheckIn, checkOut)) {
                 rateToLengthOfRate = getPriceRateForNight(counterCheckIn, checkOut, roomTypeToReserve);
                 counterCheckIn = counterCheckIn.plusDays(rateToLengthOfRate.getValue());
-
+                
+                rateToLengthOfRate.getKey().associateReservations(reservation);
+                        
                 priceOfStay.add(rateToLengthOfRate.getKey().getRatePerNight()
                         .multiply(BigDecimal.valueOf(rateToLengthOfRate.getValue()))
                 );
