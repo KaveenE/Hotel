@@ -49,8 +49,7 @@ public abstract class RoomRateAbsEntity implements Serializable, Comparable<Room
     @JoinColumn(nullable = false)
     private RoomTypeEntity roomTypeEntity;
 
-    @ManyToMany(mappedBy = "roomRateAbsEntity", 
-            cascade = {CascadeType.PERSIST,CascadeType.DETACH,CascadeType.MERGE,CascadeType.REFRESH})
+    @ManyToMany(cascade = {CascadeType.PERSIST,CascadeType.DETACH,CascadeType.MERGE,CascadeType.REFRESH})
     private Set<ReservationEntity> reservations;
 
     public RoomRateAbsEntity() {
@@ -142,7 +141,6 @@ public abstract class RoomRateAbsEntity implements Serializable, Comparable<Room
 
     public void associateReservations(Collection<ReservationEntity> reservationSet) {
         this.reservations.addAll(reservationSet);
-        reservationSet.forEach(reservation -> reservation.setRoomRateAbsEntity(this));
     }
 
     public void disassociateReservations(ReservationEntity... reservations) {
@@ -151,8 +149,7 @@ public abstract class RoomRateAbsEntity implements Serializable, Comparable<Room
     }
 
     public void disassociateReservations(Collection<ReservationEntity> reservationSet) {
-        //TODO:We don't need the 1st line right
-        reservationSet.forEach(reservation -> reservation.setRoomRateAbsEntity(null));
+        
         if (reservationSet != this.reservations) {
             this.reservations.removeAll(reservationSet);
         } else {

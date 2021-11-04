@@ -50,9 +50,7 @@ public class ReservationEntity implements Serializable {
     @Column(nullable = false)
     private Boolean online;
 
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    @JoinColumn(nullable = false)
-    private RoomRateAbsEntity roomRateAbsEntity;
+   
     @ManyToOne(optional = true, fetch = FetchType.LAZY)
     private RoomEntity roomEntity;
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
@@ -127,14 +125,6 @@ public class ReservationEntity implements Serializable {
 
     public void setCheckOutDate(Date checkOutDate) {
         this.checkOutDate = checkOutDate;
-    }
-
-    public RoomRateAbsEntity getRoomRateAbsEntity() {
-        return roomRateAbsEntity;
-    }
-
-    public void setRoomRateAbsEntity(RoomRateAbsEntity roomRateAbsEntity) {
-        this.roomRateAbsEntity = roomRateAbsEntity;
     }
 
     public RoomTypeEntity getRoomTypeEntity() {
