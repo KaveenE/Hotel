@@ -50,6 +50,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
 
     private void createReservaton(Collection<ReservationEntity> reservations) {
         reservations.forEach(reservation -> em.persist(reservation));
+        em.flush();
     }
 
     @Override
@@ -59,10 +60,14 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
 
     @Override
     public ReservationEntity reserveRoomsByRoomType(ReservationEntity reservation, String roomTypeName, boolean walkIn, Long roomQuantity) throws DoesNotExistException {
+        Set<ReservationEntity> reservations = Stream.generate(() -> new ReservationEntity(reservation.getCheckInDate(), reservation.getCheckOutDate()))
+                .limit(roomQuantity)
+                .collect(Collectors.toSet());
+        
         RoomTypeEntity roomTypeToReserve = roomTypeSessionBean.retrieveRoomTypeByName(roomTypeName);
-        roomTypeToReserve.associateReservationEntity(reservation);
+        roomTypeToReserve.associateReservationEntity(reservations);
 
-        computeAndAssociatePriceOfReservation(roomTypeToReserve, reservation, walkIn);
+        computeAndAssociatePriceOfReservation(roomTypeToReserve, reservations, walkIn);
 
         LocalDateTime checkInDateTime = BossHelper.dateToLocalDateTime(reservation.getCheckInDate());
         if (checkInDateTime.toLocalDate().equals(LocalDate.now()) && checkInDateTime.getHour() > 2) {
@@ -70,18 +75,14 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
 
         }
 
-        Set<ReservationEntity> reservations = Stream.generate(() -> new ReservationEntity(reservation.getCheckInDate(), reservation.getCheckOutDate(), reservation.getPriceOfStay()))
-                .limit(roomQuantity)
-                .collect(Collectors.toSet());
-        
         this.createReservaton(reservations);
-        
+
         return reservation;
 
     }
 
-    private void computeAndAssociatePriceOfReservation(RoomTypeEntity roomTypeToReserve, ReservationEntity reservation, Boolean walkIn) throws DoesNotExistException {
-
+    private void computeAndAssociatePriceOfReservation(RoomTypeEntity roomTypeToReserve, Set<ReservationEntity> reservations, Boolean walkIn) throws DoesNotExistException {
+        ReservationEntity reservation = reservations.iterator().next();
         LocalDate checkIn = BossHelper.dateToLocalDate(reservation.getCheckInDate());
         LocalDate checkOut = BossHelper.dateToLocalDate(reservation.getCheckOutDate());
         BigDecimal priceOfStay = BigDecimal.ZERO;
@@ -89,10 +90,10 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
         if (walkIn) {
             RoomRateAbsEntity publishedRate = roomTypeToReserve.getPublishedRate()
                     .orElseThrow(() -> new RoomRateDoesNotExistException("Published rate is not linked with RoomType, " + roomTypeToReserve.getName()));
-            publishedRate.associateReservations(reservation);
+            publishedRate.associateReservations(reservations);
 
             priceOfStay = publishedRate.getRatePerNight()
-                    .multiply(BigDecimal.valueOf(ChronoUnit.DAYS.between(checkIn, checkOut)+1));
+                    .multiply(BigDecimal.valueOf(ChronoUnit.DAYS.between(checkIn, checkOut) + 1));
         } else {
 
             LocalDate counterCheckIn = checkIn;
@@ -101,17 +102,19 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
             while (isBeforeInclusive(counterCheckIn, checkOut)) {
                 rateToLengthOfRate = getPriceRateForNight(counterCheckIn, checkOut, roomTypeToReserve);
                 counterCheckIn = counterCheckIn.plusDays(rateToLengthOfRate.getValue());
-                
-                rateToLengthOfRate.getKey().associateReservations(reservation);
-                        
+
+                rateToLengthOfRate.getKey().associateReservations(reservations);
+
                 priceOfStay.add(rateToLengthOfRate.getKey().getRatePerNight()
                         .multiply(BigDecimal.valueOf(rateToLengthOfRate.getValue()))
                 );
             }
 
         }
-
-        reservation.setPriceOfStay(priceOfStay);
+        
+        for(ReservationEntity re: reservations) {
+            re.setPriceOfStay(priceOfStay);
+        }
 
     }
 
