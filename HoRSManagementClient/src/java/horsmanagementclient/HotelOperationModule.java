@@ -349,7 +349,7 @@ public class HotelOperationModule {
 
             System.out.println("*** HoRS :: Hotel Management System :: Create New Room ***\n");
             System.out.print("Enter Room Number (room floor + room number)> ");
-            newRoom.setFloorUnitNo(scanner.nextLong());
+            newRoom.setFloorUnitNo(scanner.nextLine());
             System.out.print("Enter Room Type Name> ");
             String roomTypeName = scanner.nextLine();
             RoomTypeEntity roomType = roomTypeSessionBean.retrieveRoomTypeByName(roomTypeName);
@@ -369,13 +369,13 @@ public class HotelOperationModule {
 
             System.out.println("*** HoRS :: Hotel Management System :: Update Room ***\n");
             System.out.print("Enter Room Number> ");
-            Long roomNumber = scanner.nextLong();
+            String roomNumber = scanner.nextLine();
             RoomEntity room = roomSessionBean.retrieveRoomByFloorUnitNo(roomNumber);
 
             System.out.print("Enter Room Floor Unit Number (blank if no change)> ");
             input = scanner.nextLine();
             if (input.length() != 0) {
-                room.setFloorUnitNo(Long.valueOf(input));
+                room.setFloorUnitNo(input);
             }
 
             System.out.print("Choose Room Status (1. available, 2.unavailable)> ");
@@ -398,9 +398,9 @@ public class HotelOperationModule {
 
             System.out.println("*** HoRS :: Hotel Management System :: Delete Room ***\n");
             System.out.print("Enter Room Number> ");
-            Long roomNumber = scanner.nextLong();
+            String roomNumber = scanner.nextLine();
             RoomEntity room = roomSessionBean.retrieveRoomByFloorUnitNo(roomNumber);
-            System.out.printf("Confirm Delete Room Number %d (Enter 'Y' to Delete)> ", room.getFloorUnitNo());
+            System.out.printf("Confirm Delete Room Number %s (Enter 'Y' to Delete)> ", room.getFloorUnitNo());
             input = scanner.nextLine().toUpperCase();
 
             if (input.equals("Y")) {
@@ -421,7 +421,7 @@ public class HotelOperationModule {
         List<RoomEntity> rooms = roomSessionBean.retrieveAllRooms();
         System.out.printf("%12s%12s%20s%20s\n", "Room Number", "Room Status", "Room Type", "Room Reservation Id");
         for (RoomEntity room : rooms) {
-            System.out.printf("%12s%12s%20s\n", room.getFloorUnitNo().toString(), room.getRoomStatusEnum(),
+            System.out.printf("%12s%12s%20s\n", room.getFloorUnitNo(), room.getRoomStatusEnum(),
                     room.getRoomTypeEntity().getName());
         }
        bufferScreenForUser();
@@ -488,9 +488,9 @@ public class HotelOperationModule {
             newRoomRate = roomRateSessionBean.createRoomRateWithExistingRoomType(newRoomRate, roomType.getRoomTypeId());
             System.out.println("New room rate created successfully!: " + newRoomRate.getRoomRateId() + "\n");
         } catch (DoesNotExistException ex) {
-            System.out.println(ex.getMessage() + "!\n");
+            bufferScreenForUser(ex.getMessage() + "!\n");
         } catch (ParseException ex) {
-            System.out.println("Invalid Date Format entered!" + "\n");
+            bufferScreenForUser("Invalid Date Format entered!" + "\n");
         }
     }
 
@@ -621,9 +621,9 @@ public class HotelOperationModule {
             System.out.println("Room Rate updated successfully!\n");
 
         } catch (ParseException ex) {
-            System.out.println("Invalid Date Format entered!" + "\n");
+            bufferScreenForUser("Invalid Date Format entered!" + "\n");
         } catch (DoesNotExistException ex) {
-            System.out.println("An error has occurred while updating room rate: " + ex.getMessage() + "\n");
+            bufferScreenForUser("An error has occurred while updating room rate: " + ex.getMessage() + "\n");
         }
     }
 

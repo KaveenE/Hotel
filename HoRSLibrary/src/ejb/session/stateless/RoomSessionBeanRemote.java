@@ -25,8 +25,8 @@ public interface RoomSessionBeanRemote {
 
     public void updateRoom(RoomEntity room) throws DoesNotExistException, AlreadyExistsException;
 
-    public void deleteRoomByFloorUnitNo(Long floorUnitNo) throws DoesNotExistException;
+    public void deleteRoomByFloorUnitNo(String floorUnitNo) throws DoesNotExistException;
 
-    public RoomEntity retrieveRoomByFloorUnitNo(Long floorUnitNo) throws DoesNotExistException;
+    public RoomEntity retrieveRoomByFloorUnitNo(String floorUnitNo) throws DoesNotExistException;
 
 }

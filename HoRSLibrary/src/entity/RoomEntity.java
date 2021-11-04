@@ -36,7 +36,7 @@ public class RoomEntity implements Serializable {
     private Long roomId;
 
     @Column(nullable = false, unique = true)
-    private Long floorUnitNo;
+    private String floorUnitNo;
     @Enumerated(EnumType.STRING)
     private RoomStatusEnum roomStatusEnum;
     @Column(nullable = false)
@@ -54,7 +54,7 @@ public class RoomEntity implements Serializable {
         this.roomStatusEnum = RoomStatusEnum.AVAILABLE;
     }
 
-    public RoomEntity(Long floorUnitNo, RoomTypeEntity roomTypeEntity) {
+    public RoomEntity(String floorUnitNo, RoomTypeEntity roomTypeEntity) {
         this();
         this.floorUnitNo = floorUnitNo;
         this.roomTypeEntity = roomTypeEntity;
@@ -96,11 +96,11 @@ public class RoomEntity implements Serializable {
         return "entity.RoomEntity[ id=" + roomId + " ]";
     }
 
-    public Long getFloorUnitNo() {
+    public String getFloorUnitNo() {
         return floorUnitNo;
     }
 
-    public void setFloorUnitNo(Long floorUnitNo) {
+    public void setFloorUnitNo(String floorUnitNo) {
         this.floorUnitNo = floorUnitNo;
     }
 

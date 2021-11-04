@@ -20,6 +20,7 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import util.helper.BossHelper;
@@ -48,7 +49,8 @@ public abstract class RoomRateAbsEntity implements Serializable, Comparable<Room
     @JoinColumn(nullable = false)
     private RoomTypeEntity roomTypeEntity;
 
-    @OneToMany(mappedBy = "roomRateAbsEntity", cascade = CascadeType.ALL)
+    @ManyToMany(mappedBy = "roomRateAbsEntity", 
+            cascade = {CascadeType.PERSIST,CascadeType.DETACH,CascadeType.MERGE,CascadeType.REFRESH})
     private Set<ReservationEntity> reservations;
 
     public RoomRateAbsEntity() {

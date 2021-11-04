@@ -97,8 +97,8 @@ public class DataInitSessionBean {
         roomRateSessionBean.createRoomRateWithExistingRoomType(normalRateGrandSuite, grand.getRoomTypeId());
         roomRateSessionBean.createRoomRateWithExistingRoomType(normalRateGrandSuite, grand.getRoomTypeId());
 
-        RoomEntity singletonDeluxeRoom = new RoomEntity(2102L, deluxe);
-        RoomEntity singletonGrandRoom = new RoomEntity(2103L, grand);
+        RoomEntity singletonDeluxeRoom = new RoomEntity("2102", deluxe);
+        RoomEntity singletonGrandRoom = new RoomEntity("2103", grand);
 
         roomSessionBean.createRoomWithExistingRoomType(singletonDeluxeRoom, deluxe.getRoomTypeId());
         roomSessionBean.createRoomWithExistingRoomType(singletonGrandRoom, grand.getRoomTypeId());

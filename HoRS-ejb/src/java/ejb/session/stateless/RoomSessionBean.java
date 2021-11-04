@@ -76,7 +76,7 @@ public class RoomSessionBean implements RoomSessionBeanRemote, RoomSessionBeanLo
         
         RoomEntity roomToUpdate = retrieveRoomById(room.getRoomId());
         
-        if(!Objects.equals(roomToUpdate.getFloorUnitNo(), roomToUpdate.getFloorUnitNo())  && uniqueFieldAlreadyExists(room.getFloorUnitNo())) {
+        if(!roomToUpdate.getFloorUnitNo().equals(roomToUpdate.getFloorUnitNo())  && uniqueFieldAlreadyExists(room.getFloorUnitNo())) {
             throw new RoomAlreadyExistsException("This unique floor number already exists!");
         }
 
@@ -84,7 +84,7 @@ public class RoomSessionBean implements RoomSessionBeanRemote, RoomSessionBeanLo
         roomToUpdate.setRoomStatusEnum(room.getRoomStatusEnum());
     }
 
-    private boolean uniqueFieldAlreadyExists(Long floorUnitNo) {
+    private boolean uniqueFieldAlreadyExists(String floorUnitNo) {
         return !em.createQuery("SELECT re FROM RoomEntity re WHERE re.floorUnitNo = :floorUnitNo")
                 .setParameter("floorUnitNo", floorUnitNo)
                 .getResultList()
@@ -93,7 +93,7 @@ public class RoomSessionBean implements RoomSessionBeanRemote, RoomSessionBeanLo
 
     //Placeholder for "Delete Room" (UC 14)
     @Override
-    public void deleteRoomByFloorUnitNo(Long floorUnitNo) throws DoesNotExistException {
+    public void deleteRoomByFloorUnitNo(String floorUnitNo) throws DoesNotExistException {
         //Delete a particular room record.
         //A room record can only be deleted if it is not used (ie 0 RLE?)
         //Otherwise, it should be marked as disabled, excluded from the hotel room inventory for that particular room type and should not be allocated to a new reservation.
@@ -112,7 +112,7 @@ public class RoomSessionBean implements RoomSessionBeanRemote, RoomSessionBeanLo
     }
 
     @Override
-    public RoomEntity retrieveRoomByFloorUnitNo(Long floorUnitNo) throws DoesNotExistException {
+    public RoomEntity retrieveRoomByFloorUnitNo(String floorUnitNo) throws DoesNotExistException {
         try {
             return (RoomEntity) em.createQuery("SELECT re FROM RoomEntity re WHERE re.floorUnitNo = :floorUnitNo")
                     .setParameter("floorUnitNo", floorUnitNo)
