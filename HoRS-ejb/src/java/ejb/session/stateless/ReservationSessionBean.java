@@ -54,6 +54,8 @@ import util.helper.BossHelper;
 public class ReservationSessionBean implements ReservationSessionBeanRemote, ReservationSessionBeanLocal {
 
     @EJB
+    private GuestSessionBeanLocal guestSessionBean;
+    @EJB
     private RoomTypeSessionBeanLocal roomTypeSessionBean;
     @PersistenceContext(unitName = "HoRS-ejbPU")
     private EntityManager em;
@@ -62,12 +64,29 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
         reservations.forEach(reservation -> em.persist(reservation));
         em.flush();
     }
-    
+
     @Override
     public ReservationEntity retrieveReservationById(Long resId) throws DoesNotExistException {
-        return BossHelper.requireNonNull(em.find(ReservationEntity.class, resId), new ReservationDoesNotExistException()); 
+        return BossHelper.requireNonNull(em.find(ReservationEntity.class, resId), new ReservationDoesNotExistException());
     }
-    
+
+    @Override
+    public List<ReservationEntity> retrieveReservationByCheckIn(Date checkIn) {
+        return em.createQuery("SELECT res FROM ReservationEntity res WHERE res.checkInDate = :checkIn")
+                .setParameter("checkIn", checkIn)
+                .getResultList();
+    }
+
+    @Override
+    public List<ReservationEntity> retrieveReservationByCheckInAndGuest(LocalDate checkIn, String username) throws DoesNotExistException {
+        List<ReservationEntity> allReservationsByGuest = guestSessionBean.retrieveAllReservationsByGuest(username);
+
+        return allReservationsByGuest.stream()
+                .filter(res -> BossHelper.dateToLocalDate(res.getCheckInDate())
+                .equals(checkIn))
+                .collect(Collectors.toList());
+    }
+
     @Override
     public void walkInReserveRoomsByRoomType(ReservationEntity reservation, String roomTypeName, Long roomQuantity) throws DoesNotExistException {
         this.reserveRoomsByRoomType(reservation, roomTypeName, true, roomQuantity);
@@ -86,7 +105,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
 
         //Associate RR
         computeAndAssociatePriceOfReservation(roomTypeToReserve, reservations, walkIn);
-        
+
         //Associate Rooms
         associateToPotentialFreeRooms(reservations, roomTypeName);
 
@@ -149,7 +168,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
                 .stream()
                 .filter(room -> !room.getIsDisabled() && room.getRoomStatusEnum() == RoomStatusEnum.AVAILABLE)
                 .collect(Collectors.toSet());
-        
+
         boolean free;
         for (RoomEntity potentialFreeRoom : availableAndEnabledRooms) {
 
