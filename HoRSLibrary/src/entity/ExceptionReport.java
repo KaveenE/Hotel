@@ -5,12 +5,7 @@
  */
 package entity;
 
-import java.io.Serializable;
 import javax.persistence.Embeddable;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 
 /**
  *
@@ -22,6 +17,9 @@ public class ExceptionReport {
     private Integer exceptionType;
     private String messageToHotel;
     private String messageToGuest;
+
+    public ExceptionReport() {
+    }
 
     public ExceptionReport(Integer exceptionType, String messageToHotel, String messageToGuest) {
         this.exceptionType = exceptionType;
@@ -52,5 +50,5 @@ public class ExceptionReport {
     public void setMessageToGuest(String messageToGuest) {
         this.messageToGuest = messageToGuest;
     }
-    
+
 }

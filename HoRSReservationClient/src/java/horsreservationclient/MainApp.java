@@ -16,7 +16,10 @@ import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import util.exception.AlreadyExistsException;
 import util.exception.DoesNotExistException;
 import util.exception.InvalidLoginException;
@@ -77,10 +80,7 @@ public class MainApp {
                     try {
                         doLogin();
                         System.out.println("Login successful!\n");
-
-//                        guestOperationModule = new GuestOperationModule(roomSessionBean, roomRateSessionBean, roomTypeSessionBean);
-//
-//                        menuMain();
+                        mainMenu();
                     } catch (InvalidLoginException ex) {
                         System.out.println("Invalid login credential: " + ex.getMessage() + "\n");
                     }
@@ -125,7 +125,7 @@ public class MainApp {
 
             GuestEntity newGuest = new GuestEntity();
 
-            System.out.println("*** HoRS :: Hotel Administration Client :: Create New Guest ***\n");
+            System.out.println("*** HoRS :: Hotel Reservation Client :: Create New Guest ***\n");
             System.out.print("Enter Email> ");
             newGuest.setEmailAddress(scanner.nextLine());
             System.out.print("Enter Password> ");
@@ -139,7 +139,6 @@ public class MainApp {
         }
     }
 
-    
     public Map<String, Integer> guestSearchRoom() {
 
         Map<String, Integer> availableRoomsForRoomType = null;
@@ -151,7 +150,7 @@ public class MainApp {
             System.out.print("Enter Check Out Date (dd-mm-yyyy)>");
             checkOut = LocalDate.parse(scanner.nextLine(), dtf);
 
-            ReservationEntity customerBooking = new ReservationEntity(BossHelper.localDatetoDate(checkIn),BossHelper.localDatetoDate(checkOut));
+            ReservationEntity customerBooking = new ReservationEntity(BossHelper.localDatetoDate(checkIn), BossHelper.localDatetoDate(checkOut));
 
             availableRoomsForRoomType = roomTypeSessionBean.searchRoomTypeReservableQuantity(checkIn, checkOut);
 
@@ -176,6 +175,107 @@ public class MainApp {
         return availableRoomsForRoomType;
     }
 
+    public void mainMenu() {
+        Integer response = 0;
+
+        while (true) {
+            System.out.println("*** Hotel Reservation Client ***\n");
+            System.out.println("You are logged in as " + guestEntity.getEmailAddress() + "\n");
+
+            System.out.println("1: Reserve Hotel Room");
+            System.out.println("2: View My Reservation Details");
+            System.out.println("3: View All My Reservations");
+            System.out.println("4: Logout\n");
+
+            response = 0;
+
+            while (response < 1 || response > 4) {
+                System.out.print("> ");
+
+                response = scanner.nextInt();
+
+                if (response == 1) {
+                    Map<String, Integer> roomTypeResults = guestSearchRoom();
+                    if (!roomTypeResults.isEmpty()) {
+                        reserveHotelRoom(roomTypeResults);
+                    }
+                } else if (response == 2) {
+                    viewMyReservationDetails();
+                } else if (response == 3) {
+                    viewAllMyReservations();
+                } else if (response == 4) {
+                    break;
+                } else {
+                    System.out.println("Invalid option, please try again!\n");
+                }
+            }
+
+            if (response == 4) {
+                break;
+            }
+        }
+    }
+
+    public void reserveHotelRoom(Map<String, Integer> availableRoomsForRoomType) {
+        String bookingRoomType;
+        Long bookingRoomTypeQuantity;
+        System.out.println("*** HoRS :: Hotel Reservation Client :: Reserve Hotel Room ***\n");
+
+        System.out.print("Enter Room Type to book> ");
+        bookingRoomType = scanner.nextLine();
+        System.out.print("Enter number of rooms> ");
+        bookingRoomTypeQuantity = scanner.nextLong();
+
+        if (!availableRoomsForRoomType.containsKey(bookingRoomType)) {
+            bufferScreenForUser("Room Type does not exist");
+            return;
+        } else if (bookingRoomTypeQuantity > availableRoomsForRoomType.getOrDefault(bookingRoomType, -1)) {
+            bufferScreenForUser("Insufficient rooms for requested room type!");
+            return;
+        }
+
+        ReservationEntity reservation = new ReservationEntity(BossHelper.localDatetoDate(checkIn), BossHelper.localDatetoDate(checkOut));
+        try {
+            reservationSessionBean.reserveRoomsByRoomType(reservation, bookingRoomType, false, bookingRoomTypeQuantity);
+        } catch (DoesNotExistException ex) {
+            bufferScreenForUser(ex.getMessage());
+        }
+
+    }
+
+    public void viewMyReservationDetails() {
+        Long reservationId;
+        System.out.println("*** HoRS :: Hotel Reservation Client :: View Reservation Detail ***\n");
+
+        System.out.print("Enter Reservation Id to View> ");
+        reservationId = scanner.nextLong();
+        try {
+            ReservationEntity reservationEntity = guestSessionBean.retrieveReservationsByGuest(guestEntity.getEmailAddress(), reservationId);
+            System.out.printf("%15s%15s%15s%15s\n", "Reservation Id", "Check-In Date", "Check-Out Date", "Price of Stay");
+            System.out.printf("%15s%15s%15s%15s\n",
+                    reservationEntity.getReservationId(), reservationEntity.getCheckInDate(),
+                    reservationEntity.getCheckOutDate(), reservationEntity.getPriceOfStay());
+
+        } catch (DoesNotExistException ex) {
+            bufferScreenForUser(ex.getMessage());
+        }
+    }
+
+    public void viewAllMyReservations() {
+        try {
+            List<ReservationEntity> reservationEntities = guestSessionBean.retrieveAllReservationsByGuest(guestEntity.getEmailAddress());
+            System.out.println("*** HoRS :: Hotel Reservation Client :: View Reservation Detail ***\n");
+            System.out.printf("%15s%15s%15s%15s\n", "Reservation Id", "Check-In Date", "Check-Out Date", "Price of Stay");
+            for (ReservationEntity reservationEntity : reservationEntities) {
+                System.out.printf("%15s%15s%15s%15s\n",
+                        reservationEntity.getReservationId(), reservationEntity.getCheckInDate(),
+                        reservationEntity.getCheckOutDate(), reservationEntity.getPriceOfStay());
+            }
+        } catch (DoesNotExistException ex) {
+            bufferScreenForUser(ex.getMessage());
+        }
+    }
+
     private void bufferScreenForUser(String message) {
         System.out.println(message);
         this.bufferScreenForUser();
@@ -186,4 +286,3 @@ public class MainApp {
         scanner.nextLine();
     }
 }
-

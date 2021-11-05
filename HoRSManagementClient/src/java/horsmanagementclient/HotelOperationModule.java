@@ -56,7 +56,7 @@ public class HotelOperationModule {
         Integer response = 0;
 
         while (true) {
-            System.out.println("*** HoRS :: Hotel Operation ***\n");
+            System.out.println("*** HoRS :: Hotel Operation Module***\n");
             System.out.println("1: Create New Room Type");
             System.out.println("2: View Room Type Details");
             System.out.println("3: Update Room Type");
@@ -162,7 +162,7 @@ public class HotelOperationModule {
 
         RoomTypeEntity newRoomType = new RoomTypeEntity();
 
-        System.out.println("*** HoRS :: Hotel Management System :: Create New Room Type ***\n");
+        System.out.println("*** HoRS :: Hotel Operation Module :: Create New Room Type ***\n");
         System.out.print("Enter Name> ");
         newRoomType.setName(scanner.nextLine());
         System.out.print("Enter Ranking> ");
@@ -198,7 +198,7 @@ public class HotelOperationModule {
     public void viewRoomTypeDetails() {
         Integer response = 0;
 
-        System.out.println("*** HoRS :: Hotel Management System :: View Room Type Details ***\n");
+        System.out.println("*** HoRS :: Hotel Operation Module :: View Room Type Details ***\n");
 
         System.out.print("Enter Room Type Name> ");
         String name = scanner.nextLine();
@@ -234,7 +234,7 @@ public class HotelOperationModule {
 
         String input;
 
-        System.out.println("*** HoRS :: Hotel Management System :: Update Room Type ***\n");
+        System.out.println("*** HoRS :: Hotel Operation Module :: Update Room Type ***\n");
         System.out.print("Enter Name (blank if no change)> ");
         input = scanner.nextLine();
         if (input.length() > 0) {
@@ -306,7 +306,7 @@ public class HotelOperationModule {
 
         String input;
 
-        System.out.println("*** HoRS :: Hotel Management System :: Delete Room Type ***\n");
+        System.out.println("*** HoRS :: Hotel Operation Module :: Delete Room Type ***\n");
         System.out.printf("Confirm Delete Room Type %s (Room Type ID: %d) (Enter 'Y' to Delete)> ", roomType.getName(), roomType.getRoomTypeId());
         input = scanner.nextLine().toUpperCase();
 
@@ -324,7 +324,7 @@ public class HotelOperationModule {
 
     public void viewAllRoomTypes() {
 
-        System.out.println("*** HoRS :: Hotel Management System :: View All Room Type ***\n");
+        System.out.println("*** HoRS :: Hotel Operation Module :: View All Room Type ***\n");
 
         List<RoomTypeEntity> roomTypes = roomTypeSessionBean.retrieveAllRoomTypes();
         System.out.printf("%12s%20s%70s%6s%50s%10s%60s%10s\n", "Room Type Id", "Name", "Description", "Size", "Bed", "Capacity", "Amenities", "Disabled");
@@ -341,7 +341,7 @@ public class HotelOperationModule {
 
             RoomEntity newRoom = new RoomEntity();
 
-            System.out.println("*** HoRS :: Hotel Management System :: Create New Room ***\n");
+            System.out.println("*** HoRS :: Hotel Operation Module :: Create New Room ***\n");
             System.out.print("Enter Room Number (room floor + room number)> ");
             newRoom.setFloorUnitNo(scanner.nextLine());
             System.out.print("Enter Room Type Name> ");
@@ -361,7 +361,7 @@ public class HotelOperationModule {
 
             String input;
 
-            System.out.println("*** HoRS :: Hotel Management System :: Update Room ***\n");
+            System.out.println("*** HoRS :: Hotel Operation Module :: Update Room ***\n");
             System.out.print("Enter Room Number> ");
             String roomNumber = scanner.nextLine();
             RoomEntity room = roomSessionBean.retrieveRoomByFloorUnitNo(roomNumber);
@@ -390,7 +390,7 @@ public class HotelOperationModule {
         try {
             String input;
 
-            System.out.println("*** HoRS :: Hotel Management System :: Delete Room ***\n");
+            System.out.println("*** HoRS :: Hotel Operation Module :: Delete Room ***\n");
             System.out.print("Enter Room Number> ");
             String roomNumber = scanner.nextLine();
             RoomEntity room = roomSessionBean.retrieveRoomByFloorUnitNo(roomNumber);
@@ -410,7 +410,7 @@ public class HotelOperationModule {
 
     public void viewAllRooms() {
 
-        System.out.println("*** HoRS :: Hotel Management System :: View All Rooms ***\n");
+        System.out.println("*** HoRS :: Hotel Operation Module :: View All Rooms ***\n");
 
         List<RoomEntity> rooms = roomSessionBean.retrieveAllRooms();
         System.out.printf("%12s%12s%20s%20s\n", "Room Number", "Room Status", "Room Type", "Room Reservation Id");
@@ -426,7 +426,7 @@ public class HotelOperationModule {
 
             RoomRateAbsEntity newRoomRate;
 
-            System.out.println("*** HoRS :: Hotel Management System :: Create New Room Rate ***\n");
+            System.out.println("*** HoRS :: Hotel Operation Module :: Create New Room Rate ***\n");
             while (true) {
                 System.out.print("Select Room Rate Type:\n 1. Normal Rate\n 2. Published Rate\n 3. Promotion Rate\n 4. Peak Rate\n> ");
                 Integer roomRateTypeInt = scanner.nextInt();
@@ -492,7 +492,7 @@ public class HotelOperationModule {
 
         Integer response = 0;
 
-        System.out.println("*** HoRS :: Hotel Management System :: View Room Rate Details ***\n");
+        System.out.println("*** HoRS :: Hotel Operation Module :: View Room Rate Details ***\n");
 
         System.out.print("Enter Room Rate Id> ");
         Long rateId = scanner.nextLong();
@@ -535,7 +535,7 @@ public class HotelOperationModule {
 
     public void viewAllRoomRates() {
 
-        System.out.println("*** HoRS :: Hotel Management System :: View All Room Rates ***\n");
+        System.out.println("*** HoRS :: Hotel Operation Module :: View All Room Rates ***\n");
 
         List<RoomRateAbsEntity> roomRates = roomRateSessionBean.retrieveAllRoomRates();
 
@@ -569,7 +569,7 @@ public class HotelOperationModule {
 
             String input;
 
-            System.out.println("*** HoRS :: Hotel Management System :: Update Room Rate ***\n");
+            System.out.println("*** HoRS :: Hotel Operation Module :: Update Room Rate ***\n");
             System.out.print("Enter Name (blank if no change)> ");
             input = scanner.nextLine();
             if (input.length() > 0) {
@@ -618,7 +618,7 @@ public class HotelOperationModule {
     public void deleteRoomRate(RoomRateAbsEntity roomRate) {
         String input;
 
-        System.out.println("*** HoRS :: Hotel Management System :: Delete Room Rate ***\n");
+        System.out.println("*** HoRS :: Hotel Operation Module :: Delete Room Rate ***\n");
         System.out.printf("Confirm Delete Room Rate %s (Room Rate ID: %d) (Enter 'Y' to Delete)> ", roomRate.getName(), roomRate.getRoomRateId());
         input = scanner.nextLine().toUpperCase();
 

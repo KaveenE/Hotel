@@ -89,7 +89,6 @@ public class FrontOfficeModule {
         }
     }
 
- 
     public Map<String, Integer> walkInSearchRoom() {
 
         Map<String, Integer> availableRoomsForRoomType = null;
@@ -122,10 +121,11 @@ public class FrontOfficeModule {
         return availableRoomsForRoomType;
     }
 
-    //TODO
     public void walkInReserveRoom(Map<String, Integer> availableRoomsForRoomType) {
         String bookingRoomType;
         Long bookingRoomTypeQuantity;
+        System.out.println("*** HoRS :: Hotel Administration Client :: Reserve Hotel Room ***\n");
+
         System.out.print("Enter Room Type to book> ");
         bookingRoomType = scanner.nextLine();
         System.out.print("Enter number of rooms> ");
@@ -138,10 +138,10 @@ public class FrontOfficeModule {
             bufferScreenForUser("Insufficient rooms for requested room type!");
             return;
         }
-        
+
         ReservationEntity reservation = new ReservationEntity(new Date(), BossHelper.localDatetoDate(checkOut));
         try {
-           reservationSessionBean.walkInReserveRoomsByRoomType(reservation, bookingRoomType, bookingRoomTypeQuantity);
+            reservationSessionBean.walkInReserveRoomsByRoomType(reservation, bookingRoomType, bookingRoomTypeQuantity);
         } catch (DoesNotExistException ex) {
             bufferScreenForUser(ex.getMessage());
         }

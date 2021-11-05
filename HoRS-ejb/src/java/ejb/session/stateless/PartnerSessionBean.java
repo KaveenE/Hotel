@@ -63,6 +63,7 @@ public class PartnerSessionBean implements PartnerSessionBeanRemote, PartnerSess
         }
     }
     
+    //retrieves all reservation records for the guest
     @Override
     public List<ReservationEntity> retrieveAllReservationsByPartner(String emailAddress) throws DoesNotExistException {
         return retrievePartnerByUsername(emailAddress).getPartnerReservationEntities()
@@ -70,6 +71,7 @@ public class PartnerSessionBean implements PartnerSessionBeanRemote, PartnerSess
                                                     .collect(Collectors.toList());
     }
     
+    //retrieves a particular reservation record
     @Override
     public ReservationEntity retrieveReservationsByPartner(String emailAddress,Long reservationId) throws DoesNotExistException {
         return retrievePartnerByUsername(emailAddress).getPartnerReservationEntities()
@@ -79,6 +81,7 @@ public class PartnerSessionBean implements PartnerSessionBeanRemote, PartnerSess
                                                     .findFirst()
                                                     .orElseThrow(() -> new ReservationDoesNotExistException());
     }
+    
     @Override
     public PartnerEntity partnerLogin(String username, String password) throws InvalidLoginException {
         try {
