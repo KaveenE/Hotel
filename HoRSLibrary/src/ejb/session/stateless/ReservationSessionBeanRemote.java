@@ -23,4 +23,6 @@ public interface ReservationSessionBeanRemote {
 
     public void reserveRoomsByRoomType(ReservationEntity reservation, String roomTypeName, boolean walkIn, Long roomQuantity) throws DoesNotExistException;
 
+    public ReservationEntity retrieveReservationById(Long resId) throws DoesNotExistException;
+
 }

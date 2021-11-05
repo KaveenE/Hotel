@@ -6,6 +6,7 @@
 package ejb.session.stateless;
 
 import entity.PartnerEntity;
+import entity.ReservationEntity;
 import java.util.List;
 import javax.ejb.Remote;
 import util.exception.AlreadyExistsException;
@@ -27,5 +28,7 @@ public interface PartnerSessionBeanRemote {
     public PartnerEntity retrievePartnerByUsername(String username) throws DoesNotExistException;
 
     public PartnerEntity partnerLogin(String username, String password) throws InvalidLoginException;
+
+    public List<ReservationEntity> retrieveAllReservationsByPartner(String emailAddress) throws DoesNotExistException;
 
 }

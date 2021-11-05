@@ -6,8 +6,10 @@
 package ejb.session.stateless;
 
 import entity.GuestEntity;
+import entity.ReservationEntity;
 import java.util.List;
 import javax.ejb.Local;
+import util.exception.DoesNotExistException;
 
 /**
  *
@@ -17,5 +19,7 @@ import javax.ejb.Local;
 public interface GuestSessionBeanLocal {
 
     public List<GuestEntity> retrieveAllGuests();
+
+    public List<ReservationEntity> retrieveAllReservationsByGuest(String emailAddress) throws DoesNotExistException;
     
 }

@@ -6,7 +6,9 @@
 package ejb.session.stateless;
 
 import entity.PartnerEntity;
+import entity.ReservationEntity;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -58,6 +60,13 @@ public class PartnerSessionBean implements PartnerSessionBeanRemote, PartnerSess
         } catch (NoResultException | NonUniqueResultException ex) {
             throw new PartnerDoesNotExistException("Partner Username " + username + " does not exist!");
         }
+    }
+    
+    @Override
+    public List<ReservationEntity> retrieveAllReservationsByPartner(String emailAddress) throws DoesNotExistException {
+        return retrievePartnerByUsername(emailAddress).getPartnerReservationEntities()
+                                                    .stream().map(partnerRes -> (ReservationEntity)partnerRes)
+                                                    .collect(Collectors.toList());
     }
 
     @Override

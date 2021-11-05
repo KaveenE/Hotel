@@ -6,7 +6,11 @@
 package ejb.session.stateless;
 
 import entity.GuestEntity;
+import entity.ReservationEntity;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -58,6 +62,13 @@ public class GuestSessionBean implements GuestSessionBeanRemote, GuestSessionBea
         } catch (NoResultException | NonUniqueResultException ex) {
             throw new GuestDoesNotExistException("Guest Username " + emailAddress + " does not exist!");
         }
+    }
+    
+    @Override
+    public List<ReservationEntity> retrieveAllReservationsByGuest(String emailAddress) throws DoesNotExistException {
+        return retrieveGuestByUsername(emailAddress).getGuestReservationEntities()
+                                                    .stream().map(guestRes -> (ReservationEntity)guestRes)
+                                                    .collect(Collectors.toList());
     }
 
     @Override

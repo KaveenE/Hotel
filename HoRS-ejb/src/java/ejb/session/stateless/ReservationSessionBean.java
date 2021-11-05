@@ -42,6 +42,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import util.enumeration.RoomStatusEnum;
 import util.exception.DoesNotExistException;
+import util.exception.ReservationDoesNotExistException;
 import util.exception.RoomRateDoesNotExistException;
 import util.helper.BossHelper;
 
@@ -61,7 +62,12 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
         reservations.forEach(reservation -> em.persist(reservation));
         em.flush();
     }
-
+    
+    @Override
+    public ReservationEntity retrieveReservationById(Long resId) throws DoesNotExistException {
+        return BossHelper.requireNonNull(em.find(ReservationEntity.class, resId), new ReservationDoesNotExistException()); 
+    }
+    
     @Override
     public void walkInReserveRoomsByRoomType(ReservationEntity reservation, String roomTypeName, Long roomQuantity) throws DoesNotExistException {
         this.reserveRoomsByRoomType(reservation, roomTypeName, true, roomQuantity);
@@ -143,14 +149,14 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
                 .stream()
                 .filter(room -> !room.getIsDisabled() && room.getRoomStatusEnum() == RoomStatusEnum.AVAILABLE)
                 .collect(Collectors.toSet());
-
+        
         boolean free;
         for (RoomEntity potentialFreeRoom : availableAndEnabledRooms) {
 
             //Room is not free if any of its RLE coincides with guest's period of stay
             free = potentialFreeRoom.getReservationEntities()
                     .stream()
-                    .allMatch(rle -> isBeforeInclusive(rle.getCheckOutDate(), checkIn) && isAfterInclusive(rle.getCheckInDate(), checkOut));
+                    .allMatch(res -> isBeforeInclusive(res.getCheckOutDate(), checkIn) && isAfterInclusive(res.getCheckInDate(), checkOut));
 
             if (free && !reservationQueue.isEmpty()) {
                 potentialFreeRoom.associateReservationEntities(reservationQueue.poll());
