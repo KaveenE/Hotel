@@ -21,5 +21,6 @@ public interface GuestSessionBeanLocal {
     public List<GuestEntity> retrieveAllGuests();
 
     public List<ReservationEntity> retrieveAllReservationsByGuest(String emailAddress) throws DoesNotExistException;
+    public GuestEntity retrieveGuestByUsername(String emailAddress) throws DoesNotExistException;
     
 }

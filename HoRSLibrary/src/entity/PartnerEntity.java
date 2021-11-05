@@ -37,7 +37,7 @@ public class PartnerEntity implements Serializable {
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "PARTNER_ENTITY_FK")
-    private Set<PartnerReservationEntity> partnerReservationEntities;
+    private Set<ReservationEntity> partnerReservationEntities;
 
     public PartnerEntity() {
         this.partnerReservationEntities = new HashSet<>();
@@ -93,28 +93,28 @@ public class PartnerEntity implements Serializable {
         this.password = password;
     }
 
-    public Set<PartnerReservationEntity> getPartnerReservationEntities() {
+    public Set<ReservationEntity> getPartnerReservationEntities() {
         return partnerReservationEntities;
     }
 
-    public void associatePartnerReservationEntities(PartnerReservationEntity... partnerReservationEntities) {
-        Set<PartnerReservationEntity> partnerReservationEntitySet = BossHelper.convertArrayToSet(partnerReservationEntities);
+    public void associatePartnerReservationEntities(ReservationEntity... partnerReservationEntities) {
+        Set<ReservationEntity> partnerReservationEntitySet = BossHelper.convertArrayToSet(partnerReservationEntities);
         this.associatePartnerReservationEntities(partnerReservationEntitySet);
 
     }
 
-    public void associatePartnerReservationEntities(Collection<PartnerReservationEntity> partnerReservationEntities) {
+    public void associatePartnerReservationEntities(Collection<ReservationEntity> partnerReservationEntities) {
         this.partnerReservationEntities.addAll(partnerReservationEntities);
 
     }
 
-    public void disassociatePartnerReservationEntities(PartnerReservationEntity... partnerReservationEntities) {
-        Set<PartnerReservationEntity> partnerReservationEntitySet = BossHelper.convertArrayToSet(partnerReservationEntities);
+    public void disassociatePartnerReservationEntities(ReservationEntity... partnerReservationEntities) {
+        Set<ReservationEntity> partnerReservationEntitySet = BossHelper.convertArrayToSet(partnerReservationEntities);
         this.disassociatePartnerReservationEntities(partnerReservationEntitySet);
 
     }
 
-    public void disassociatePartnerReservationEntities(Collection<PartnerReservationEntity> partnerReservationEntities) {
+    public void disassociatePartnerReservationEntities(Collection<ReservationEntity> partnerReservationEntities) {
         if (partnerReservationEntities != this.partnerReservationEntities) {
             this.partnerReservationEntities.removeAll(partnerReservationEntities);
         } else {

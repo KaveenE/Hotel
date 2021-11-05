@@ -64,7 +64,7 @@ public class ReservationEntity implements Serializable {
         this(checkInDate, checkOutDate, null);
 
     }
-
+    
     public ReservationEntity(Date checkInDate, Date checkOutDate, BigDecimal priceOfStay) {
         this();
         this.checkInDate = checkInDate;
@@ -87,7 +87,7 @@ public class ReservationEntity implements Serializable {
         hash += (reservationId != null ? reservationId.hashCode() : 0);
         return hash;
     }
-
+    
     @Override
     public boolean equals(Object object) {
 
@@ -170,6 +170,14 @@ public class ReservationEntity implements Serializable {
 
     public void setExceptionReport(ExceptionReport exceptionReport) {
         this.exceptionReport = exceptionReport;
+    }
+
+    public Boolean getOnline() {
+        return online;
+    }
+
+    public void setOnline(Boolean online) {
+        this.online = online;
     }
 
 }

@@ -7,6 +7,7 @@ package ejb.session.stateless;
 
 import ejb.session.stateless.ReservationSessionBeanRemote;
 import ejb.session.stateless.RoomTypeSessionBeanLocal;
+import entity.GuestReservationEntity;
 import entity.PeakRateEntity;
 import entity.PromoRateEntity;
 
@@ -54,7 +55,11 @@ import util.helper.BossHelper;
 public class ReservationSessionBean implements ReservationSessionBeanRemote, ReservationSessionBeanLocal {
 
     @EJB
+    private PartnerSessionBeanLocal partnerSessionBean;
+
+    @EJB
     private GuestSessionBeanLocal guestSessionBean;
+
     @EJB
     private RoomTypeSessionBeanLocal roomTypeSessionBean;
     @PersistenceContext(unitName = "HoRS-ejbPU")
@@ -91,12 +96,14 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
 
     @Override
     public void walkInReserveRoomsByRoomType(ReservationEntity reservation, String roomTypeName, Long roomQuantity) throws DoesNotExistException {
-        this.reserveRoomsByRoomType(reservation, roomTypeName, true, roomQuantity);
-        return;
+        this.reserveRoomsByRoomType(reservation, roomTypeName, roomQuantity, null);
+
     }
 
     @Override
-    public void reserveRoomsByRoomType(ReservationEntity reservation, String roomTypeName, boolean walkIn, Long roomQuantity) throws DoesNotExistException {
+    public void reserveRoomsByRoomType(ReservationEntity reservation, String roomTypeName, Long roomQuantity, String username) throws DoesNotExistException {
+        boolean walkIn = !reservation.getOnline();
+
         Set<ReservationEntity> reservations = Stream.generate(() -> new ReservationEntity(reservation.getCheckInDate(), reservation.getCheckOutDate()))
                 .limit(roomQuantity)
                 .collect(Collectors.toSet());
@@ -114,6 +121,16 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
         LocalDateTime checkInDateTime = BossHelper.dateToLocalDateTime(reservation.getCheckInDate());
         if (checkInDateTime.toLocalDate().equals(LocalDate.now()) && checkInDateTime.getHour() > 2) {
             //TODO: Same day reservation, have to allocate
+        }
+
+        if (!walkIn) {
+            if (reservation instanceof GuestReservationEntity) {
+                 guestSessionBean.retrieveGuestByUsername(username)
+                                 .associateGuestReservationEntities(reservations);
+            } else {
+                partnerSessionBean.retrievePartnerByUsername(username)
+                                  .associatePartnerReservationEntities(reservations);
+            }
         }
 
         this.createReservaton(reservations);

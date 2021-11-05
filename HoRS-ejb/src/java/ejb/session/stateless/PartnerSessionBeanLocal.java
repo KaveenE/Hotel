@@ -8,6 +8,7 @@ package ejb.session.stateless;
 import entity.PartnerEntity;
 import javax.ejb.Local;
 import util.exception.AlreadyExistsException;
+import util.exception.DoesNotExistException;
 import util.exception.InvalidLoginException;
 import util.exception.UnknownPersistenceException;
 
@@ -20,5 +21,6 @@ public interface PartnerSessionBeanLocal {
 
     public PartnerEntity createNewPartner(PartnerEntity newPartnerEntity) throws AlreadyExistsException, UnknownPersistenceException;
     public PartnerEntity partnerLogin(String username, String password) throws InvalidLoginException;
+    public PartnerEntity retrievePartnerByUsername(String username) throws DoesNotExistException;
     
 }
