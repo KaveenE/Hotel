@@ -31,4 +31,6 @@ public interface PartnerSessionBeanRemote {
 
     public List<ReservationEntity> retrieveAllReservationsByPartner(String emailAddress) throws DoesNotExistException;
 
+    public ReservationEntity retrieveReservationsByPartner(String emailAddress, Long reservationId) throws DoesNotExistException;
+
 }

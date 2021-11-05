@@ -21,6 +21,7 @@ import util.exception.DoesNotExistException;
 import util.exception.InvalidLoginException;
 import util.exception.PartnerAlreadyExistsException;
 import util.exception.PartnerDoesNotExistException;
+import util.exception.ReservationDoesNotExistException;
 import util.exception.UnknownPersistenceException;
 
 /**
@@ -68,7 +69,16 @@ public class PartnerSessionBean implements PartnerSessionBeanRemote, PartnerSess
                                                     .stream().map(partnerRes -> (ReservationEntity)partnerRes)
                                                     .collect(Collectors.toList());
     }
-
+    
+    @Override
+    public ReservationEntity retrieveReservationsByPartner(String emailAddress,Long reservationId) throws DoesNotExistException {
+        return retrievePartnerByUsername(emailAddress).getPartnerReservationEntities()
+                                                    .stream()
+                                                    .map(partnerRes -> (ReservationEntity)partnerRes)
+                                                    .filter(partnerRes -> partnerRes.getReservationId().equals(reservationId))
+                                                    .findFirst()
+                                                    .orElseThrow(() -> new ReservationDoesNotExistException());
+    }
     @Override
     public PartnerEntity partnerLogin(String username, String password) throws InvalidLoginException {
         try {

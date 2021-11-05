@@ -23,6 +23,7 @@ import util.exception.DoesNotExistException;
 import util.exception.InvalidLoginException;
 import util.exception.GuestAlreadyExistsException;
 import util.exception.GuestDoesNotExistException;
+import util.exception.ReservationDoesNotExistException;
 import util.exception.UnknownPersistenceException;
 
 /**
@@ -69,6 +70,16 @@ public class GuestSessionBean implements GuestSessionBeanRemote, GuestSessionBea
         return retrieveGuestByUsername(emailAddress).getGuestReservationEntities()
                                                     .stream().map(guestRes -> (ReservationEntity)guestRes)
                                                     .collect(Collectors.toList());
+    }
+    
+    @Override
+    public ReservationEntity retrieveReservationsByGuest(String emailAddress,Long reservationId) throws DoesNotExistException {
+        return retrieveGuestByUsername(emailAddress).getGuestReservationEntities()
+                                                    .stream()
+                                                    .map(guestRes -> (ReservationEntity)guestRes)
+                                                    .filter(res -> res.getReservationId().equals(reservationId))
+                                                    .findFirst()
+                                                    .orElseThrow(() -> new ReservationDoesNotExistException());
     }
 
     @Override
