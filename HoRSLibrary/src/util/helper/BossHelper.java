@@ -42,6 +42,10 @@ public final class BossHelper {
     public static final int NAME_LENGTH = 50;
     public static final int PASSWORD_LENGTH = 128;
     public static final int MOBILEHP_LENGTH = 15;
+    
+    //To represent exception type 1 or 2. Quick and dirty unless you insist on enumerations.
+    public static final int TYPE1_EX = 1;
+    public static final int TYPE2_EX = 2;
 
     //Ease of bean validation
     public static final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();

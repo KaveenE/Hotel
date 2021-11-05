@@ -10,6 +10,7 @@ import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -34,11 +35,8 @@ public class ReservationEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long reservationId;
-    
+
     //TODO: Do we need reserved data? No right?
-    @Temporal(TemporalType.DATE)
-    @Column(nullable = true)
-    private Date reservedDate;
     @Temporal(TemporalType.DATE)
     @Column(nullable = false)
     private Date checkInDate;
@@ -50,8 +48,9 @@ public class ReservationEntity implements Serializable {
     @Column(nullable = false)
     private Boolean online;
     private Boolean isAllocated;
+    @Embedded
+    private ExceptionReport exceptionReport;
 
-   
     @ManyToOne(optional = true, fetch = FetchType.LAZY)
     private RoomEntity roomEntity;
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
@@ -152,8 +151,25 @@ public class ReservationEntity implements Serializable {
         this.priceOfStay = priceOfStay;
     }
 
-    public void setReservedDate(Date reservedDate) {
-        this.reservedDate = reservedDate;
+    public Boolean getIsAllocated() {
+        return isAllocated;
+    }
+
+    public void setIsAllocated(Boolean isAllocated) {
+        this.isAllocated = isAllocated;
+    }
+
+    public String getExceptionReport(boolean isHotel) {
+        StringBuffer sb = new StringBuffer(exceptionReport.getExceptionType() + " ");
+        
+        if(isHotel) {
+           return sb.append(exceptionReport.getMessageToHotel()).toString();
+        }
+        return sb.append(exceptionReport.getMessageToGuest()).toString();
+    }
+
+    public void setExceptionReport(ExceptionReport exceptionReport) {
+        this.exceptionReport = exceptionReport;
     }
 
 }

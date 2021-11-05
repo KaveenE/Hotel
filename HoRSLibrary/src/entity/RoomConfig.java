@@ -16,9 +16,8 @@ import util.helper.BossHelper;
  * @author enkav
  */
 @Embeddable
-public class RoomConfig implements Serializable, Comparable<RoomConfig> {
+public class RoomConfig implements Comparable<RoomConfig> {
 
-    private static final long serialVersionUID = 1L;
 
     @Column(nullable = false)
     private Integer ranking;
