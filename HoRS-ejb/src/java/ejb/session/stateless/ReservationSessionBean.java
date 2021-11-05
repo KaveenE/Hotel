@@ -71,10 +71,12 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
     }
 
     @Override
-    public List<ReservationEntity> retrieveReservationByCheckIn(Date checkIn) {
-        return em.createQuery("SELECT res FROM ReservationEntity res WHERE res.checkInDate = :checkIn")
-                .setParameter("checkIn", checkIn)
-                .getResultList();
+    public List<ReservationEntity> retrieveReservationByCheckIn(LocalDate checkIn) {
+        return em.createQuery("SELECT res FROM ReservationEntity res", ReservationEntity.class)
+                .getResultList()
+                .stream()
+                .filter(res -> BossHelper.dateToLocalDate(res.getCheckInDate()).isEqual(checkIn))
+                .collect(Collectors.toList());
     }
 
     @Override
