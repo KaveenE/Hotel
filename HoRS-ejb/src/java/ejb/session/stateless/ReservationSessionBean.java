@@ -5,9 +5,9 @@
  */
 package ejb.session.stateless;
 
-import ejb.session.stateless.ReservationSessionBeanRemote;
-import ejb.session.stateless.RoomTypeSessionBeanLocal;
+import entity.GuestEntity;
 import entity.GuestReservationEntity;
+import entity.PartnerReservationEntity;
 import entity.PeakRateEntity;
 import entity.PromoRateEntity;
 
@@ -99,9 +99,17 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
     @Override
     public void reserveRoomsByRoomType(ReservationEntity reservation, String roomTypeName, Long roomQuantity, String username) throws DoesNotExistException {
         boolean walkIn = !reservation.getOnline();
+        Stream<ReservationEntity> reservationStream;
 
-        Set<ReservationEntity> reservations = Stream.generate(() -> new ReservationEntity(reservation.getCheckInDate(), reservation.getCheckOutDate()))
-                .limit(roomQuantity)
+        if (reservation instanceof GuestReservationEntity) {
+            reservationStream = Stream.generate(() -> new GuestReservationEntity(reservation.getCheckInDate(), reservation.getCheckOutDate()));
+        } else if (reservation instanceof PartnerReservationEntity) {
+            reservationStream = Stream.generate(() -> new PartnerReservationEntity(reservation.getCheckInDate(), reservation.getCheckOutDate()));
+        } else {
+            reservationStream = Stream.generate(() -> new ReservationEntity(reservation.getCheckInDate(), reservation.getCheckOutDate()));
+        }
+
+        Set<ReservationEntity> reservations = reservationStream.limit(roomQuantity)
                 .collect(Collectors.toSet());
 
         //Associate RT
@@ -121,11 +129,17 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
 
         if (!walkIn) {
             if (reservation instanceof GuestReservationEntity) {
-                 guestSessionBean.retrieveGuestByUsername(username)
-                                 .associateGuestReservationEntities(reservations);
+                GuestEntity guestEntity = guestSessionBean.retrieveGuestByUsername(username);
+                guestEntity.associateGuestReservationEntities(reservations
+                        .stream()
+                        .map(res -> (GuestReservationEntity) res)
+                        .collect(Collectors.toSet()));
             } else {
                 partnerSessionBean.retrievePartnerByUsername(username)
-                                  .associatePartnerReservationEntities(reservations);
+                        .associatePartnerReservationEntities(reservations
+                                .stream()
+                                .map(res -> (PartnerReservationEntity) res)
+                                .collect(Collectors.toSet()));
             }
         }
 
@@ -158,7 +172,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
 
                 rateToLengthOfRate.getKey().associateReservations(reservations);
 
-                priceOfStay.add(rateToLengthOfRate.getKey().getRatePerNight()
+                priceOfStay = priceOfStay.add(rateToLengthOfRate.getKey().getRatePerNight()
                         .multiply(BigDecimal.valueOf(rateToLengthOfRate.getValue()))
                 );
             }
@@ -171,7 +185,6 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
 
     }
 
-    
     //helper method of reserveRoomsByRoomType, associates every reservation entity with a allocatable room
     private void associateToPotentialFreeRooms(Set<ReservationEntity> reservations, String roomTypeName) throws DoesNotExistException {
         Queue<ReservationEntity> reservationQueue = new ArrayDeque<>(reservations);

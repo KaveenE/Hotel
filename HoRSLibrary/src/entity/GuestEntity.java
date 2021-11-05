@@ -38,7 +38,7 @@ public class GuestEntity implements Serializable {
     
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "GUEST_ENTITY_FK")
-    private Set<ReservationEntity> guestReservationEntities;
+    private Set<GuestReservationEntity> guestReservationEntities;
     
     public GuestEntity() {
         this.guestReservationEntities = new HashSet<>();
@@ -99,21 +99,21 @@ public class GuestEntity implements Serializable {
         this.password = password;
     }
     
-    public void associateGuestReservationEntities(ReservationEntity... guestReservationEntities) {
-        Set<ReservationEntity> guestReservationEntitySet = BossHelper.convertArrayToSet(guestReservationEntities);
+    public void associateGuestReservationEntities(GuestReservationEntity... guestReservationEntities) {
+        Set<GuestReservationEntity> guestReservationEntitySet = BossHelper.convertArrayToSet(guestReservationEntities);
         this.associateGuestReservationEntities(guestReservationEntitySet);
     }
 
-    public void associateGuestReservationEntities(Collection<ReservationEntity> guestReservationEntities) {
+    public void associateGuestReservationEntities(Collection<GuestReservationEntity> guestReservationEntities) {
         this.guestReservationEntities.addAll(guestReservationEntities);
     }
 
-    public void disassociateGuestReservationEntities(ReservationEntity... guestReservationEntities) {
-        Set<ReservationEntity> guestReservationEntitySet = BossHelper.convertArrayToSet(guestReservationEntities);
+    public void disassociateGuestReservationEntities(GuestReservationEntity... guestReservationEntities) {
+        Set<GuestReservationEntity> guestReservationEntitySet = BossHelper.convertArrayToSet(guestReservationEntities);
         this.disassociateGuestReservationEntities(guestReservationEntitySet);
     }
 
-    public void disassociateGuestReservationEntities(Collection<ReservationEntity> guestReservationEntities) {
+    public void disassociateGuestReservationEntities(Collection<GuestReservationEntity> guestReservationEntities) {
         if (guestReservationEntities != this.guestReservationEntities) {
             this.guestReservationEntities.removeAll(guestReservationEntities);
         } else {
@@ -122,7 +122,7 @@ public class GuestEntity implements Serializable {
 
     }
 
-    public Set<ReservationEntity> getGuestReservationEntities() {
+    public Set<GuestReservationEntity> getGuestReservationEntities() {
         return guestReservationEntities;
     }
 

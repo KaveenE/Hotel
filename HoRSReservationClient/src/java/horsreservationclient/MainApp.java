@@ -11,15 +11,13 @@ import ejb.session.stateless.RoomRateSessionBeanRemote;
 import ejb.session.stateless.RoomSessionBeanRemote;
 import ejb.session.stateless.RoomTypeSessionBeanRemote;
 import entity.GuestEntity;
+import entity.GuestReservationEntity;
 import entity.ReservationEntity;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import util.exception.AlreadyExistsException;
 import util.exception.DoesNotExistException;
 import util.exception.InvalidLoginException;
@@ -234,9 +232,9 @@ public class MainApp {
             return;
         }
 
-        ReservationEntity reservation = new ReservationEntity(BossHelper.localDatetoDate(checkIn), BossHelper.localDatetoDate(checkOut));
+        ReservationEntity reservation = new GuestReservationEntity(BossHelper.localDatetoDate(checkIn), BossHelper.localDatetoDate(checkOut));
         try {
-            reservationSessionBean.reserveRoomsByRoomType(reservation, bookingRoomType, false, bookingRoomTypeQuantity);
+            reservationSessionBean.reserveRoomsByRoomType(reservation, bookingRoomType, bookingRoomTypeQuantity, guestEntity.getEmailAddress());
         } catch (DoesNotExistException ex) {
             bufferScreenForUser(ex.getMessage());
         }
@@ -265,11 +263,11 @@ public class MainApp {
         try {
             List<ReservationEntity> reservationEntities = guestSessionBean.retrieveAllReservationsByGuest(guestEntity.getEmailAddress());
             System.out.println("*** HoRS :: Hotel Reservation Client :: View Reservation Detail ***\n");
-            System.out.printf("%15s%15s%15s%15s\n", "Reservation Id", "Check-In Date", "Check-Out Date", "Price of Stay");
+            System.out.printf("%20s%20s%20s%20s\n", "Reservation Id", "Check-In Date", "Check-Out Date", "Price of Stay");
             for (ReservationEntity reservationEntity : reservationEntities) {
-                System.out.printf("%15s%15s%15s%15s\n",
-                        reservationEntity.getReservationId(), reservationEntity.getCheckInDate(),
-                        reservationEntity.getCheckOutDate(), reservationEntity.getPriceOfStay());
+                System.out.printf("%20s%20s%20s%20s\n",
+                        reservationEntity.getReservationId(), BossHelper.dateToLocalDate(reservationEntity.getCheckInDate()),
+                        BossHelper.dateToLocalDate(reservationEntity.getCheckOutDate()), reservationEntity.getPriceOfStay());
             }
         } catch (DoesNotExistException ex) {
             bufferScreenForUser(ex.getMessage());
