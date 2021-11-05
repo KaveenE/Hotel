@@ -7,9 +7,7 @@ package ejb.session.stateless;
 
 import entity.ReservationEntity;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import javax.ejb.Remote;
 import util.exception.DoesNotExistException;
 

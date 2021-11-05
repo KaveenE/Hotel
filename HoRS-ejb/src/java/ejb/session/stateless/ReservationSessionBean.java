@@ -17,16 +17,10 @@ import entity.RoomTypeEntity;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.Month;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.Deque;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
@@ -34,9 +28,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
-import javax.ejb.Stateful;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -70,6 +62,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
         return BossHelper.requireNonNull(em.find(ReservationEntity.class, resId), new ReservationDoesNotExistException());
     }
 
+    //returns a list of reservation entities with same check in date as input check in date
     @Override
     public List<ReservationEntity> retrieveReservationByCheckIn(LocalDate checkIn) {
         return em.createQuery("SELECT res FROM ReservationEntity res", ReservationEntity.class)
@@ -79,6 +72,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
                 .collect(Collectors.toList());
     }
 
+    //returns a list of guest's reservation entites with same check in date as input check in date
     @Override
     public List<ReservationEntity> retrieveReservationByCheckInAndGuest(LocalDate checkIn, String username) throws DoesNotExistException {
         List<ReservationEntity> allReservationsByGuest = guestSessionBean.retrieveAllReservationsByGuest(username);
@@ -89,12 +83,14 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
                 .collect(Collectors.toList());
     }
 
+    //overloaded method to facilitate room reservations for walk in only
     @Override
     public void walkInReserveRoomsByRoomType(ReservationEntity reservation, String roomTypeName, Long roomQuantity) throws DoesNotExistException {
         this.reserveRoomsByRoomType(reservation, roomTypeName, true, roomQuantity);
         return;
     }
 
+    //creates and associates reservations with room rate, room type and rooms
     @Override
     public void reserveRoomsByRoomType(ReservationEntity reservation, String roomTypeName, boolean walkIn, Long roomQuantity) throws DoesNotExistException {
         Set<ReservationEntity> reservations = Stream.generate(() -> new ReservationEntity(reservation.getCheckInDate(), reservation.getCheckOutDate()))
@@ -120,6 +116,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
 
     }
 
+    //helper method of reserveRoomsByRoomType, sets the price for price of stay and associates reservation with room rate
     private void computeAndAssociatePriceOfReservation(RoomTypeEntity roomTypeToReserve, Set<ReservationEntity> reservations, Boolean walkIn) throws DoesNotExistException {
         ReservationEntity reservation = reservations.iterator().next();
         LocalDate checkIn = BossHelper.dateToLocalDate(reservation.getCheckInDate());
@@ -157,6 +154,8 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
 
     }
 
+    
+    //helper method of reserveRoomsByRoomType, associates every reservation entity with a allocatable room
     private void associateToPotentialFreeRooms(Set<ReservationEntity> reservations, String roomTypeName) throws DoesNotExistException {
         Queue<ReservationEntity> reservationQueue = new ArrayDeque<>(reservations);
 
