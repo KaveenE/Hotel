@@ -17,8 +17,8 @@ public class Pair<E, V> implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private final E element1;
-    private final V element2;
+    private  E element1;
+    private  V element2;
 
     public Pair(E one, V two) {
         element1 = one;
@@ -31,6 +31,14 @@ public class Pair<E, V> implements Serializable {
 
     public V getSecond() {
         return element2;
+    }
+    
+    public void setFirst(E element1) {
+        this.element1 =  element1;
+    }
+
+    public void setSecond(V element2) {
+        this.element2 =  element2;
     }
 
     @Override

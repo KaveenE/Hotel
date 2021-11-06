@@ -32,6 +32,7 @@ import util.exception.RoomTypeAlreadyExistsException;
 import util.exception.RoomTypeDoesNotExistException;
 import util.exception.UnknownPersistenceException;
 import util.helper.BossHelper;
+import util.helper.Pair;
 
 /**
  *
@@ -69,10 +70,10 @@ public class RoomTypeSessionBean implements RoomTypeSessionBeanRemote, RoomTypeS
         BossHelper.requireNonNull(roomType.getRoomTypeId(), new RoomTypeDoesNotExistException());
 
         RoomTypeEntity roomTypeToUpdate = retrieveRoomTypeById(roomType.getRoomTypeId());
-        if(!roomTypeToUpdate.getName().equals(roomType.getName()) && uniqueFieldAlreadyExists(roomType.getName())) {
+        if (!roomTypeToUpdate.getName().equals(roomType.getName()) && uniqueFieldAlreadyExists(roomType.getName())) {
             throw new RoomTypeAlreadyExistsException("This unique name already exists!");
         }
-        
+
         roomTypeToUpdate.setName(roomType.getName());
         roomTypeToUpdate.setAmenities(roomType.getAmenities());
         roomTypeToUpdate.setBed(roomType.getBed());
@@ -166,8 +167,21 @@ public class RoomTypeSessionBean implements RoomTypeSessionBeanRemote, RoomTypeS
             freeRooms = getAllocatableQuantityByRoomType(checkIn, checkOut, potentialRoomTypeToReserve.getName());
             roomTypeToAvailableRooms.put(potentialRoomTypeToReserve.getName(), freeRooms);
         }
-        
+
         return roomTypeToAvailableRooms;
+    }
+
+    @Override
+    public List<Pair<String, Integer>> searchRoomTypeReservableQuantityForPartner(LocalDate checkIn, LocalDate checkOut) throws DoesNotExistException {
+        
+        Map<String, Integer> roomTypeToAvailableRooms = searchRoomTypeReservableQuantity(checkIn, checkOut);
+
+        List<Pair<String, Integer>> listOfroomTypeToAvailableRooms = roomTypeToAvailableRooms.entrySet()
+                .stream()
+                .map(keyValue -> new Pair<>(keyValue.getKey(), keyValue.getValue()))
+                .collect(Collectors.toCollection(() -> new ArrayList<>()));
+
+        return listOfroomTypeToAvailableRooms;
     }
 
     //Gives you the allocatable quantity of the room type 

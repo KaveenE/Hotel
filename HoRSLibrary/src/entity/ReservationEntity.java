@@ -35,8 +35,7 @@ public class ReservationEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long reservationId;
-
-    //TODO: Do we need reserved data? No right?
+    
     @Temporal(TemporalType.DATE)
     @Column(nullable = false)
     private Date checkInDate;
