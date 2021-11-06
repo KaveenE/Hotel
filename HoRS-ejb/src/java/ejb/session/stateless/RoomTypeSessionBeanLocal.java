@@ -32,7 +32,6 @@ public interface RoomTypeSessionBeanLocal {
 
     public RoomTypeEntity retrieveRoomTypeByName(String name) throws DoesNotExistException;
     
-    public List<Pair<String,Integer>> searchRoomTypeReservableQuantityForPartner(LocalDate checkIn, LocalDate checkOut) throws DoesNotExistException;
-
+    public List<Pair<String, Integer>> searchRoomTypeReservableQuantityForPartner(LocalDate checkIn, LocalDate checkOut) throws DoesNotExistException;
 
 }

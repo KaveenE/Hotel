@@ -173,15 +173,11 @@ public class RoomTypeSessionBean implements RoomTypeSessionBeanRemote, RoomTypeS
 
     @Override
     public List<Pair<String, Integer>> searchRoomTypeReservableQuantityForPartner(LocalDate checkIn, LocalDate checkOut) throws DoesNotExistException {
-        
         Map<String, Integer> roomTypeToAvailableRooms = searchRoomTypeReservableQuantity(checkIn, checkOut);
-
-        List<Pair<String, Integer>> listOfroomTypeToAvailableRooms = roomTypeToAvailableRooms.entrySet()
+        return roomTypeToAvailableRooms.entrySet()
                 .stream()
                 .map(keyValue -> new Pair<>(keyValue.getKey(), keyValue.getValue()))
                 .collect(Collectors.toCollection(() -> new ArrayList<>()));
-
-        return listOfroomTypeToAvailableRooms;
     }
 
     //Gives you the allocatable quantity of the room type 

@@ -65,16 +65,16 @@ public class PartnerSessionBean implements PartnerSessionBeanRemote, PartnerSess
     
     //retrieves all reservation records for the guest
     @Override
-    public List<ReservationEntity> retrieveAllReservationsByPartner(String emailAddress) throws DoesNotExistException {
-        return retrievePartnerByUsername(emailAddress).getPartnerReservationEntities()
+    public List<ReservationEntity> retrieveAllReservationsByPartner(String username) throws DoesNotExistException {
+        return retrievePartnerByUsername(username).getPartnerReservationEntities()
                                                     .stream().map(partnerRes -> (ReservationEntity)partnerRes)
                                                     .collect(Collectors.toList());
     }
     
     //retrieves a particular reservation record
     @Override
-    public ReservationEntity retrieveReservationsByPartner(String emailAddress,Long reservationId) throws DoesNotExistException {
-        return retrievePartnerByUsername(emailAddress).getPartnerReservationEntities()
+    public ReservationEntity retrieveReservationsByPartner(String username, Long reservationId) throws DoesNotExistException {
+        return retrievePartnerByUsername(username).getPartnerReservationEntities()
                                                     .stream()
                                                     .map(partnerRes -> (ReservationEntity)partnerRes)
                                                     .filter(partnerRes -> partnerRes.getReservationId().equals(reservationId))

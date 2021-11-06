@@ -6,7 +6,6 @@
 package util.helper;
 
 import java.io.Serializable;
-import javax.enterprise.inject.se.SeContainer;
 
 /**
  *
