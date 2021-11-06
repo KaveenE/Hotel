@@ -5,6 +5,7 @@
  */
 package util.helper;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -36,8 +37,9 @@ import util.exception.DoesNotExistException;
  *
  * @author enkav
  */
-public final class BossHelper {
-
+public final class BossHelper implements Serializable{
+    private static final long serialVersionUID = 1L;
+    
     //Got these from 3 posts in stackoverflow 
     public static final int NAME_LENGTH = 50;
     public static final int PASSWORD_LENGTH = 128;

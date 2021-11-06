@@ -9,6 +9,7 @@ import entity.RoomEntity;
 import entity.RoomRateAbsEntity;
 import entity.RoomTypeEntity;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -165,7 +166,7 @@ public class RoomTypeSessionBean implements RoomTypeSessionBeanRemote, RoomTypeS
             freeRooms = getAllocatableQuantityByRoomType(checkIn, checkOut, potentialRoomTypeToReserve.getName());
             roomTypeToAvailableRooms.put(potentialRoomTypeToReserve.getName(), freeRooms);
         }
-
+        
         return roomTypeToAvailableRooms;
     }
 
