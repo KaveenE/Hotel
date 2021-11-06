@@ -5,12 +5,9 @@
  */
 package ejb.session.stateless;
 
-import entity.RoomRateAbsEntity;
 import entity.RoomTypeEntity;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.Map;
-import java.util.Set;
 import javax.ejb.Local;
 import util.exception.AlreadyExistsException;
 import util.exception.DoesNotExistException;

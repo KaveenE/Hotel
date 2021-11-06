@@ -7,9 +7,9 @@ package ejb.session.stateless;
 
 import entity.ReservationEntity;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 import javax.ejb.Local;
+import util.exception.DoesNotExistException;
 
 /**
  *
@@ -19,5 +19,7 @@ import javax.ejb.Local;
 public interface ReservationSessionBeanLocal {
 
     public List<ReservationEntity> retrieveReservationByCheckIn(LocalDate checkIn);
-    
+
+    public void reserveRoomsByRoomType(ReservationEntity reservation, String roomTypeName, Long roomQuantity, String username) throws DoesNotExistException;
+
 }
