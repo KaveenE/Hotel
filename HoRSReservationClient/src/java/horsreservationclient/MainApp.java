@@ -249,10 +249,10 @@ public class MainApp {
         reservationId = scanner.nextLong();
         try {
             ReservationEntity reservationEntity = guestSessionBean.retrieveReservationsByGuest(guestEntity.getEmailAddress(), reservationId);
-            System.out.printf("%15s%15s%15s%15s\n", "Reservation Id", "Check-In Date", "Check-Out Date", "Price of Stay");
-            System.out.printf("%15s%15s%15s%15s\n",
-                    reservationEntity.getReservationId(), reservationEntity.getCheckInDate(),
-                    reservationEntity.getCheckOutDate(), reservationEntity.getPriceOfStay());
+            System.out.printf("%20s%20s%20s%20s\n", "Reservation Id", "Check-In Date", "Check-Out Date", "Price of Stay");
+            System.out.printf("%20s%20s%20s%20s\n",
+                    reservationEntity.getReservationId(), BossHelper.dateToLocalDate(reservationEntity.getCheckInDate()),
+                    BossHelper.dateToLocalDate(reservationEntity.getCheckOutDate()), reservationEntity.getPriceOfStay());
 
         } catch (DoesNotExistException ex) {
             bufferScreenForUser(ex.getMessage());
@@ -262,7 +262,7 @@ public class MainApp {
     public void viewAllMyReservations() {
         try {
             List<ReservationEntity> reservationEntities = guestSessionBean.retrieveAllReservationsByGuest(guestEntity.getEmailAddress());
-            System.out.println("*** HoRS :: Hotel Reservation Client :: View Reservation Detail ***\n");
+            System.out.println("*** HoRS :: Hotel Reservation Client :: View All Reservations ***\n");
             System.out.printf("%20s%20s%20s%20s\n", "Reservation Id", "Check-In Date", "Check-Out Date", "Price of Stay");
             for (ReservationEntity reservationEntity : reservationEntities) {
                 System.out.printf("%20s%20s%20s%20s\n",
