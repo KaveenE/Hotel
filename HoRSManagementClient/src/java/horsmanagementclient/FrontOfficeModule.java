@@ -67,7 +67,7 @@ public class FrontOfficeModule {
                     walkInSearchRoom();
                 } else if (response == 2) {
                     Map<String, Integer> roomTypeResults = walkInSearchRoom();
-                    if (!roomTypeResults.isEmpty()) {
+                    if (roomTypeResults!=null && !roomTypeResults.isEmpty()) {
                         walkInReserveRoom(roomTypeResults);
                     }
                 } else if (response == 3) {
