@@ -63,9 +63,7 @@ public class DataInitSessionBean {
 
     @PostConstruct
     public void postConstruct() {
-        try {
-            employeeSessionBean.retrieveEmployeeByUsername("systems");
-        } catch (DoesNotExistException ex) {
+        if(em.find(EmployeeEntity.class, 1L) == null) {
             try {
                 initializeData();
             } catch (AlreadyExistsException | DoesNotExistException | UnknownPersistenceException chainedEx) {

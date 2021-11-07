@@ -5,6 +5,7 @@
  */
 package entity;
 
+import java.io.Serializable;
 import javax.persistence.Embeddable;
 
 /**
@@ -12,8 +13,9 @@ import javax.persistence.Embeddable;
  * @author enkav
  */
 @Embeddable
-public class ExceptionReport {
-
+public class ExceptionReport implements Serializable {
+    private static final long serialVersionUID = 1L;
+    
     private Integer exceptionType;
     private String messageToHotel;
     private String messageToGuest;
