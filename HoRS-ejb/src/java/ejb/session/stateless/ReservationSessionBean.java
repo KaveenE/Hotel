@@ -7,6 +7,7 @@ package ejb.session.stateless;
 
 import entity.GuestEntity;
 import entity.GuestReservationEntity;
+import entity.NormalRateEntity;
 import entity.PartnerReservationEntity;
 import entity.PeakRateEntity;
 import entity.PromoRateEntity;
@@ -38,6 +39,7 @@ import util.exception.DoesNotExistException;
 import util.exception.ReservationDoesNotExistException;
 import util.exception.RoomRateDoesNotExistException;
 import util.helper.BossHelper;
+import util.helper.Pair;
 
 /**
  *
@@ -167,7 +169,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
             while (isBeforeInclusive(counterCheckIn, checkOut)) {
                 rateToLengthOfRate = getPriceRateForNight(counterCheckIn, checkOut, roomTypeToReserve);
                 counterCheckIn = counterCheckIn.plusDays(rateToLengthOfRate.getValue());
-
+                
                 rateToLengthOfRate.getKey().associateReservations(reservations);
 
                 priceOfStay = priceOfStay.add(rateToLengthOfRate.getKey().getRatePerNight()
@@ -243,39 +245,34 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
         TreeMap<RoomRateAbsEntity, Long> rateTolengthOfRate = new TreeMap<>();
 
         for (RoomRateAbsEntity roomRate : roomTypeToReserve.getRoomRateAbsEntities()) {
-
+            
             if (roomRate instanceof PromoRateEntity) {
                 promoRate = (PromoRateEntity) roomRate;
                 validFrom = BossHelper.dateToLocalDate(promoRate.getValidFrom());
                 validTo = BossHelper.dateToLocalDate(promoRate.getValidTo());
 
-                if (isAfterInclusive(currentDateInHotel, validFrom) && isBeforeInclusive(checkOut, validTo)) {
-                    rateTolengthOfRate.put(promoRate, ChronoUnit.DAYS.between(currentDateInHotel, checkOut) + 1);
-                } else if (isAfterInclusive(currentDateInHotel, validFrom) && checkOut.isAfter(validTo)) {
-                    rateTolengthOfRate.put(promoRate, ChronoUnit.DAYS.between(currentDateInHotel, validTo) + 1);
+                if (isBeforeInclusive(currentDateInHotel, validTo) && isAfterInclusive(currentDateInHotel,validFrom) ) {
+                    rateTolengthOfRate.put(roomRate, 1L);
+                    break;
                 }
-
-                break;
-
+                
             } else if (roomRate instanceof PeakRateEntity) {
                 peakRate = (PeakRateEntity) roomRate;
                 validFrom = BossHelper.dateToLocalDate(peakRate.getValidFrom());
                 validTo = BossHelper.dateToLocalDate(peakRate.getValidTo());
 
-                if (isAfterInclusive(currentDateInHotel, validFrom) && isBeforeInclusive(checkOut, validTo)) {
-                    rateTolengthOfRate.put(peakRate, ChronoUnit.DAYS.between(currentDateInHotel, checkOut) + 1);
-                } else if (isAfterInclusive(currentDateInHotel, validFrom) && checkOut.isAfter(validTo)) {
-                    rateTolengthOfRate.put(peakRate, ChronoUnit.DAYS.between(currentDateInHotel, validTo) + 1);
+                if (isBeforeInclusive(currentDateInHotel, validTo) && isAfterInclusive(currentDateInHotel,validFrom) ) {
+                    rateTolengthOfRate.put(roomRate, 1L);
                 }
 
-            } else {
+            } else if(roomRate instanceof NormalRateEntity){
                 rateTolengthOfRate.put(roomRate, 1L);
             }
         }
-
+        
         return rateTolengthOfRate.lastEntry();
     }
-
+    
     private boolean isBeforeInclusive(LocalDate checkIn, LocalDate checkOut) {
         return checkIn.compareTo(checkOut) <= 0;
     }
