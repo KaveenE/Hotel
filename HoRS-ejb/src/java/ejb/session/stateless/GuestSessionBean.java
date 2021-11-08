@@ -8,6 +8,7 @@ package ejb.session.stateless;
 import entity.GuestEntity;
 import entity.ReservationEntity;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -65,10 +66,10 @@ public class GuestSessionBean implements GuestSessionBeanRemote, GuestSessionBea
     
     //retrieves all reservation records for the guest
     @Override
-    public List<ReservationEntity> retrieveAllReservationsByGuest(String emailAddress) throws DoesNotExistException {
+    public Set<ReservationEntity> retrieveAllReservationsByGuest(String emailAddress) throws DoesNotExistException {
         return retrieveGuestByUsername(emailAddress).getGuestReservationEntities()
                                                     .stream().map(guestRes -> (ReservationEntity)guestRes)
-                                                    .collect(Collectors.toList());
+                                                    .collect(Collectors.toSet());
     }
     
     //retrieves a particular reservation record

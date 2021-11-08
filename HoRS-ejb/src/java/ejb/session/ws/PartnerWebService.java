@@ -13,6 +13,7 @@ import entity.PartnerReservationEntity;
 import entity.ReservationEntity;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import javax.ejb.EJB;
 import javax.jws.WebService;
 import javax.jws.WebMethod;
@@ -59,7 +60,7 @@ public class PartnerWebService {
     }
 
     @WebMethod(operationName = "retrieveAllReservationsByPartner")
-    public List<ReservationEntity> retrieveAllReservationsByPartner(@WebParam(name = "emailAddress") String emailAddress) throws DoesNotExistException {
+    public Set<ReservationEntity> retrieveAllReservationsByPartner(@WebParam(name = "emailAddress") String emailAddress) throws DoesNotExistException {
         return partnerSessionBean.retrieveAllReservationsByPartner(emailAddress);
     }
     

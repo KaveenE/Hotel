@@ -8,6 +8,7 @@ package ejb.session.stateless;
 import entity.PartnerEntity;
 import entity.ReservationEntity;
 import java.util.List;
+import java.util.Set;
 import javax.ejb.Local;
 import util.exception.AlreadyExistsException;
 import util.exception.DoesNotExistException;
@@ -29,6 +30,6 @@ public interface PartnerSessionBeanLocal {
 
     public ReservationEntity retrieveReservationsByPartner(String emailAddress, Long reservationId) throws DoesNotExistException;
     
-    List<ReservationEntity> retrieveAllReservationsByPartner(String emailAddress) throws DoesNotExistException;
+    public Set<ReservationEntity> retrieveAllReservationsByPartner(String emailAddress) throws DoesNotExistException;
 
 }

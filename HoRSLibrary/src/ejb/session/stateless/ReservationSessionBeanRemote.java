@@ -8,6 +8,7 @@ package ejb.session.stateless;
 import entity.ReservationEntity;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 import javax.ejb.Remote;
 import util.exception.DoesNotExistException;
 
@@ -24,6 +25,6 @@ public interface ReservationSessionBeanRemote {
 
     public ReservationEntity retrieveReservationById(Long resId) throws DoesNotExistException;
 
-    public List<ReservationEntity> retrieveReservationByCheckInAndGuest(LocalDate checkIn, String username) throws DoesNotExistException;
+    public Set<ReservationEntity> retrieveReservationByCheckInAndGuest(LocalDate checkIn, String username) throws DoesNotExistException;
 
 }

@@ -8,6 +8,7 @@ package ejb.session.stateless;
 import entity.PartnerEntity;
 import entity.ReservationEntity;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -65,10 +66,10 @@ public class PartnerSessionBean implements PartnerSessionBeanRemote, PartnerSess
     
     //retrieves all reservation records for the guest
     @Override
-    public List<ReservationEntity> retrieveAllReservationsByPartner(String username) throws DoesNotExistException {
+    public Set<ReservationEntity> retrieveAllReservationsByPartner(String username) throws DoesNotExistException {
         return retrievePartnerByUsername(username).getPartnerReservationEntities()
                                                     .stream().map(partnerRes -> (ReservationEntity)partnerRes)
-                                                    .collect(Collectors.toList());
+                                                    .collect(Collectors.toSet());
     }
     
     //retrieves a particular reservation record

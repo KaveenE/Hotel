@@ -67,25 +67,25 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
         return BossHelper.requireNonNull(em.find(ReservationEntity.class, resId), new ReservationDoesNotExistException());
     }
 
-    //returns a list of reservation entities with same check in date as input check in date
+    //returns a Set of reservation entities with same check in date as input check in date
     @Override
-    public List<ReservationEntity> retrieveReservationByCheckIn(LocalDate checkIn) {
+    public Set<ReservationEntity> retrieveReservationByCheckIn(LocalDate checkIn) {
         return em.createQuery("SELECT res FROM ReservationEntity res", ReservationEntity.class)
                 .getResultList()
                 .stream()
                 .filter(res -> BossHelper.dateToLocalDate(res.getCheckInDate()).isEqual(checkIn))
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
     }
 
     //returns a list of guest's reservation entites with same check in date as input check in date
     @Override
-    public List<ReservationEntity> retrieveReservationByCheckInAndGuest(LocalDate checkIn, String username) throws DoesNotExistException {
-        List<ReservationEntity> allReservationsByGuest = guestSessionBean.retrieveAllReservationsByGuest(username);
+    public Set<ReservationEntity> retrieveReservationByCheckInAndGuest(LocalDate checkIn, String username) throws DoesNotExistException {
+        Set<ReservationEntity> allReservationsByGuest = guestSessionBean.retrieveAllReservationsByGuest(username);
 
         return allReservationsByGuest.stream()
                 .filter(res -> BossHelper.dateToLocalDate(res.getCheckInDate())
                 .equals(checkIn))
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
     }
 
     //overloaded method to facilitate room reservations for walk in only
