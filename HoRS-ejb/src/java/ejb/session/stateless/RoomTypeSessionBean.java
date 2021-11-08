@@ -11,16 +11,12 @@ import entity.RoomRateAbsEntity;
 import entity.RoomTypeEntity;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -191,13 +187,18 @@ public class RoomTypeSessionBean implements RoomTypeSessionBeanRemote, RoomTypeS
     private Integer getAllocatableQuantityByRoomType(LocalDate checkIn, LocalDate checkOut, String roomTypeName) throws DoesNotExistException {
         RoomTypeEntity selectedRoomType = this.retrieveRoomTypeByName(roomTypeName);
 
-        Set<RoomEntity> availableAndEnabledRooms = getAvailableAndEnabledRoomsByRoomType(selectedRoomType);
+        Set<RoomEntity> availableAndEnabledRooms = selectedRoomType.getRoomEntities()
+                .stream()
+                .filter(room -> !room.getIsDisabled() && room.getRoomStatusEnum() == RoomStatusEnum.AVAILABLE)
+                .collect(Collectors.toSet());
 
         boolean free;
         int roomsFree = 0;
         for (RoomEntity potentialFreeRoom : availableAndEnabledRooms) {
-            //Room is not free if any of its RE coincides with guest's period of stay
+
+//          Room is not free if any of its RE coincides with guest's period of 
             free = reservationSessionBean.checkRoomSchedule(potentialFreeRoom, checkIn, checkOut);
+
             if (free) {
                 roomsFree++;
             }
@@ -206,94 +207,12 @@ public class RoomTypeSessionBean implements RoomTypeSessionBeanRemote, RoomTypeS
         return roomsFree;
     }
 
-    @Override
-    public Set<RoomEntity> getAvailableAndEnabledRoomsByRoomType(RoomTypeEntity selectedRoomType) {
-        return selectedRoomType.getRoomEntities()
-                .stream()
-                .filter(room -> !room.getIsDisabled() && room.getRoomStatusEnum() == RoomStatusEnum.AVAILABLE)
-                .collect(Collectors.toSet());
-    }
-
-    //TODO:Refactor later?
-    private Optional<RoomEntity> getAllocatableRoomByRoomType(LocalDate checkIn, LocalDate checkOut, String roomTypeName) throws DoesNotExistException {
-        RoomTypeEntity selectedRoomType = this.retrieveRoomTypeByName(roomTypeName);
-
-        Set<RoomEntity> availableAndEnabledRooms = getAvailableAndEnabledRoomsByRoomType(selectedRoomType);
-
-        boolean free;
-        for (RoomEntity potentialFreeRoom : availableAndEnabledRooms) {
-            //Room is not free if any of its RLE coincides with guest's period of stay
-            free = reservationSessionBean.checkRoomSchedule(potentialFreeRoom, checkIn, checkOut);
-            if (free) {
-                return Optional.ofNullable(potentialFreeRoom);
-            }
-        }
-
-        return Optional.empty();
-    }
-
     private boolean isBeforeInclusive(Date basisDate, LocalDate otherDate) {
         return BossHelper.dateToLocalDate(basisDate).compareTo(otherDate) <= 0;
     }
 
     private boolean isAfterInclusive(Date basisDate, LocalDate otherDate) {
         return BossHelper.dateToLocalDate(basisDate).compareTo(otherDate) >= 0;
-    }
-
-    private Optional<String> getNextHigherRankRoomTypeOf(String currRoomType) {
-        List<RoomTypeEntity> allRoomTypes = retrieveAllRoomTypes();
-        Collections.sort(allRoomTypes);
-
-        //The highest ranked was already booked
-        if (allRoomTypes.get(allRoomTypes.size() - 1).getName().equals(currRoomType)) {
-            return Optional.empty();
-        }
-
-        return Stream.iterate(0, index -> index + 1)
-                .filter(index -> allRoomTypes.get(index).equals(currRoomType))
-                .map(index -> allRoomTypes.get(index + 1).getName())
-                .findFirst();
-    }
-
-    @Override
-    public void allocateRoomsToCurrentDayReservations() throws DoesNotExistException {
-
-        Set<ReservationEntity> currentDayReservations = reservationSessionBean.retrieveReservationByCheckIn(LocalDate.now());
-
-        Set<ReservationEntity> reservations_unavailableRooms = currentDayReservations.stream()
-                .filter(currRes -> {
-
-                    if (currRes.getRoomEntity().getRoomStatusEnum() == RoomStatusEnum.AVAILABLE) {
-                        currRes.setIsAllocated(true);
-                    }
-
-                    return currRes.getRoomEntity().getRoomStatusEnum() == RoomStatusEnum.UNAVAILABLE;
-                })
-                .collect(Collectors.toSet());
-
-        Set<ReservationEntity> reservations_noFreeRooms = new HashSet<>(reservations_unavailableRooms);
-        LocalDate checkIn, checkOut;
-        for (ReservationEntity currRes : reservations_unavailableRooms) {
-
-            checkIn = BossHelper.dateToLocalDate(currRes.getCheckInDate());
-            checkOut = BossHelper.dateToLocalDate(currRes.getCheckOutDate());
-
-            getAllocatableRoomByRoomType(checkIn, checkOut, currRes.getRoomTypeEntity().getName())
-                    .ifPresent(potentialFreeRoom -> {
-                        currRes.getRoomEntity().disassociateReservationEntities(currRes);
-                        potentialFreeRoom.associateReservationEntities(currRes);
-                        currRes.setIsAllocated(true);
-                        reservations_noFreeRooms.remove(currRes);
-                    });
-        }
-
-        //ATP, I have reservations that are not allocated despite searching for new rooms
-        //Search higher room type for each reservation
-        Map<String, Set<ReservationEntity>> roomTypeNameToReservations = reservations_noFreeRooms.stream()
-                .collect(
-                        Collectors.groupingBy(res -> res.getRoomTypeEntity().getName(), Collectors.toSet())
-                );
-
     }
 
 }
