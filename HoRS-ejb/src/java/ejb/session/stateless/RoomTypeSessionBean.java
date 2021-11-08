@@ -325,12 +325,20 @@ public class RoomTypeSessionBean implements RoomTypeSessionBeanRemote, RoomTypeS
             potentialFreeRoom.associateReservationEntities(currRes);
 
             currRes.setIsAllocated(true);
-            currRes.setExceptionReport(new ExceptionReport(1, "Exception 1 occured", "You have been upgraded!"));
+            currRes.setExceptionReport(new ExceptionReport(
+                    1,
+                    "Exception 1 occured. No rooms available for " + currRes.getRoomTypeEntity().getName() + "!",
+                    "You have been upgraded to " + upgradedRoomTypeName + "!")
+            );
             reservations_noFreeRoomsOnUpgradedRoomType.remove(currRes);
         }
 
         reservations_noFreeRoomsOnUpgradedRoomType.stream()
-                .forEach(res -> res.setExceptionReport(new ExceptionReport(2, "Exception 2 occured", "You don't any room :)")));
+                .forEach(res -> res.setExceptionReport(new ExceptionReport(
+                2,
+                "Exception 2 occured. No rooms available for " + res.getRoomTypeEntity().getName() + "!",
+                "You don't any room :)")
+        ));
 
     }
 
