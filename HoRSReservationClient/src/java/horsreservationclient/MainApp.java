@@ -16,8 +16,8 @@ import entity.ReservationEntity;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import util.exception.AlreadyExistsException;
 import util.exception.DoesNotExistException;
 import util.exception.InvalidLoginException;
@@ -261,7 +261,7 @@ public class MainApp {
 
     public void viewAllMyReservations() {
         try {
-            List<ReservationEntity> reservationEntities = guestSessionBean.retrieveAllReservationsByGuest(guestEntity.getEmailAddress());
+            Set<ReservationEntity> reservationEntities = guestSessionBean.retrieveAllReservationsByGuest(guestEntity.getEmailAddress());
             System.out.println("*** HoRS :: Hotel Reservation Client :: View All Reservations ***\n");
             System.out.printf("%20s%20s%20s%20s\n", "Reservation Id", "Check-In Date", "Check-Out Date", "Price of Stay");
             for (ReservationEntity reservationEntity : reservationEntities) {
