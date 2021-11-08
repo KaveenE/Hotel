@@ -48,10 +48,8 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
 
     @EJB
     private PartnerSessionBeanLocal partnerSessionBean;
-
     @EJB
     private GuestSessionBeanLocal guestSessionBean;
-
     @EJB
     private RoomTypeSessionBeanLocal roomTypeSessionBean;
     @PersistenceContext(unitName = "HoRS-ejbPU")
@@ -204,9 +202,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
         for (RoomEntity potentialFreeRoom : availableAndEnabledRooms) {
 
             //Room is not free if any of its RLE coincides with guest's period of stay
-            free = potentialFreeRoom.getReservationEntities()
-                    .stream()
-                    .allMatch(res -> isBeforeInclusive(res.getCheckOutDate(), checkIn) && isAfterInclusive(res.getCheckInDate(), checkOut));
+            free = checkRoomSchedule(potentialFreeRoom, checkIn, checkOut);
 
             if (free && !reservationQueue.isEmpty()) {
                 potentialFreeRoom.associateReservationEntities(reservationQueue.poll());
@@ -215,8 +211,16 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
         }
     }
 
+    @Override
+    public Boolean checkRoomSchedule(RoomEntity potentialFreeRoom, LocalDate checkIn, LocalDate checkOut) {
+        return potentialFreeRoom.getReservationEntities()
+                .stream()
+                .allMatch(res -> isBeforeInclusive(res.getCheckOutDate(), checkIn) || isAfterInclusive(res.getCheckInDate(), checkOut));
+    }
+
     /**
-     * Implementation Details: We check for <strong>Promo>Peak>Normal</strong>
+     * Implementation Details: We check for
+     * <strong>Promo>Peak>Normal</strong>
      * in this order following their ranking.
      * <ul>
      * <li>This is so that I can <em>break</em> loop the moment Promo is

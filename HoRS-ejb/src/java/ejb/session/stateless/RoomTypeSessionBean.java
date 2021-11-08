@@ -5,6 +5,7 @@
  */
 package ejb.session.stateless;
 
+import entity.ReservationEntity;
 import entity.RoomEntity;
 import entity.RoomRateAbsEntity;
 import entity.RoomTypeEntity;
@@ -41,6 +42,8 @@ import util.helper.Pair;
 @Stateless
 public class RoomTypeSessionBean implements RoomTypeSessionBeanRemote, RoomTypeSessionBeanLocal {
 
+    @EJB
+    private ReservationSessionBeanLocal reservationSessionBean;
     @EJB
     private RoomSessionBeanLocal roomSessionBean;
     @EJB
@@ -193,10 +196,8 @@ public class RoomTypeSessionBean implements RoomTypeSessionBeanRemote, RoomTypeS
         int roomsFree = 0;
         for (RoomEntity potentialFreeRoom : availableAndEnabledRooms) {
 
-            //Room is not free if any of its RLE coincides with guest's period of stay
-            free = potentialFreeRoom.getReservationEntities()
-                    .stream()
-                    .allMatch(rle -> isBeforeInclusive(rle.getCheckOutDate(), checkIn) && isAfterInclusive(rle.getCheckInDate(), checkOut));
+//          Room is not free if any of its RE coincides with guest's period of 
+            free = reservationSessionBean.checkRoomSchedule(potentialFreeRoom, checkIn, checkOut);
 
             if (free) {
                 roomsFree++;
