@@ -83,8 +83,8 @@ public class DataInitSessionBean {
         List<String> amenities = new ArrayList<>();
         amenities.add("Wifi");
         amenities.add("Order-in");
-        RoomRateAbsEntity normalRateDeluxe = new NormalRateEntity("Singleton Normal", BigDecimal.valueOf(120));
-        RoomRateAbsEntity publishedRateDeluxe = new PublishedRateEntity("Singleton Published", BigDecimal.valueOf(150));
+        RoomRateAbsEntity normalRateDeluxe = new NormalRateEntity("Singleton Normal", BigDecimal.valueOf(10));
+        RoomRateAbsEntity publishedRateDeluxe = new PublishedRateEntity("Singleton Published", BigDecimal.valueOf(100));
 
         RoomTypeEntity deluxe = new RoomTypeEntity(new RoomConfig(5, "Deluxe", "Cheap shit", 20L, "1 kiddie", 1), amenities);
         deluxe = roomTypeSessionBean.createRoomType(deluxe);
@@ -93,12 +93,12 @@ public class DataInitSessionBean {
 
         amenities.add("Bar");
         amenities.add("Extra service (.)(.)");
-        RoomRateAbsEntity normalRateGrandSuite = new NormalRateEntity("Singleton Normal", BigDecimal.valueOf(320));
-        RoomRateAbsEntity publishedRateGrandSuite = new PublishedRateEntity("Singleton Published", BigDecimal.valueOf(350));
+        RoomRateAbsEntity normalRateGrandSuite = new NormalRateEntity("Singleton Normal", BigDecimal.valueOf(1000));
+        RoomRateAbsEntity publishedRateGrandSuite = new PublishedRateEntity("Singleton Published", BigDecimal.valueOf(10000));
         RoomTypeEntity grand = new RoomTypeEntity(new RoomConfig(1, "Grand Suite", "Super Duper Luxurious", 69L, "3 king", 5), amenities);
         grand = roomTypeSessionBean.createRoomType(grand);
         roomRateSessionBean.createRoomRateWithExistingRoomType(normalRateGrandSuite, grand.getRoomTypeId());
-        roomRateSessionBean.createRoomRateWithExistingRoomType(normalRateGrandSuite, grand.getRoomTypeId());
+        roomRateSessionBean.createRoomRateWithExistingRoomType(publishedRateGrandSuite, grand.getRoomTypeId());
 
         RoomEntity singletonDeluxeRoom = new RoomEntity("2102", deluxe);
         RoomEntity singletonGrandRoom = new RoomEntity("2103", grand);
@@ -106,12 +106,12 @@ public class DataInitSessionBean {
         roomSessionBean.createRoomWithExistingRoomType(singletonDeluxeRoom, deluxe.getRoomTypeId());
         roomSessionBean.createRoomWithExistingRoomType(singletonGrandRoom, grand.getRoomTypeId());
 
-        Date currDateTime = new Date();
-        Calendar c = Calendar.getInstance();
-        c.setTime(currDateTime);
-        Date checkin = c.getTime();
-        c.add(Calendar.DATE, 3);
-        Date checkout = c.getTime();
+//        Date currDateTime = new Date();
+//        Calendar c = Calendar.getInstance();
+//        c.setTime(currDateTime);
+//        Date checkin = c.getTime();
+//        c.add(Calendar.DATE, 3);
+//        Date checkout = c.getTime();
 
 //        ReservationEntity rle1 = new ReservationEntity(checkin, checkout, );
 //        ReservationEntity rle2 = new ReservationEntity(checkin, checkout, );

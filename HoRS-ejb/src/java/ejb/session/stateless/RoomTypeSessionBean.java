@@ -5,18 +5,23 @@
  */
 package ejb.session.stateless;
 
+import entity.ExceptionReport;
 import entity.ReservationEntity;
 import entity.RoomEntity;
 import entity.RoomRateAbsEntity;
 import entity.RoomTypeEntity;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -188,7 +193,7 @@ public class RoomTypeSessionBean implements RoomTypeSessionBeanRemote, RoomTypeS
         RoomTypeEntity selectedRoomType = this.retrieveRoomTypeByName(roomTypeName);
 
         Set<RoomEntity> availableAndEnabledRooms = getAvailableAndEnabledRoomsByRoomType(selectedRoomType);
-        
+
         boolean free;
         int roomsFree = 0;
         for (RoomEntity potentialFreeRoom : availableAndEnabledRooms) {
@@ -203,7 +208,7 @@ public class RoomTypeSessionBean implements RoomTypeSessionBeanRemote, RoomTypeS
 
         return roomsFree;
     }
-    
+
     @Override
     public Set<RoomEntity> getAvailableAndEnabledRoomsByRoomType(RoomTypeEntity selectedRoomType) {
         return selectedRoomType.getRoomEntities()
@@ -211,13 +216,122 @@ public class RoomTypeSessionBean implements RoomTypeSessionBeanRemote, RoomTypeS
                 .filter(room -> !room.getIsDisabled() && room.getRoomStatusEnum() == RoomStatusEnum.AVAILABLE)
                 .collect(Collectors.toSet());
     }
-    
+
     private boolean isBeforeInclusive(Date basisDate, LocalDate otherDate) {
         return BossHelper.dateToLocalDate(basisDate).compareTo(otherDate) <= 0;
     }
 
     private boolean isAfterInclusive(Date basisDate, LocalDate otherDate) {
         return BossHelper.dateToLocalDate(basisDate).compareTo(otherDate) >= 0;
+    }
+
+    private RoomEntity getAllocatableRoomByRoomType(LocalDate checkIn, LocalDate checkOut, String roomTypeName) throws DoesNotExistException {
+        RoomTypeEntity selectedRoomType = this.retrieveRoomTypeByName(roomTypeName);
+
+        Set<RoomEntity> availableAndEnabledRooms = getAvailableAndEnabledRoomsByRoomType(selectedRoomType);
+
+        boolean free;
+        for (RoomEntity potentialFreeRoom : availableAndEnabledRooms) {
+            //Room is not free if any of its RLE coincides with guest's period of stay
+            free = reservationSessionBean.checkRoomSchedule(potentialFreeRoom, checkIn, checkOut);
+            if (free) {
+                return potentialFreeRoom;
+            }
+        }
+
+        return null;
+    }
+
+    private String getNextHigherRankRoomTypeOf(String currRoomType) {
+        List<RoomTypeEntity> allRoomTypes = retrieveAllRoomTypes();
+        Collections.sort(allRoomTypes);
+
+        //The highest ranked was already booked
+        if (allRoomTypes.get(allRoomTypes.size() - 1).getName().equals(currRoomType)) {
+            return null;
+        }
+
+        return Stream.iterate(0, index -> index + 1)
+                .filter(index -> allRoomTypes.get(index).equals(currRoomType))
+                .map(index -> allRoomTypes.get(index + 1).getName())
+                .findFirst().get();
+    }
+
+    @Override
+    public void allocateRoomsToCurrentDayReservations() throws DoesNotExistException {
+
+        RoomEntity potentialFreeRoom;
+        Set<ReservationEntity> currentDayReservations = reservationSessionBean.retrieveReservationByCheckIn(LocalDate.now());
+
+        Set<ReservationEntity> reservations_unavailableRooms = currentDayReservations.stream()
+                .filter(currRes -> {
+
+                    if (currRes.getRoomEntity().getRoomStatusEnum() == RoomStatusEnum.AVAILABLE) {
+                        currRes.setIsAllocated(true);
+                    }
+
+                    return currRes.getRoomEntity().getRoomStatusEnum() == RoomStatusEnum.UNAVAILABLE;
+                })
+                .collect(Collectors.toSet());
+
+        Set<ReservationEntity> reservations_noFreeRoomsOnRequestRoomType = new HashSet<>(reservations_unavailableRooms);
+        LocalDate checkIn, checkOut;
+        for (ReservationEntity currRes : reservations_unavailableRooms) {
+
+            checkIn = BossHelper.dateToLocalDate(currRes.getCheckInDate());
+            checkOut = BossHelper.dateToLocalDate(currRes.getCheckOutDate());
+
+            potentialFreeRoom = getAllocatableRoomByRoomType(checkIn, checkOut, currRes.getRoomTypeEntity().getName());
+
+            if (potentialFreeRoom == null) {
+                continue;
+            }
+
+            currRes.getRoomEntity().disassociateReservationEntities(currRes);
+            potentialFreeRoom.associateReservationEntities(currRes);
+            currRes.setIsAllocated(true);
+            reservations_noFreeRoomsOnRequestRoomType.remove(currRes);
+
+        }
+
+        //ATP, I have reservations that are not allocated despite searching for new rooms for same room type
+        //Search higher room type for each reservation
+        String upgradedRoomTypeName;
+        RoomTypeEntity upgradedRoomType;
+
+        Set<ReservationEntity> reservations_noFreeRoomsOnUpgradedRoomType = new HashSet<>(reservations_noFreeRoomsOnRequestRoomType);
+        for (ReservationEntity currRes : reservations_noFreeRoomsOnRequestRoomType) {
+
+            checkIn = BossHelper.dateToLocalDate(currRes.getCheckInDate());
+            checkOut = BossHelper.dateToLocalDate(currRes.getCheckOutDate());
+
+            upgradedRoomTypeName = getNextHigherRankRoomTypeOf(currRes.getRoomTypeEntity().getName());
+
+            if (upgradedRoomTypeName == null) {
+                continue;
+            }
+
+            upgradedRoomType = retrieveRoomTypeByName(upgradedRoomTypeName);
+            potentialFreeRoom = getAllocatableRoomByRoomType(checkIn, checkOut, upgradedRoomTypeName);
+
+            if (potentialFreeRoom == null) {
+                continue;
+            }
+
+            currRes.getRoomTypeEntity().disassociateReservationEntity(currRes);
+            upgradedRoomType.associateReservationEntity(currRes);
+
+            currRes.getRoomEntity().disassociateReservationEntities(currRes);
+            potentialFreeRoom.associateReservationEntities(currRes);
+
+            currRes.setIsAllocated(true);
+            currRes.setExceptionReport(new ExceptionReport(1, "Exception 1 occured", "You have been upgraded!"));
+            reservations_noFreeRoomsOnUpgradedRoomType.remove(currRes);
+        }
+
+        reservations_noFreeRoomsOnUpgradedRoomType.stream()
+                .forEach(res -> res.setExceptionReport(new ExceptionReport(2, "Exception 2 occured", "You don't any room :)")));
+
     }
 
 }
