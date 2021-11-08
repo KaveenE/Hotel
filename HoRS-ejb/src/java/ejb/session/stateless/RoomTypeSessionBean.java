@@ -187,16 +187,13 @@ public class RoomTypeSessionBean implements RoomTypeSessionBeanRemote, RoomTypeS
     private Integer getAllocatableQuantityByRoomType(LocalDate checkIn, LocalDate checkOut, String roomTypeName) throws DoesNotExistException {
         RoomTypeEntity selectedRoomType = this.retrieveRoomTypeByName(roomTypeName);
 
-        Set<RoomEntity> availableAndEnabledRooms = selectedRoomType.getRoomEntities()
-                .stream()
-                .filter(room -> !room.getIsDisabled() && room.getRoomStatusEnum() == RoomStatusEnum.AVAILABLE)
-                .collect(Collectors.toSet());
-
+        Set<RoomEntity> availableAndEnabledRooms = getAvailableAndEnabledRoomsByRoomType(selectedRoomType);
+        
         boolean free;
         int roomsFree = 0;
         for (RoomEntity potentialFreeRoom : availableAndEnabledRooms) {
 
-//          Room is not free if any of its RE coincides with guest's period of 
+            //Room is not free if any of its RE coincides with guest's period of stay 
             free = reservationSessionBean.checkRoomSchedule(potentialFreeRoom, checkIn, checkOut);
 
             if (free) {
@@ -206,7 +203,15 @@ public class RoomTypeSessionBean implements RoomTypeSessionBeanRemote, RoomTypeS
 
         return roomsFree;
     }
-
+    
+    @Override
+    public Set<RoomEntity> getAvailableAndEnabledRoomsByRoomType(RoomTypeEntity selectedRoomType) {
+        return selectedRoomType.getRoomEntities()
+                .stream()
+                .filter(room -> !room.getIsDisabled() && room.getRoomStatusEnum() == RoomStatusEnum.AVAILABLE)
+                .collect(Collectors.toSet());
+    }
+    
     private boolean isBeforeInclusive(Date basisDate, LocalDate otherDate) {
         return BossHelper.dateToLocalDate(basisDate).compareTo(otherDate) <= 0;
     }
