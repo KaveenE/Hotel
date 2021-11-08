@@ -5,10 +5,12 @@
  */
 package ejb.session.stateless;
 
+import entity.RoomEntity;
 import entity.RoomTypeEntity;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import javax.ejb.Local;
 import util.exception.AlreadyExistsException;
 import util.exception.DoesNotExistException;
@@ -33,5 +35,7 @@ public interface RoomTypeSessionBeanLocal {
     public RoomTypeEntity retrieveRoomTypeByName(String name) throws DoesNotExistException;
     
     public List<Pair<String, Integer>> searchRoomTypeReservableQuantityForPartner(LocalDate checkIn, LocalDate checkOut) throws DoesNotExistException;
+
+    public Set<RoomEntity> getAvailableAndEnabledRoomsByRoomType(RoomTypeEntity selectedRoomType);
 
 }

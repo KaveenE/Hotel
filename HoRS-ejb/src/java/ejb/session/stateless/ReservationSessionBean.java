@@ -193,17 +193,12 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
 
         RoomTypeEntity selectedRoomType = roomTypeSessionBean.retrieveRoomTypeByName(roomTypeName);
 
-        Set<RoomEntity> availableAndEnabledRooms = selectedRoomType.getRoomEntities()
-                .stream()
-                .filter(room -> !room.getIsDisabled() && room.getRoomStatusEnum() == RoomStatusEnum.AVAILABLE)
-                .collect(Collectors.toSet());
+        Set<RoomEntity> availableAndEnabledRooms = roomTypeSessionBean.getAvailableAndEnabledRoomsByRoomType(selectedRoomType);
 
         boolean free;
         for (RoomEntity potentialFreeRoom : availableAndEnabledRooms) {
-
             //Room is not free if any of its RLE coincides with guest's period of stay
             free = checkRoomSchedule(potentialFreeRoom, checkIn, checkOut);
-
             if (free && !reservationQueue.isEmpty()) {
                 potentialFreeRoom.associateReservationEntities(reservationQueue.poll());
             }
