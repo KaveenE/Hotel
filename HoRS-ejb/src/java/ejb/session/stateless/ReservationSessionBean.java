@@ -214,30 +214,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
                 .allMatch(res -> isBeforeInclusive(res.getCheckOutDate(), checkIn) || isAfterInclusive(res.getCheckInDate(), checkOut));
     }
 
-    /**
-     * Implementation Details: We check for
-     * <strong>Promo>Peak>Normal</strong>
-     * in this order following their ranking.
-     * <ul>
-     * <li>This is so that I can <em>break</em> loop the moment Promo is
-     * found.</li>
-     * <li>This is why I made the RoomAbsRateEntity comparable</li>
-     * </ul>
-     * Everytime I check a rate, I attempt to find the longest days the rate is
-     * applicable for
-     * <ul>
-     * <li>This is so that I don't have to iterate through every single day
-     * (this happens in braindead version).</li>
-     * </ul>
-     * I store all the results in a TreeMap, from which I extract the largest
-     * value after the loop has ended.
-     *
-     * @param currentDateInHotel The date at which he is staying in hotel
-     * @param checkOut The date at which customer plans to checkout
-     * @param roomTypeToReserve The roomType customer opted for
-     * @return The best rate applicable and the duration(in days) you can apply
-     * for
-     */
+   
     private Map.Entry<RoomRateAbsEntity, Long> getPriceRateForNight(LocalDate currentDateInHotel, LocalDate checkOut, RoomTypeEntity roomTypeToReserve) {
         PromoRateEntity promoRate;
         PeakRateEntity peakRate;

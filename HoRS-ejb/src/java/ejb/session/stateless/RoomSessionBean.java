@@ -54,7 +54,13 @@ public class RoomSessionBean implements RoomSessionBeanRemote, RoomSessionBeanLo
     @Override
     public RoomEntity retrieveRoomById(Long roomId) throws DoesNotExistException {
         RoomEntity room = em.find(RoomEntity.class, roomId);
-        return BossHelper.requireNonNull(room, new RoomDoesNotExistException());
+        
+        BossHelper.requireNonNull(room, new RoomDoesNotExistException());
+        if(room.getIsDisabled()) {
+            throw new RoomDoesNotExistException();
+        }
+        
+        return room;
     }
 
     @Override
@@ -114,9 +120,14 @@ public class RoomSessionBean implements RoomSessionBeanRemote, RoomSessionBeanLo
     @Override
     public RoomEntity retrieveRoomByFloorUnitNo(String floorUnitNo) throws DoesNotExistException {
         try {
-            return (RoomEntity) em.createQuery("SELECT re FROM RoomEntity re WHERE re.floorUnitNo = :floorUnitNo")
+            RoomEntity room =(RoomEntity) em.createQuery("SELECT re FROM RoomEntity re WHERE re.floorUnitNo = :floorUnitNo")
                     .setParameter("floorUnitNo", floorUnitNo)
                     .getSingleResult();
+            if(room.getIsDisabled()) {
+                throw new RoomDoesNotExistException();
+            }
+            
+            return room;
         } catch (NoResultException | NonUniqueResultException ex) {
             throw new RoomDoesNotExistException();
         }

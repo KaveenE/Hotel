@@ -47,7 +47,12 @@ public class RoomRateSessionBean implements RoomRateSessionBeanRemote, RoomRateS
     @Override
     public RoomRateAbsEntity retrieveRoomRateById(Long roomRateId) throws DoesNotExistException {
         RoomRateAbsEntity roomRate = em.find(RoomRateAbsEntity.class, roomRateId);
+        
         roomRate = BossHelper.requireNonNull(roomRate, new RoomRateDoesNotExistException());
+        if(roomRate.getIsDisabled()) {
+            throw new RoomRateDoesNotExistException();
+        }
+ 
         roomRate.getRoomTypeEntity();
 
         return roomRate;

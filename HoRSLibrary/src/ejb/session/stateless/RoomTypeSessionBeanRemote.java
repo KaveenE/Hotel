@@ -40,4 +40,6 @@ public interface RoomTypeSessionBeanRemote {
     
     public void allocateRoomsToCurrentDayReservations() throws DoesNotExistException;
 
+    public void allocateRoomsToFutureReservations(LocalDate futureCheckIn) throws DoesNotExistException;
+
 }

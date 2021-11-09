@@ -134,6 +134,10 @@ public class RoomTypeSessionBean implements RoomTypeSessionBeanRemote, RoomTypeS
                     .setParameter("name", name)
                     .getSingleResult();
             rt.getAmenities().size();
+            
+            if(rt.getIsDisabled()) {
+                throw new RoomTypeDoesNotExistException();
+            }
 
             return rt;
         } catch (NoResultException | NonUniqueResultException ex) {
@@ -260,8 +264,13 @@ public class RoomTypeSessionBean implements RoomTypeSessionBeanRemote, RoomTypeS
     @Override
     public void allocateRoomsToCurrentDayReservations() throws DoesNotExistException {
 
+        allocateRoomsToFutureReservations(LocalDate.now());
+    }
+
+    @Override
+    public void allocateRoomsToFutureReservations(LocalDate futureCheckIn) throws DoesNotExistException {
         RoomEntity potentialFreeRoom;
-        Set<ReservationEntity> currentDayReservations = reservationSessionBean.retrieveReservationByCheckIn(LocalDate.now());
+        Set<ReservationEntity> currentDayReservations = reservationSessionBean.retrieveReservationByCheckIn(futureCheckIn);
 
         Set<ReservationEntity> reservations_unavailableRooms = currentDayReservations.stream()
                 .filter(currRes -> {
@@ -341,5 +350,4 @@ public class RoomTypeSessionBean implements RoomTypeSessionBeanRemote, RoomTypeS
         ));
 
     }
-
 }
