@@ -13,7 +13,7 @@ import util.helper.BossHelper;
 
 /**
  *
- * @author enkav
+ * @author PP42
  */
 @Embeddable
 public class RoomConfig implements Comparable<RoomConfig>, Serializable {

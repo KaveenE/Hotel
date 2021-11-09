@@ -54,10 +54,9 @@ public class RoomEntity implements Serializable {
         this.roomStatusEnum = RoomStatusEnum.AVAILABLE;
     }
 
-    public RoomEntity(String floorUnitNo, RoomTypeEntity roomTypeEntity) {
+    public RoomEntity(String floorUnitNo) {
         this();
         this.floorUnitNo = floorUnitNo;
-        this.roomTypeEntity = roomTypeEntity;
     }
 
     public Long getRoomId() {

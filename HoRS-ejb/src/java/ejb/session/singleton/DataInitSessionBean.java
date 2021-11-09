@@ -41,7 +41,7 @@ import util.exception.UnknownPersistenceException;
  */
 @Singleton
 @LocalBean
-@Startup
+//@Startup
 public class DataInitSessionBean {
 
     @EJB
@@ -100,8 +100,8 @@ public class DataInitSessionBean {
         roomRateSessionBean.createRoomRateWithExistingRoomType(normalRateGrandSuite, grand.getRoomTypeId());
         roomRateSessionBean.createRoomRateWithExistingRoomType(publishedRateGrandSuite, grand.getRoomTypeId());
 
-        RoomEntity singletonDeluxeRoom = new RoomEntity("2102", deluxe);
-        RoomEntity singletonGrandRoom = new RoomEntity("2103", grand);
+        RoomEntity singletonDeluxeRoom = new RoomEntity("2102");
+        RoomEntity singletonGrandRoom = new RoomEntity("2103");
 
         roomSessionBean.createRoomWithExistingRoomType(singletonDeluxeRoom, deluxe.getRoomTypeId());
         roomSessionBean.createRoomWithExistingRoomType(singletonGrandRoom, grand.getRoomTypeId());
