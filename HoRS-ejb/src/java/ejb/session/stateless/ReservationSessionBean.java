@@ -122,11 +122,6 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
         //Associate Rooms
         associateToPotentialFreeRooms(reservations, roomTypeName);
 
-        LocalDateTime checkInDateTime = BossHelper.dateToLocalDateTime(reservation.getCheckInDate());
-        if (checkInDateTime.toLocalDate().equals(LocalDate.now()) && checkInDateTime.getHour() > 2) {
-            //TODO: Same day reservation, have to allocate
-        }
-
         if (!walkIn) {
             if (reservation instanceof GuestReservationEntity) {
                 GuestEntity guestEntity = guestSessionBean.retrieveGuestByUsername(username);
@@ -140,6 +135,13 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
                                 .stream()
                                 .map(res -> (PartnerReservationEntity) res)
                                 .collect(Collectors.toSet()));
+            }
+            
+            //Incase customer books after 2, we have to manually allocate by using the allocateToFutureReservations
+            //but passing in current time
+            LocalDateTime checkInDateTime = BossHelper.dateToLocalDateTime(reservation.getCheckInDate());
+            if (checkInDateTime.toLocalDate().equals(LocalDate.now()) && checkInDateTime.getHour() > 2) {
+                roomTypeSessionBean.allocateRoomsToFutureReservations(checkInDateTime.toLocalDate());
             }
         }
 
@@ -169,7 +171,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
             while (isBeforeInclusive(counterCheckIn, checkOut)) {
                 rateToLengthOfRate = getPriceRateForNight(counterCheckIn, checkOut, roomTypeToReserve);
                 counterCheckIn = counterCheckIn.plusDays(rateToLengthOfRate.getValue());
-                
+
                 rateToLengthOfRate.getKey().associateReservations(reservations);
 
                 priceOfStay = priceOfStay.add(rateToLengthOfRate.getKey().getRatePerNight()
@@ -206,7 +208,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
 
         }
     }
-    
+
     @Override
     public Boolean checkRoomSchedule(RoomEntity potentialFreeRoom, LocalDate checkIn, LocalDate checkOut) {
         return potentialFreeRoom.getReservationEntities()
@@ -214,7 +216,6 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
                 .allMatch(res -> isBeforeInclusive(res.getCheckOutDate(), checkIn) || isAfterInclusive(res.getCheckInDate(), checkOut));
     }
 
-   
     private Map.Entry<RoomRateAbsEntity, Long> getPriceRateForNight(LocalDate currentDateInHotel, LocalDate checkOut, RoomTypeEntity roomTypeToReserve) {
         PromoRateEntity promoRate;
         PeakRateEntity peakRate;
@@ -222,34 +223,34 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
         TreeMap<RoomRateAbsEntity, Long> rateTolengthOfRate = new TreeMap<>();
 
         for (RoomRateAbsEntity roomRate : roomTypeToReserve.getRoomRateAbsEntities()) {
-            
+
             if (roomRate instanceof PromoRateEntity) {
                 promoRate = (PromoRateEntity) roomRate;
                 validFrom = BossHelper.dateToLocalDate(promoRate.getValidFrom());
                 validTo = BossHelper.dateToLocalDate(promoRate.getValidTo());
 
-                if (isBeforeInclusive(currentDateInHotel, validTo) && isAfterInclusive(currentDateInHotel,validFrom) ) {
+                if (isBeforeInclusive(currentDateInHotel, validTo) && isAfterInclusive(currentDateInHotel, validFrom)) {
                     rateTolengthOfRate.put(roomRate, 1L);
                     break;
                 }
-                
+
             } else if (roomRate instanceof PeakRateEntity) {
                 peakRate = (PeakRateEntity) roomRate;
                 validFrom = BossHelper.dateToLocalDate(peakRate.getValidFrom());
                 validTo = BossHelper.dateToLocalDate(peakRate.getValidTo());
 
-                if (isBeforeInclusive(currentDateInHotel, validTo) && isAfterInclusive(currentDateInHotel,validFrom) ) {
+                if (isBeforeInclusive(currentDateInHotel, validTo) && isAfterInclusive(currentDateInHotel, validFrom)) {
                     rateTolengthOfRate.put(roomRate, 1L);
                 }
 
-            } else if(roomRate instanceof NormalRateEntity){
+            } else if (roomRate instanceof NormalRateEntity) {
                 rateTolengthOfRate.put(roomRate, 1L);
             }
         }
-        
+
         return rateTolengthOfRate.lastEntry();
     }
-    
+
     private boolean isBeforeInclusive(LocalDate checkIn, LocalDate checkOut) {
         return checkIn.compareTo(checkOut) <= 0;
     }

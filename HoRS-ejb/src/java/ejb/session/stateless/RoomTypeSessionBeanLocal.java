@@ -37,5 +37,7 @@ public interface RoomTypeSessionBeanLocal {
     public List<Pair<String, Integer>> searchRoomTypeReservableQuantityForPartner(LocalDate checkIn, LocalDate checkOut) throws DoesNotExistException;
     
     public Set<RoomEntity> getAvailableAndEnabledRoomsByRoomType(RoomTypeEntity selectedRoomType);
+    
+    public void allocateRoomsToFutureReservations(LocalDate futureCheckIn) throws DoesNotExistException;
 
 }
