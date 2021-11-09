@@ -71,10 +71,10 @@ public class FrontOfficeModule {
                         walkInReserveRoom(roomTypeResults);
                     }
                 } else if (response == 3) {
-                    checkInGuest();
+//                    checkInGuest();
                     System.out.println("not implemented yet!");
                 } else if (response == 4) {
-                    checkOutGuest();
+//                    checkOutGuest();
                     System.out.println("not implemented yet!");
                 } else if (response == 5) {
                     break;

@@ -48,7 +48,7 @@ public class RoomConfig implements Comparable<RoomConfig>, Serializable {
 
     @Override
     public int compareTo(RoomConfig o) {
-        return o.ranking - this.ranking;
+        return this.ranking - o.ranking;
     }
 
     public Integer getRanking() {

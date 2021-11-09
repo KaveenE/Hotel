@@ -269,7 +269,6 @@ public class RoomTypeEntity implements Serializable, Comparable<RoomTypeEntity> 
     public int compareTo(RoomTypeEntity o) {
         int compareRanks = roomConfig.compareTo(o.roomConfig);
 
-        //if ranks same, compare by insertion order. Earlier inserted == higher rank
         if (compareRanks == 0) {
             return (int) (o.getRoomTypeId() - this.getRoomTypeId());
         }

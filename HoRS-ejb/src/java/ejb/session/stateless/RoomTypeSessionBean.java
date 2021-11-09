@@ -18,7 +18,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -135,8 +134,8 @@ public class RoomTypeSessionBean implements RoomTypeSessionBeanRemote, RoomTypeS
                     .setParameter("name", name)
                     .getSingleResult();
             rt.getAmenities().size();
-            
-            if(rt.getIsDisabled()) {
+
+            if (rt.getIsDisabled()) {
                 throw new RoomTypeDoesNotExistException();
             }
 
@@ -222,14 +221,6 @@ public class RoomTypeSessionBean implements RoomTypeSessionBeanRemote, RoomTypeS
                 .collect(Collectors.toSet());
     }
 
-    private boolean isBeforeInclusive(Date basisDate, LocalDate otherDate) {
-        return BossHelper.dateToLocalDate(basisDate).compareTo(otherDate) <= 0;
-    }
-
-    private boolean isAfterInclusive(Date basisDate, LocalDate otherDate) {
-        return BossHelper.dateToLocalDate(basisDate).compareTo(otherDate) >= 0;
-    }
-
     private RoomEntity getAllocatableRoomByRoomType(LocalDate checkIn, LocalDate checkOut, String roomTypeName) throws DoesNotExistException {
         RoomTypeEntity selectedRoomType = this.retrieveRoomTypeByName(roomTypeName);
 
@@ -247,19 +238,21 @@ public class RoomTypeSessionBean implements RoomTypeSessionBeanRemote, RoomTypeS
         return null;
     }
 
-    private String getNextHigherRankRoomTypeOf(String currRoomType) {
+    private String getNextHigherRankRoomTypeOf(String currRoomType) throws DoesNotExistException {
         List<RoomTypeEntity> allRoomTypes = retrieveAllRoomTypes();
         Collections.sort(allRoomTypes);
+        RoomTypeEntity roomType = retrieveRoomTypeByName(currRoomType);
 
         //The highest ranked was already booked
         if (allRoomTypes.get(allRoomTypes.size() - 1).getName().equals(currRoomType)) {
             return null;
+        } else {
+            roomType = allRoomTypes.get(roomType.getRanking());
+            if (roomType.getIsDisabled()) {
+                return roomType.getName();
+            }
         }
-
-        return Stream.iterate(0, index -> index + 1)
-                .filter(index -> allRoomTypes.get(index).equals(currRoomType))
-                .map(index -> allRoomTypes.get(index + 1).getName())
-                .findFirst().get();
+        return null;
     }
 
     @Override
@@ -277,7 +270,7 @@ public class RoomTypeSessionBean implements RoomTypeSessionBeanRemote, RoomTypeS
         Set<ReservationEntity> reservations_unavailableRooms = currentDayReservations.stream()
                 .filter(currRes -> {
 
-                    if (currRes.getRoomEntity().getRoomStatusEnum() == RoomStatusEnum.AVAILABLE) {
+                    if (currRes.getRoomEntity().getRoomStatusEnum() == RoomStatusEnum.AVAILABLE && !currRes.getRoomEntity().getIsDisabled()) {
                         currRes.setIsAllocated(true);
                     }
 
@@ -351,6 +344,14 @@ public class RoomTypeSessionBean implements RoomTypeSessionBeanRemote, RoomTypeS
                 "You don't any room :)")
         ));
 
+    }
+
+    private boolean isBeforeInclusive(Date basisDate, LocalDate otherDate) {
+        return BossHelper.dateToLocalDate(basisDate).compareTo(otherDate) <= 0;
+    }
+
+    private boolean isAfterInclusive(Date basisDate, LocalDate otherDate) {
+        return BossHelper.dateToLocalDate(basisDate).compareTo(otherDate) >= 0;
     }
 
 }

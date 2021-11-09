@@ -23,7 +23,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayDeque;
 import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
@@ -34,12 +33,10 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import util.enumeration.RoomStatusEnum;
 import util.exception.DoesNotExistException;
 import util.exception.ReservationDoesNotExistException;
 import util.exception.RoomRateDoesNotExistException;
 import util.helper.BossHelper;
-import util.helper.Pair;
 
 /**
  *
@@ -136,7 +133,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
                                 .map(res -> (PartnerReservationEntity) res)
                                 .collect(Collectors.toSet()));
             }
-            
+
             //Incase customer books after 2, we have to manually allocate by using the allocateToFutureReservations
             //but passing in current time
             LocalDateTime checkInDateTime = BossHelper.dateToLocalDateTime(reservation.getCheckInDate());
@@ -224,7 +221,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
 
         for (RoomRateAbsEntity roomRate : roomTypeToReserve.getRoomRateAbsEntities()) {
 
-            if (roomRate instanceof PromoRateEntity) {
+            if (roomRate instanceof PromoRateEntity && !roomRate.getIsDisabled()) {
                 promoRate = (PromoRateEntity) roomRate;
                 validFrom = BossHelper.dateToLocalDate(promoRate.getValidFrom());
                 validTo = BossHelper.dateToLocalDate(promoRate.getValidTo());
@@ -234,7 +231,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
                     break;
                 }
 
-            } else if (roomRate instanceof PeakRateEntity) {
+            } else if (roomRate instanceof PeakRateEntity && !roomRate.getIsDisabled()) {
                 peakRate = (PeakRateEntity) roomRate;
                 validFrom = BossHelper.dateToLocalDate(peakRate.getValidFrom());
                 validTo = BossHelper.dateToLocalDate(peakRate.getValidTo());

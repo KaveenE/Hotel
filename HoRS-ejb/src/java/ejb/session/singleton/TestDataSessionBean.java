@@ -78,9 +78,9 @@ public class TestDataSessionBean {
         amenities.add("Breakfast");
         RoomTypeEntity familyRoom = roomTypeSessionBean.createRoomType(new RoomTypeEntity(new RoomConfig(3, "Family Room", "Family Room", 250L, "3", 5), amenities));
         amenities.add("Bar");
-        RoomTypeEntity juniorSuite = roomTypeSessionBean.createRoomType(new RoomTypeEntity(new RoomConfig(3, "Junior Suite", "Junior Suite", 250L, "2", 5), amenities));
+        RoomTypeEntity juniorSuite = roomTypeSessionBean.createRoomType(new RoomTypeEntity(new RoomConfig(4, "Junior Suite", "Junior Suite", 250L, "2", 5), amenities));
         amenities.add("Dinner");
-        RoomTypeEntity grandSuite = roomTypeSessionBean.createRoomType(new RoomTypeEntity(new RoomConfig(3, "Grand Suite", "Grand Suite", 500L, "5", 5), amenities));
+        RoomTypeEntity grandSuite = roomTypeSessionBean.createRoomType(new RoomTypeEntity(new RoomConfig(5, "Grand Suite", "Grand Suite", 500L, "5", 5), amenities));
         em.flush();
 
         roomRateSessionBean.createRoomRateWithExistingRoomType(new PublishedRateEntity("Deluxe Room Published", BigDecimal.valueOf(100)), deluxeRoom.getRoomTypeId());
