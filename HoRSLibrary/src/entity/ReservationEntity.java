@@ -46,6 +46,7 @@ public class ReservationEntity implements Serializable {
     private BigDecimal priceOfStay;
     @Column(nullable = false)
     private Boolean online;
+    @Column(nullable = false)
     private Boolean isAllocated;
     @Embedded
     private ExceptionReport exceptionReport;
@@ -57,6 +58,7 @@ public class ReservationEntity implements Serializable {
 
     public ReservationEntity() {
         online = (this instanceof PartnerReservationEntity || this instanceof GuestReservationEntity);
+        isAllocated = false;
     }
 
     public ReservationEntity(Date checkInDate, Date checkOutDate) {
