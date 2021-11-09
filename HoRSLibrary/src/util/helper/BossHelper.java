@@ -22,6 +22,7 @@ import javax.persistence.Entity;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
+import util.exception.BeanValidationException;
 import util.exception.DoesNotExistException;
 
 /**
@@ -37,17 +38,14 @@ import util.exception.DoesNotExistException;
  *
  * @author enkav
  */
-public final class BossHelper implements Serializable{
+public final class BossHelper implements Serializable {
+
     private static final long serialVersionUID = 1L;
-    
+
     //Got these from 3 posts in stackoverflow 
     public static final int NAME_LENGTH = 50;
     public static final int PASSWORD_LENGTH = 128;
     public static final int MOBILEHP_LENGTH = 15;
-    
-    //To represent exception type 1 or 2. Quick and dirty unless you insist on enumerations.
-    public static final int TYPE1_EX = 1;
-    public static final int TYPE2_EX = 2;
 
     //Ease of bean validation
     public static final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
@@ -92,12 +90,29 @@ public final class BossHelper implements Serializable{
         return returnObj;
     }
 
-    public static void printValidationErrorsIfAny(Entity entity) {
+    public static boolean printValidationErrorsIfAny(Entity entity) {
 
         Set<ConstraintViolation<Entity>> errors = validator.validate(entity);
+        if (!errors.isEmpty()) {
+            System.out.println("You have violated the following:");
+            errors.forEach(error -> System.out.println(error.getMessage()));
+        }
 
-        System.out.println("You have violated the following:");
-        errors.forEach(error -> System.out.println(error.getMessage()));
+//      What we do in client
+//      if (printValidationErrorsIfAny(x))  {
+//            bufferScreen();
+//        }
+        return !errors.isEmpty();
+    }
+    
+    public static void throwValidationErrorsIfAny(Entity entity) throws BeanValidationException {
+        Set<ConstraintViolation<Entity>> errors = validator.validate(entity);
+        StringBuffer sb = new StringBuffer();
+        
+        if(!errors.isEmpty()) {
+            errors.forEach(error -> sb.append(error+" \n"));
+            throw new BeanValidationException(sb.toString());
+        }
     }
 
     public Integer nextInt() {

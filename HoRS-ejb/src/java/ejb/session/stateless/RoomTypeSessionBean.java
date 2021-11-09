@@ -350,4 +350,5 @@ public class RoomTypeSessionBean implements RoomTypeSessionBeanRemote, RoomTypeS
         ));
 
     }
+
 }
