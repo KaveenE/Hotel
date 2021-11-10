@@ -39,10 +39,12 @@ public class RoomTypeEntity implements Serializable, Comparable<RoomTypeEntity> 
     @Embedded
     @NotNull
     private RoomConfig roomConfig;
+    
     @ElementCollection
     @Column(nullable = false)
     @NotNull
     private List<String> amenities;
+    
     @Column(nullable = false)
     @NotNull
     private Boolean isDisabled;
@@ -50,9 +52,11 @@ public class RoomTypeEntity implements Serializable, Comparable<RoomTypeEntity> 
     @OneToMany(mappedBy = "roomTypeEntity", cascade = CascadeType.ALL)
     @NotEmpty
     private Set<RoomRateAbsEntity> roomRateAbsEntities;
+    
     @OneToMany(mappedBy = "roomTypeEntity", cascade = CascadeType.ALL)
     @NotEmpty
     private Set<RoomEntity> roomEntities;
+    
     @OneToMany(mappedBy = "roomTypeEntity", cascade = CascadeType.ALL)
     @NotEmpty
     private Set<ReservationEntity> reservationEntities;

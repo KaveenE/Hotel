@@ -12,6 +12,7 @@ import entity.PartnerEntity;
 import java.util.List;
 import util.enumeration.EmployeeRoleEnum;
 import util.exception.AlreadyExistsException;
+import util.exception.BeanValidationException;
 import util.exception.UnknownPersistenceException;
 import util.helper.BossHelper;
 
@@ -73,7 +74,6 @@ public class SystemAdministrationModule {
         }
     }
 
-    //UC 3
     public void createEmployee() {
         try {
             Integer response = 0;
@@ -101,12 +101,11 @@ public class SystemAdministrationModule {
             newEmployee = employeeSessionBean.createNewEmployee(newEmployee);
             System.out.println("New employee created successfully!: " + newEmployee.getUsername() + "\n");
 
-        } catch (AlreadyExistsException | UnknownPersistenceException ex) {
+        } catch (AlreadyExistsException | UnknownPersistenceException | BeanValidationException ex) {
             System.out.println(ex.getMessage() + "!\n");
         }
     }
 
-    //UC 4
     public void viewAllEmployees() {
 
         System.out.println("*** HoRS :: Hotel Administration System :: View All Employees ***\n");
@@ -122,7 +121,6 @@ public class SystemAdministrationModule {
         scanner.nextLine();
     }
 
-    //UC 5
     public void createPartner() {
         try {
             Integer response = 0;
@@ -138,12 +136,11 @@ public class SystemAdministrationModule {
             newPartner = partnerSessionBean.createNewPartner(newPartner);
             System.out.println("New partner created successfully!: " + newPartner.getUsername() + "\n");
 
-        } catch (AlreadyExistsException | UnknownPersistenceException ex) {
+        } catch (AlreadyExistsException | UnknownPersistenceException | BeanValidationException ex) {
             System.out.println(ex.getMessage() + "!\n");
         }
     }
 
-    //UC 6
     public void viewAllPartners() {
         System.out.println("*** HoRS :: Hotel Administration System :: View All Partners ***\n");
 

@@ -15,8 +15,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Date;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import util.exception.BeanValidationException;
 import util.exception.DoesNotExistException;
 import util.helper.BossHelper;
 
@@ -143,7 +142,7 @@ public class FrontOfficeModule {
         ReservationEntity reservation = new ReservationEntity(new Date(), BossHelper.localDatetoDate(checkOut));
         try {
             reservationSessionBean.walkInReserveRoomsByRoomType(reservation, bookingRoomType, bookingRoomTypeQuantity);
-        } catch (DoesNotExistException ex) {
+        } catch (DoesNotExistException | BeanValidationException ex) {
             bufferScreenForUser(ex.getMessage());
         }
 

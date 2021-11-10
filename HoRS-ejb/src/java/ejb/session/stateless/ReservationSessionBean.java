@@ -56,7 +56,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
     @PersistenceContext(unitName = "HoRS-ejbPU")
     private EntityManager em;
 
-    private void createReservaton(Collection<ReservationEntity> reservations) throws BeanValidationException{
+    private void createReservaton(Collection<ReservationEntity> reservations) throws BeanValidationException {
         BossHelper.throwValidationErrorsIfAny(reservations.iterator().next());
         
         reservations.forEach(reservation -> em.persist(reservation));
@@ -127,6 +127,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
         computeAndAssociatePriceOfReservation(roomTypeToReserve, reservations, walkIn);
 
         //Associate Rooms
+        
         associateToPotentialFreeRooms(reservations, roomTypeName);
 
         if (!walkIn) {
@@ -195,7 +196,8 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
     }
 
     //helper method of reserveRoomsByRoomType, associates every reservation entity with a allocatable room
-    private void associateToPotentialFreeRooms(Set<ReservationEntity> reservations, String roomTypeName) throws DoesNotExistException {
+    private void associateToPotentialFreeRooms(Set<ReservationEntity> reservations, String roomTypeName) throws DoesNotExistException, BeanValidationException { 
+        BossHelper.throwValidationErrorsIfAny(reservations.iterator().next());
         Queue<ReservationEntity> reservationQueue = new ArrayDeque<>(reservations);
 
         ReservationEntity reservation = reservations.iterator().next();

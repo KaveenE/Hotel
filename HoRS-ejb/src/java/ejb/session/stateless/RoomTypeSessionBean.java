@@ -73,7 +73,7 @@ public class RoomTypeSessionBean implements RoomTypeSessionBeanRemote, RoomTypeS
     }
 
     @Override
-    public void updateRoomType(RoomTypeEntity roomType) throws DoesNotExistException, AlreadyExistsException,BeanValidationException {
+    public void updateRoomType(RoomTypeEntity roomType) throws DoesNotExistException, AlreadyExistsException, BeanValidationException {
         BossHelper.requireNonNull(roomType, new RoomTypeDoesNotExistException());
         BossHelper.requireNonNull(roomType.getRoomTypeId(), new RoomTypeDoesNotExistException());
         BossHelper.throwValidationErrorsIfAny(roomType);
@@ -101,7 +101,7 @@ public class RoomTypeSessionBean implements RoomTypeSessionBeanRemote, RoomTypeS
     }
 
     @Override
-    public RoomTypeEntity createRoomType(RoomTypeEntity roomType) throws DoesNotExistException, UnknownPersistenceException, AlreadyExistsException,BeanValidationException {
+    public RoomTypeEntity createRoomType(RoomTypeEntity roomType) throws DoesNotExistException, UnknownPersistenceException, AlreadyExistsException, BeanValidationException {
         BossHelper.throwValidationErrorsIfAny(roomType);
         try {
             em.persist(roomType);

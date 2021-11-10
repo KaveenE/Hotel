@@ -10,7 +10,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
@@ -18,7 +17,6 @@ import java.util.Objects;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.stream.Collectors;
-import javax.persistence.Entity;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
@@ -104,13 +102,13 @@ public final class BossHelper implements Serializable {
 //        }
         return !errors.isEmpty();
     }
-    
+
     public static <T> void throwValidationErrorsIfAny(T entity) throws BeanValidationException {
         Set<ConstraintViolation<T>> errors = validator.validate(entity);
         StringBuilder sb = new StringBuilder();
-        
-        if(!errors.isEmpty()) {
-            errors.forEach(error -> sb.append(error+" \n"));
+
+        if (!errors.isEmpty()) {
+            errors.forEach(error -> sb.append(String.format("In %s: %s\n", error.getRootBean().toString(), error.getMessage())));
             throw new BeanValidationException(sb.toString());
         }
     }

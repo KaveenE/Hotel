@@ -25,6 +25,7 @@ import java.util.Date;
 import java.util.List;
 import util.enumeration.RoomStatusEnum;
 import util.exception.AlreadyExistsException;
+import util.exception.BeanValidationException;
 import util.exception.DoesNotExistException;
 import util.exception.UnknownPersistenceException;
 import util.helper.BossHelper;
@@ -191,7 +192,7 @@ public class HotelOperationModule {
             newRoomType = roomTypeSessionBean.createRoomType(newRoomType);
             System.out.println("New room type created successfully!: " + newRoomType.getRoomTypeId() + "\n");
 
-        } catch (DoesNotExistException | UnknownPersistenceException | AlreadyExistsException ex) {
+        } catch (DoesNotExistException | UnknownPersistenceException | AlreadyExistsException | BeanValidationException ex) {
             bufferScreenForUser(ex.getMessage());
         }
 
@@ -299,7 +300,7 @@ public class HotelOperationModule {
         try {
             roomTypeSessionBean.updateRoomType(roomType);
             System.out.println("Room Type updated successfully!\n");
-        } catch (DoesNotExistException | AlreadyExistsException ex) {
+        } catch (DoesNotExistException | AlreadyExistsException | BeanValidationException ex) {
             bufferScreenForUser("An error has occurred while updating room type: " + ex.getMessage() + "\n");
         }
     }
@@ -352,7 +353,7 @@ public class HotelOperationModule {
             System.out.println("Open room for room type: " + roomType.getName() + "\n");
             newRoom = roomSessionBean.createRoomWithExistingRoomType(newRoom, roomType.getRoomTypeId());
             System.out.println("New room created successfully!: " + newRoom.getFloorUnitNo() + "\n");
-        } catch (DoesNotExistException | UnknownPersistenceException | AlreadyExistsException ex) {
+        } catch (DoesNotExistException | UnknownPersistenceException | AlreadyExistsException | BeanValidationException ex) {
             bufferScreenForUser(ex.getMessage() + "!\n");
         }
     }
@@ -382,7 +383,7 @@ public class HotelOperationModule {
                 System.out.println("Invalid option!\n");
             }
 
-        } catch (DoesNotExistException | AlreadyExistsException ex) {
+        } catch (DoesNotExistException | AlreadyExistsException | BeanValidationException ex) {
             bufferScreenForUser("An error has occurred while updating room : " + ex.getMessage() + "\n");
         }
     }
@@ -501,7 +502,7 @@ public class HotelOperationModule {
             System.out.println("Open room rate for room type: " + roomType.getName() + "\n");
             newRoomRate = roomRateSessionBean.createRoomRateWithExistingRoomType(newRoomRate, roomType.getRoomTypeId());
             System.out.println("New room rate created successfully!: " + newRoomRate.getRoomRateId() + "\n");
-        } catch (DoesNotExistException ex) {
+        } catch (DoesNotExistException | BeanValidationException ex) {
             bufferScreenForUser(ex.getMessage() + "!\n");
         } catch (ParseException ex) {
             bufferScreenForUser("Invalid Date Format entered!" + "\n");
@@ -630,7 +631,7 @@ public class HotelOperationModule {
 
         } catch (ParseException ex) {
             bufferScreenForUser("Invalid Date Format entered!" + "\n");
-        } catch (DoesNotExistException ex) {
+        } catch (DoesNotExistException | BeanValidationException ex) {
             bufferScreenForUser("An error has occurred while updating room rate: " + ex.getMessage() + "\n");
         }
     }

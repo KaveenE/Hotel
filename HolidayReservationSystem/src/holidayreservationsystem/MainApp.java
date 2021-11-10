@@ -9,13 +9,10 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.DateTimeException;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.XMLGregorianCalendar;
 import util.helper.BossHelper;
-import ws.client.DoesNotExistException;
+import ws.client.BeanValidationException_Exception;
 import ws.client.DoesNotExistException_Exception;
 import ws.client.InvalidLoginException_Exception;
 import ws.client.Pair;
@@ -23,7 +20,6 @@ import ws.client.PartnerEntity;
 import ws.client.PartnerWebService;
 import ws.client.PartnerWebService_Service;
 import ws.client.ReservationEntity;
-import ws.client.RetrieveAllReservationsByPartner;
 
 /**
  *
@@ -190,7 +186,7 @@ public class MainApp {
 
         try {
             reserveRoomsByRoomType(checkIn, checkOut, bookingRoomType, bookingRoomTypeQuantity, partnerEntity.getUsername());
-        } catch (DatatypeConfigurationException | DoesNotExistException_Exception ex) {
+        } catch (DatatypeConfigurationException | DoesNotExistException_Exception | BeanValidationException_Exception ex) {
             bufferScreenForUser(ex.getMessage());
         }
     }
@@ -261,7 +257,7 @@ public class MainApp {
     }
 
     public void reserveRoomsByRoomType(Date checkIn, Date checkOut, String roomTypeName, Long roomQuantity, String username)
-            throws DoesNotExistException_Exception, DatatypeConfigurationException {
+            throws DoesNotExistException_Exception, DatatypeConfigurationException, BeanValidationException_Exception {
         PartnerWebService_Service service = new PartnerWebService_Service();
         PartnerWebService port = service.getPartnerWebServicePort();
         port.reserveRoomsByRoomType(BossHelper.DateToXMLDate(checkIn), BossHelper.DateToXMLDate(checkOut), roomTypeName, roomQuantity, username);

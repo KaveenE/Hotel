@@ -12,7 +12,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.validation.constraints.FutureOrPresent;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -28,7 +27,7 @@ public class PromoRateEntity extends RoomRateAbsEntity implements Serializable {
     @Column(nullable = false)
     @NotNull
     private Date validFrom;
-    
+
     @Temporal(TemporalType.DATE)
     @Column(nullable = false)
     @NotNull

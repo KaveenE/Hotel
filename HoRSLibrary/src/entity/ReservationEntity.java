@@ -60,15 +60,19 @@ public class ReservationEntity implements Serializable {
     @Column(nullable = false)
     @NotNull
     private Boolean online;
+    
     @Column(nullable = false)
     @NotNull
     private Boolean isAllocated;
+    
     @Embedded
     private ExceptionReport exceptionReport;
 
     @ManyToOne(optional = true, fetch = FetchType.LAZY)
     private RoomEntity roomEntity;
+    
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @NotNull
     private RoomTypeEntity roomTypeEntity;
 
     public ReservationEntity() {

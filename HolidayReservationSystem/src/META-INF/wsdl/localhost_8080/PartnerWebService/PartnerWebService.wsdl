@@ -4,14 +4,29 @@
 <xsd:import namespace="http://ws.session.ejb/" schemaLocation="http://localhost:8080/PartnerWebService/PartnerWebService?xsd=1"/>
 </xsd:schema>
 </types>
-<message name="searchRoomTypeReservableQuantityForPartner">
-<part name="parameters" element="tns:searchRoomTypeReservableQuantityForPartner"/>
+<message name="retrieveReservationsByPartner">
+<part name="parameters" element="tns:retrieveReservationsByPartner"/>
 </message>
-<message name="searchRoomTypeReservableQuantityForPartnerResponse">
-<part name="parameters" element="tns:searchRoomTypeReservableQuantityForPartnerResponse"/>
+<message name="retrieveReservationsByPartnerResponse">
+<part name="parameters" element="tns:retrieveReservationsByPartnerResponse"/>
 </message>
 <message name="DoesNotExistException">
 <part name="fault" element="tns:DoesNotExistException"/>
+</message>
+<message name="reserveRoomsByRoomType">
+<part name="parameters" element="tns:reserveRoomsByRoomType"/>
+</message>
+<message name="reserveRoomsByRoomTypeResponse">
+<part name="parameters" element="tns:reserveRoomsByRoomTypeResponse"/>
+</message>
+<message name="BeanValidationException">
+<part name="fault" element="tns:BeanValidationException"/>
+</message>
+<message name="retrieveAllReservationsByPartner">
+<part name="parameters" element="tns:retrieveAllReservationsByPartner"/>
+</message>
+<message name="retrieveAllReservationsByPartnerResponse">
+<part name="parameters" element="tns:retrieveAllReservationsByPartnerResponse"/>
 </message>
 <message name="partnerLogin">
 <part name="parameters" element="tns:partnerLogin"/>
@@ -22,54 +37,70 @@
 <message name="InvalidLoginException">
 <part name="fault" element="tns:InvalidLoginException"/>
 </message>
-<message name="reserveRoomsByRoomType">
-<part name="parameters" element="tns:reserveRoomsByRoomType"/>
+<message name="searchRoomTypeReservableQuantityForPartner">
+<part name="parameters" element="tns:searchRoomTypeReservableQuantityForPartner"/>
 </message>
-<message name="reserveRoomsByRoomTypeResponse">
-<part name="parameters" element="tns:reserveRoomsByRoomTypeResponse"/>
-</message>
-<message name="retrieveReservationsByPartner">
-<part name="parameters" element="tns:retrieveReservationsByPartner"/>
-</message>
-<message name="retrieveReservationsByPartnerResponse">
-<part name="parameters" element="tns:retrieveReservationsByPartnerResponse"/>
-</message>
-<message name="retrieveAllReservationsByPartner">
-<part name="parameters" element="tns:retrieveAllReservationsByPartner"/>
-</message>
-<message name="retrieveAllReservationsByPartnerResponse">
-<part name="parameters" element="tns:retrieveAllReservationsByPartnerResponse"/>
+<message name="searchRoomTypeReservableQuantityForPartnerResponse">
+<part name="parameters" element="tns:searchRoomTypeReservableQuantityForPartnerResponse"/>
 </message>
 <portType name="PartnerWebService">
-<operation name="searchRoomTypeReservableQuantityForPartner">
-<input wsam:Action="http://ws.session.ejb/PartnerWebService/searchRoomTypeReservableQuantityForPartnerRequest" message="tns:searchRoomTypeReservableQuantityForPartner"/>
-<output wsam:Action="http://ws.session.ejb/PartnerWebService/searchRoomTypeReservableQuantityForPartnerResponse" message="tns:searchRoomTypeReservableQuantityForPartnerResponse"/>
-<fault message="tns:DoesNotExistException" name="DoesNotExistException" wsam:Action="http://ws.session.ejb/PartnerWebService/searchRoomTypeReservableQuantityForPartner/Fault/DoesNotExistException"/>
-</operation>
-<operation name="partnerLogin">
-<input wsam:Action="http://ws.session.ejb/PartnerWebService/partnerLoginRequest" message="tns:partnerLogin"/>
-<output wsam:Action="http://ws.session.ejb/PartnerWebService/partnerLoginResponse" message="tns:partnerLoginResponse"/>
-<fault message="tns:InvalidLoginException" name="InvalidLoginException" wsam:Action="http://ws.session.ejb/PartnerWebService/partnerLogin/Fault/InvalidLoginException"/>
+<operation name="retrieveReservationsByPartner">
+<input wsam:Action="http://ws.session.ejb/PartnerWebService/retrieveReservationsByPartnerRequest" message="tns:retrieveReservationsByPartner"/>
+<output wsam:Action="http://ws.session.ejb/PartnerWebService/retrieveReservationsByPartnerResponse" message="tns:retrieveReservationsByPartnerResponse"/>
+<fault message="tns:DoesNotExistException" name="DoesNotExistException" wsam:Action="http://ws.session.ejb/PartnerWebService/retrieveReservationsByPartner/Fault/DoesNotExistException"/>
 </operation>
 <operation name="reserveRoomsByRoomType">
 <input wsam:Action="http://ws.session.ejb/PartnerWebService/reserveRoomsByRoomTypeRequest" message="tns:reserveRoomsByRoomType"/>
 <output wsam:Action="http://ws.session.ejb/PartnerWebService/reserveRoomsByRoomTypeResponse" message="tns:reserveRoomsByRoomTypeResponse"/>
 <fault message="tns:DoesNotExistException" name="DoesNotExistException" wsam:Action="http://ws.session.ejb/PartnerWebService/reserveRoomsByRoomType/Fault/DoesNotExistException"/>
-</operation>
-<operation name="retrieveReservationsByPartner">
-<input wsam:Action="http://ws.session.ejb/PartnerWebService/retrieveReservationsByPartnerRequest" message="tns:retrieveReservationsByPartner"/>
-<output wsam:Action="http://ws.session.ejb/PartnerWebService/retrieveReservationsByPartnerResponse" message="tns:retrieveReservationsByPartnerResponse"/>
-<fault message="tns:DoesNotExistException" name="DoesNotExistException" wsam:Action="http://ws.session.ejb/PartnerWebService/retrieveReservationsByPartner/Fault/DoesNotExistException"/>
+<fault message="tns:BeanValidationException" name="BeanValidationException" wsam:Action="http://ws.session.ejb/PartnerWebService/reserveRoomsByRoomType/Fault/BeanValidationException"/>
 </operation>
 <operation name="retrieveAllReservationsByPartner">
 <input wsam:Action="http://ws.session.ejb/PartnerWebService/retrieveAllReservationsByPartnerRequest" message="tns:retrieveAllReservationsByPartner"/>
 <output wsam:Action="http://ws.session.ejb/PartnerWebService/retrieveAllReservationsByPartnerResponse" message="tns:retrieveAllReservationsByPartnerResponse"/>
 <fault message="tns:DoesNotExistException" name="DoesNotExistException" wsam:Action="http://ws.session.ejb/PartnerWebService/retrieveAllReservationsByPartner/Fault/DoesNotExistException"/>
 </operation>
+<operation name="partnerLogin">
+<input wsam:Action="http://ws.session.ejb/PartnerWebService/partnerLoginRequest" message="tns:partnerLogin"/>
+<output wsam:Action="http://ws.session.ejb/PartnerWebService/partnerLoginResponse" message="tns:partnerLoginResponse"/>
+<fault message="tns:InvalidLoginException" name="InvalidLoginException" wsam:Action="http://ws.session.ejb/PartnerWebService/partnerLogin/Fault/InvalidLoginException"/>
+</operation>
+<operation name="searchRoomTypeReservableQuantityForPartner">
+<input wsam:Action="http://ws.session.ejb/PartnerWebService/searchRoomTypeReservableQuantityForPartnerRequest" message="tns:searchRoomTypeReservableQuantityForPartner"/>
+<output wsam:Action="http://ws.session.ejb/PartnerWebService/searchRoomTypeReservableQuantityForPartnerResponse" message="tns:searchRoomTypeReservableQuantityForPartnerResponse"/>
+<fault message="tns:DoesNotExistException" name="DoesNotExistException" wsam:Action="http://ws.session.ejb/PartnerWebService/searchRoomTypeReservableQuantityForPartner/Fault/DoesNotExistException"/>
+</operation>
 </portType>
 <binding name="PartnerWebServicePortBinding" type="tns:PartnerWebService">
 <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
-<operation name="searchRoomTypeReservableQuantityForPartner">
+<operation name="retrieveReservationsByPartner">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+<output>
+<soap:body use="literal"/>
+</output>
+<fault name="DoesNotExistException">
+<soap:fault name="DoesNotExistException" use="literal"/>
+</fault>
+</operation>
+<operation name="reserveRoomsByRoomType">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+<output>
+<soap:body use="literal"/>
+</output>
+<fault name="DoesNotExistException">
+<soap:fault name="DoesNotExistException" use="literal"/>
+</fault>
+<fault name="BeanValidationException">
+<soap:fault name="BeanValidationException" use="literal"/>
+</fault>
+</operation>
+<operation name="retrieveAllReservationsByPartner">
 <soap:operation soapAction=""/>
 <input>
 <soap:body use="literal"/>
@@ -93,31 +124,7 @@
 <soap:fault name="InvalidLoginException" use="literal"/>
 </fault>
 </operation>
-<operation name="reserveRoomsByRoomType">
-<soap:operation soapAction=""/>
-<input>
-<soap:body use="literal"/>
-</input>
-<output>
-<soap:body use="literal"/>
-</output>
-<fault name="DoesNotExistException">
-<soap:fault name="DoesNotExistException" use="literal"/>
-</fault>
-</operation>
-<operation name="retrieveReservationsByPartner">
-<soap:operation soapAction=""/>
-<input>
-<soap:body use="literal"/>
-</input>
-<output>
-<soap:body use="literal"/>
-</output>
-<fault name="DoesNotExistException">
-<soap:fault name="DoesNotExistException" use="literal"/>
-</fault>
-</operation>
-<operation name="retrieveAllReservationsByPartner">
+<operation name="searchRoomTypeReservableQuantityForPartner">
 <soap:operation soapAction=""/>
 <input>
 <soap:body use="literal"/>

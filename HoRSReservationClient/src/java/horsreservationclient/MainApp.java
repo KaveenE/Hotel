@@ -19,6 +19,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.Set;
 import util.exception.AlreadyExistsException;
+import util.exception.BeanValidationException;
 import util.exception.DoesNotExistException;
 import util.exception.InvalidLoginException;
 import util.exception.UnknownPersistenceException;
@@ -132,7 +133,7 @@ public class MainApp {
             newGuest = guestSessionBean.createNewGuest(newGuest);
             System.out.println("New guest created successfully!: " + newGuest.getEmailAddress() + "\n");
 
-        } catch (AlreadyExistsException | UnknownPersistenceException ex) {
+        } catch (AlreadyExistsException | UnknownPersistenceException | BeanValidationException ex) {
             System.out.println(ex.getMessage() + "!\n");
         }
     }
@@ -235,7 +236,7 @@ public class MainApp {
         ReservationEntity reservation = new GuestReservationEntity(BossHelper.localDatetoDate(checkIn), BossHelper.localDatetoDate(checkOut));
         try {
             reservationSessionBean.reserveRoomsByRoomType(reservation, bookingRoomType, bookingRoomTypeQuantity, guestEntity.getEmailAddress());
-        } catch (DoesNotExistException ex) {
+        } catch (DoesNotExistException | BeanValidationException ex) {
             bufferScreenForUser(ex.getMessage());
         }
 

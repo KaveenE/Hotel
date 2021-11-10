@@ -18,7 +18,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.Email;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import util.helper.BossHelper;
@@ -48,7 +47,7 @@ public class GuestEntity implements Serializable {
     
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "GUEST_ENTITY_FK")
-    @NotEmpty
+    @NotNull
     private Set<GuestReservationEntity> guestReservationEntities;
     
     public GuestEntity() {

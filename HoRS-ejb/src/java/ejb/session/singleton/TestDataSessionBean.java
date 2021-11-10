@@ -60,7 +60,7 @@ public class TestDataSessionBean {
         if (em.find(EmployeeEntity.class, 1L) == null) {
             try {
                 initializeData();
-            } catch (AlreadyExistsException | DoesNotExistException | UnknownPersistenceException |BeanValidationException chainedEx) {
+            } catch (AlreadyExistsException | DoesNotExistException | UnknownPersistenceException | BeanValidationException chainedEx) {
                 System.out.println(chainedEx.getMessage());
             }
         }

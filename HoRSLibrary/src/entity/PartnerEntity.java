@@ -17,7 +17,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import util.helper.BossHelper;
@@ -46,7 +45,7 @@ public class PartnerEntity implements Serializable {
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "PARTNER_ENTITY_FK")
-    @NotEmpty
+    @NotNull
     private Set<PartnerReservationEntity> partnerReservationEntities;
 
     public PartnerEntity() {
