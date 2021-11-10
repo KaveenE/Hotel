@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import javax.ejb.EJB;
 import javax.ejb.Schedule;
 import javax.ejb.Stateless;
@@ -341,7 +340,7 @@ public class RoomTypeSessionBean implements RoomTypeSessionBeanRemote, RoomTypeS
                 .forEach(res -> res.setExceptionReport(new ExceptionReport(
                 2,
                 "Exception 2 occured. No rooms available for " + res.getRoomTypeEntity().getName() + "!",
-                "You don't any room :)")
+                "Exception 1 occurred. You don't any room :)")
         ));
 
     }

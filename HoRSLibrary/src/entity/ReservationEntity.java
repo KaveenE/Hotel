@@ -164,12 +164,10 @@ public class ReservationEntity implements Serializable {
     }
 
     public String getExceptionReport(boolean isHotel) {
-        StringBuffer sb = new StringBuffer(exceptionReport.getExceptionType() + " ");
-
         if (isHotel) {
-            return sb.append(exceptionReport.getMessageToHotel()).toString();
+            return exceptionReport.getMessageToHotel().toString();
         }
-        return sb.append(exceptionReport.getMessageToGuest()).toString();
+        return exceptionReport.getMessageToGuest().toString();
     }
 
     public void setExceptionReport(ExceptionReport exceptionReport) {

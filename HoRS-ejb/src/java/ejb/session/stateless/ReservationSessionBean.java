@@ -62,7 +62,12 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
 
     @Override
     public ReservationEntity retrieveReservationById(Long resId) throws DoesNotExistException {
-        return BossHelper.requireNonNull(em.find(ReservationEntity.class, resId), new ReservationDoesNotExistException());
+        ReservationEntity reservationEntity = em.find(ReservationEntity.class, resId);
+        reservationEntity = BossHelper.requireNonNull(reservationEntity, new ReservationDoesNotExistException());
+        reservationEntity.getRoomTypeEntity().getRoomConfig();
+        reservationEntity.getRoomEntity();
+        
+        return reservationEntity;
     }
 
     //returns a Set of reservation entities with same check in date as input check in date

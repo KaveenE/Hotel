@@ -15,6 +15,8 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Date;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import util.exception.DoesNotExistException;
 import util.helper.BossHelper;
 
@@ -67,12 +69,11 @@ public class FrontOfficeModule {
                     walkInSearchRoom();
                 } else if (response == 2) {
                     Map<String, Integer> roomTypeResults = walkInSearchRoom();
-                    if (roomTypeResults!=null && !roomTypeResults.isEmpty()) {
+                    if (roomTypeResults != null && !roomTypeResults.isEmpty()) {
                         walkInReserveRoom(roomTypeResults);
                     }
                 } else if (response == 3) {
-//                    checkInGuest();
-                    System.out.println("not implemented yet!");
+                    checkInGuest();
                 } else if (response == 4) {
 //                    checkOutGuest();
                     System.out.println("not implemented yet!");
@@ -148,9 +149,24 @@ public class FrontOfficeModule {
 
     }
 
-    //TODO 
     public void checkInGuest() {
+        try {
+            Long reservationId;
+            System.out.println("*** HoRS :: Hotel Administration Client :: Check-in Guest ***\n");
 
+            System.out.print("Enter Reservation Id to Check-in> ");
+            reservationId = Long.parseLong(scanner.nextLine());
+            ReservationEntity reservationEntity = reservationSessionBean.retrieveReservationById(reservationId);
+            if (!reservationEntity.getIsAllocated()) {
+                System.out.println("An exception occured during room allocation: " + reservationEntity.getExceptionReport(false));
+            } else {
+                System.out.printf("%15s%15s%20s\n", "Reservation Id", "Room Type", "Allocated Room");
+                System.out.printf("%15s%15s%20s\n", reservationEntity.getReservationId().toString(), reservationEntity.getRoomTypeEntity().getName(), reservationEntity.getRoomEntity().getFloorUnitNo());
+            }
+
+        } catch (DoesNotExistException ex) {
+            bufferScreenForUser("An error has occurred while retrieving Reservation details" + ex.getMessage() + "\n");
+        }
     }
 
     //TODO
