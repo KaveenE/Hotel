@@ -9,6 +9,7 @@ import entity.RoomEntity;
 import java.util.List;
 import javax.ejb.Remote;
 import util.exception.AlreadyExistsException;
+import util.exception.BeanValidationException;
 import util.exception.DoesNotExistException;
 import util.exception.UnknownPersistenceException;
 
@@ -19,11 +20,11 @@ import util.exception.UnknownPersistenceException;
 @Remote
 public interface RoomSessionBeanRemote {
 
-    public RoomEntity createRoomWithExistingRoomType(RoomEntity roomEntity, Long roomTypeId) throws DoesNotExistException, UnknownPersistenceException, AlreadyExistsException;
+    public RoomEntity createRoomWithExistingRoomType(RoomEntity roomEntity, Long roomTypeId) throws DoesNotExistException, UnknownPersistenceException, AlreadyExistsException, BeanValidationException;
 
     public List<RoomEntity> retrieveAllRooms();
 
-    public void updateRoom(RoomEntity room) throws DoesNotExistException, AlreadyExistsException;
+    public void updateRoom(RoomEntity room) throws DoesNotExistException, AlreadyExistsException, BeanValidationException;
 
     public void deleteRoomByFloorUnitNo(String floorUnitNo) throws DoesNotExistException;
 

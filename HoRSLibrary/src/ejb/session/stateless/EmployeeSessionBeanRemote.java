@@ -9,6 +9,7 @@ import entity.EmployeeEntity;
 import java.util.List;
 import javax.ejb.Remote;
 import util.exception.AlreadyExistsException;
+import util.exception.BeanValidationException;
 import util.exception.DoesNotExistException;
 import util.exception.InvalidLoginException;
 import util.exception.UnknownPersistenceException;
@@ -20,7 +21,7 @@ import util.exception.UnknownPersistenceException;
 @Remote
 public interface EmployeeSessionBeanRemote {
 
-    public EmployeeEntity createNewEmployee(EmployeeEntity newEmployeeEntity) throws AlreadyExistsException, UnknownPersistenceException;
+    public EmployeeEntity createNewEmployee(EmployeeEntity newEmployeeEntity) throws AlreadyExistsException, UnknownPersistenceException, BeanValidationException;
 
     public List<EmployeeEntity> retrieveAllEmployees();
 

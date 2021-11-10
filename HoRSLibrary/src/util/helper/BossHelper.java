@@ -90,9 +90,9 @@ public final class BossHelper implements Serializable {
         return returnObj;
     }
 
-    public static boolean printValidationErrorsIfAny(Entity entity) {
+    public static <T> boolean printValidationErrorsIfAny(T entity) {
 
-        Set<ConstraintViolation<Entity>> errors = validator.validate(entity);
+        Set<ConstraintViolation<T>> errors = validator.validate(entity);
         if (!errors.isEmpty()) {
             System.out.println("You have violated the following:");
             errors.forEach(error -> System.out.println(error.getMessage()));
@@ -105,9 +105,9 @@ public final class BossHelper implements Serializable {
         return !errors.isEmpty();
     }
     
-    public static void throwValidationErrorsIfAny(Entity entity) throws BeanValidationException {
-        Set<ConstraintViolation<Entity>> errors = validator.validate(entity);
-        StringBuffer sb = new StringBuffer();
+    public static <T> void throwValidationErrorsIfAny(T entity) throws BeanValidationException {
+        Set<ConstraintViolation<T>> errors = validator.validate(entity);
+        StringBuilder sb = new StringBuilder();
         
         if(!errors.isEmpty()) {
             errors.forEach(error -> sb.append(error+" \n"));

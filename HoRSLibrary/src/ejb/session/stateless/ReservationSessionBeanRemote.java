@@ -10,6 +10,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 import javax.ejb.Remote;
+import util.exception.BeanValidationException;
 import util.exception.DoesNotExistException;
 
 /**
@@ -19,9 +20,9 @@ import util.exception.DoesNotExistException;
 @Remote
 public interface ReservationSessionBeanRemote {
 
-    public void walkInReserveRoomsByRoomType(ReservationEntity reservation, String roomTypeName, Long roomQuantity) throws DoesNotExistException;
+    public void walkInReserveRoomsByRoomType(ReservationEntity reservation, String roomTypeName, Long roomQuantity) throws DoesNotExistException, BeanValidationException;
 
-    public void reserveRoomsByRoomType(ReservationEntity reservation, String roomTypeName, Long roomQuantity, String username) throws DoesNotExistException;
+    public void reserveRoomsByRoomType(ReservationEntity reservation, String roomTypeName, Long roomQuantity, String username) throws DoesNotExistException, BeanValidationException;
 
     public ReservationEntity retrieveReservationById(Long resId) throws DoesNotExistException;
 

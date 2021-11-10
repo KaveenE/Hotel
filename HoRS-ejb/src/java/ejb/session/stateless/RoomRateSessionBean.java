@@ -15,6 +15,7 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import util.exception.BeanValidationException;
 import util.exception.DoesNotExistException;
 import util.exception.RoomRateDoesNotExistException;
 import util.helper.BossHelper;
@@ -59,10 +60,11 @@ public class RoomRateSessionBean implements RoomRateSessionBeanRemote, RoomRateS
     }
 
     @Override
-    public RoomRateAbsEntity createRoomRateWithExistingRoomType(RoomRateAbsEntity roomRate, Long roomTypeId) throws DoesNotExistException {
+    public RoomRateAbsEntity createRoomRateWithExistingRoomType(RoomRateAbsEntity roomRate, Long roomTypeId) throws DoesNotExistException , BeanValidationException{
         RoomTypeEntity roomType = roomTypeSessionBean.retrieveRoomTypeById(roomTypeId);
         roomType.associateRoomRateAbsEntity(roomRate);
-
+        BossHelper.throwValidationErrorsIfAny(roomRate);
+        
         em.persist(roomRate);
         em.flush();
 
@@ -70,9 +72,11 @@ public class RoomRateSessionBean implements RoomRateSessionBeanRemote, RoomRateS
     }
 
     @Override
-    public void updateRoomRate(RoomRateAbsEntity roomRate) throws DoesNotExistException {
+    public void updateRoomRate(RoomRateAbsEntity roomRate) throws DoesNotExistException, BeanValidationException{
+        
         BossHelper.requireNonNull(roomRate, new RoomRateDoesNotExistException());
         BossHelper.requireNonNull(roomRate.getRoomRateId(), new RoomRateDoesNotExistException());
+        BossHelper.throwValidationErrorsIfAny(roomRate);
 
         RoomRateAbsEntity roomRateToUpdate = retrieveRoomRateById(roomRate.getRoomRateId());
         roomRateToUpdate.setName(roomRate.getName());

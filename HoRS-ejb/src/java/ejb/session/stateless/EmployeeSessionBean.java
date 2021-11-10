@@ -15,11 +15,13 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
 import javax.persistence.Query;
 import util.exception.AlreadyExistsException;
+import util.exception.BeanValidationException;
 import util.exception.DoesNotExistException;
 import util.exception.EmployeeAlreadyExistsException;
 import util.exception.EmployeeDoesNotExistException;
 import util.exception.InvalidLoginException;
 import util.exception.UnknownPersistenceException;
+import util.helper.BossHelper;
 
 /**
  *
@@ -32,7 +34,8 @@ public class EmployeeSessionBean implements EmployeeSessionBeanRemote, EmployeeS
     private EntityManager em;
 
     @Override
-    public EmployeeEntity createNewEmployee(EmployeeEntity newEmployeeEntity) throws AlreadyExistsException, UnknownPersistenceException {
+    public EmployeeEntity createNewEmployee(EmployeeEntity newEmployeeEntity) throws AlreadyExistsException, UnknownPersistenceException, BeanValidationException{
+        BossHelper.throwValidationErrorsIfAny(newEmployeeEntity);
         try {
             em.persist(newEmployeeEntity);
             em.flush();

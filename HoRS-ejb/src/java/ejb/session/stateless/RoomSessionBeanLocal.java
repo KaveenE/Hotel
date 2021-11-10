@@ -8,6 +8,7 @@ package ejb.session.stateless;
 import entity.RoomEntity;
 import javax.ejb.Local;
 import util.exception.AlreadyExistsException;
+import util.exception.BeanValidationException;
 import util.exception.DoesNotExistException;
 import util.exception.UnknownPersistenceException;
 
@@ -20,6 +21,6 @@ public interface RoomSessionBeanLocal {
 
     public RoomEntity retrieveRoomById(Long roomId) throws DoesNotExistException;
 
-    public RoomEntity createRoomWithExistingRoomType(RoomEntity roomEntity, Long roomTypeId) throws DoesNotExistException, UnknownPersistenceException, AlreadyExistsException;
+    public RoomEntity createRoomWithExistingRoomType(RoomEntity roomEntity, Long roomTypeId) throws DoesNotExistException, UnknownPersistenceException, AlreadyExistsException, BeanValidationException;
 
 }

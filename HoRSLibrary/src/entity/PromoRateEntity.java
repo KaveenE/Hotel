@@ -27,13 +27,11 @@ public class PromoRateEntity extends RoomRateAbsEntity implements Serializable {
     @Temporal(TemporalType.DATE)
     @Column(nullable = false)
     @NotNull
-    @FutureOrPresent
     private Date validFrom;
     
     @Temporal(TemporalType.DATE)
     @Column(nullable = false)
     @NotNull
-    @FutureOrPresent
     private Date validTo;
 
     public PromoRateEntity() {

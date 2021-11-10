@@ -8,6 +8,7 @@ package ejb.session.stateless;
 import entity.EmployeeEntity;
 import javax.ejb.Local;
 import util.exception.AlreadyExistsException;
+import util.exception.BeanValidationException;
 import util.exception.DoesNotExistException;
 import util.exception.UnknownPersistenceException;
 
@@ -20,6 +21,6 @@ public interface EmployeeSessionBeanLocal {
 
     public EmployeeEntity retrieveEmployeeByUsername(String username) throws DoesNotExistException;
 
-    public EmployeeEntity createNewEmployee(EmployeeEntity newEmployeeEntity) throws AlreadyExistsException, UnknownPersistenceException;
+    public EmployeeEntity createNewEmployee(EmployeeEntity newEmployeeEntity) throws AlreadyExistsException, UnknownPersistenceException, BeanValidationException;
 
 }

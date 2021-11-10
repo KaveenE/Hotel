@@ -34,6 +34,7 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import util.exception.BeanValidationException;
 import util.exception.DoesNotExistException;
 import util.exception.ReservationDoesNotExistException;
 import util.exception.RoomRateDoesNotExistException;
@@ -55,7 +56,9 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
     @PersistenceContext(unitName = "HoRS-ejbPU")
     private EntityManager em;
 
-    private void createReservaton(Collection<ReservationEntity> reservations) {
+    private void createReservaton(Collection<ReservationEntity> reservations) throws BeanValidationException{
+        BossHelper.throwValidationErrorsIfAny(reservations.iterator().next());
+        
         reservations.forEach(reservation -> em.persist(reservation));
         em.flush();
     }
@@ -93,14 +96,15 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
 
     //overloaded method to facilitate room reservations for walk in only
     @Override
-    public void walkInReserveRoomsByRoomType(ReservationEntity reservation, String roomTypeName, Long roomQuantity) throws DoesNotExistException {
+    public void walkInReserveRoomsByRoomType(ReservationEntity reservation, String roomTypeName, Long roomQuantity) throws DoesNotExistException , BeanValidationException{
+        
         this.reserveRoomsByRoomType(reservation, roomTypeName, roomQuantity, null);
 
     }
 
     //creates and associates reservations with room rate, room type and rooms
     @Override
-    public void reserveRoomsByRoomType(ReservationEntity reservation, String roomTypeName, Long roomQuantity, String username) throws DoesNotExistException {
+    public void reserveRoomsByRoomType(ReservationEntity reservation, String roomTypeName, Long roomQuantity, String username) throws DoesNotExistException , BeanValidationException{
         boolean walkIn = !reservation.getOnline();
         Stream<ReservationEntity> reservationStream;
 

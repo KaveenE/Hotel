@@ -18,12 +18,14 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
 import javax.persistence.Query;
 import util.exception.AlreadyExistsException;
+import util.exception.BeanValidationException;
 import util.exception.DoesNotExistException;
 import util.exception.InvalidLoginException;
 import util.exception.PartnerAlreadyExistsException;
 import util.exception.PartnerDoesNotExistException;
 import util.exception.ReservationDoesNotExistException;
 import util.exception.UnknownPersistenceException;
+import util.helper.BossHelper;
 
 /**
  *
@@ -36,7 +38,8 @@ public class PartnerSessionBean implements PartnerSessionBeanRemote, PartnerSess
     private EntityManager em;
 
     @Override
-    public PartnerEntity createNewPartner(PartnerEntity newPartnerEntity) throws AlreadyExistsException, UnknownPersistenceException {
+    public PartnerEntity createNewPartner(PartnerEntity newPartnerEntity) throws AlreadyExistsException, UnknownPersistenceException, BeanValidationException {
+        BossHelper.throwValidationErrorsIfAny(newPartnerEntity);
         try {
             em.persist(newPartnerEntity);
             em.flush();

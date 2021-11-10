@@ -18,12 +18,14 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
 import javax.persistence.Query;
 import util.exception.AlreadyExistsException;
+import util.exception.BeanValidationException;
 import util.exception.DoesNotExistException;
 import util.exception.InvalidLoginException;
 import util.exception.GuestAlreadyExistsException;
 import util.exception.GuestDoesNotExistException;
 import util.exception.ReservationDoesNotExistException;
 import util.exception.UnknownPersistenceException;
+import util.helper.BossHelper;
 
 /**
  *
@@ -36,7 +38,8 @@ public class GuestSessionBean implements GuestSessionBeanRemote, GuestSessionBea
     private EntityManager em;
 
     @Override
-    public GuestEntity createNewGuest(GuestEntity newGuestEntity) throws AlreadyExistsException, UnknownPersistenceException {
+    public GuestEntity createNewGuest(GuestEntity newGuestEntity) throws AlreadyExistsException, UnknownPersistenceException, BeanValidationException {
+        BossHelper.throwValidationErrorsIfAny(newGuestEntity);
         try {
             em.persist(newGuestEntity);
             em.flush();

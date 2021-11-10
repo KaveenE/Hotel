@@ -7,6 +7,7 @@ package ejb.session.stateless;
 
 import entity.RoomRateAbsEntity;
 import javax.ejb.Local;
+import util.exception.BeanValidationException;
 import util.exception.DoesNotExistException;
 
 /**
@@ -18,5 +19,5 @@ public interface RoomRateSessionBeanLocal {
 
     public RoomRateAbsEntity retrieveRoomRateById(Long roomRateId) throws DoesNotExistException;
 
-    public RoomRateAbsEntity createRoomRateWithExistingRoomType(RoomRateAbsEntity roomRate, Long roomTypeId) throws DoesNotExistException;
+    public RoomRateAbsEntity createRoomRateWithExistingRoomType(RoomRateAbsEntity roomRate, Long roomTypeId) throws DoesNotExistException, BeanValidationException;
 }

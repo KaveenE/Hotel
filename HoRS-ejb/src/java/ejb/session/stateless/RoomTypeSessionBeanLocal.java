@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Set;
 import javax.ejb.Local;
 import util.exception.AlreadyExistsException;
+import util.exception.BeanValidationException;
 import util.exception.DoesNotExistException;
 import util.exception.UnknownPersistenceException;
 import util.helper.Pair;
@@ -26,7 +27,7 @@ public interface RoomTypeSessionBeanLocal {
 
     public RoomTypeEntity retrieveRoomTypeById(Long roomTypeId) throws DoesNotExistException;
 
-    public RoomTypeEntity createRoomType(RoomTypeEntity roomType) throws DoesNotExistException, UnknownPersistenceException, AlreadyExistsException;
+    public RoomTypeEntity createRoomType(RoomTypeEntity roomType) throws DoesNotExistException, UnknownPersistenceException, AlreadyExistsException,BeanValidationException;
 
     public Map<String, Integer> walkInSearchRoomTypeReservableQuantity(LocalDate checkOut) throws DoesNotExistException;
 

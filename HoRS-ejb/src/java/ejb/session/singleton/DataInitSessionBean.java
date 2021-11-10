@@ -32,6 +32,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import util.enumeration.EmployeeRoleEnum;
 import util.exception.AlreadyExistsException;
+import util.exception.BeanValidationException;
 import util.exception.DoesNotExistException;
 import util.exception.UnknownPersistenceException;
 
@@ -66,13 +67,13 @@ public class DataInitSessionBean {
         if(em.find(EmployeeEntity.class, 1L) == null) {
             try {
                 initializeData();
-            } catch (AlreadyExistsException | DoesNotExistException | UnknownPersistenceException chainedEx) {
+            } catch (AlreadyExistsException | DoesNotExistException | UnknownPersistenceException | BeanValidationException chainedEx) {
                 System.out.println(chainedEx.getMessage());
             }
         }
     }
 
-    private void initializeData() throws AlreadyExistsException, UnknownPersistenceException, DoesNotExistException {
+    private void initializeData() throws AlreadyExistsException, UnknownPersistenceException, DoesNotExistException, BeanValidationException {
         employeeSessionBean.createNewEmployee(new EmployeeEntity(EmployeeRoleEnum.SYSTEM_OPERATOR, "systems", "password"));
         employeeSessionBean.createNewEmployee(new EmployeeEntity(EmployeeRoleEnum.OPERATION_MANAGER, "operation", "password"));
         employeeSessionBean.createNewEmployee(new EmployeeEntity(EmployeeRoleEnum.SALES_MANAGER, "sales", "password"));

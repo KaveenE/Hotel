@@ -31,6 +31,7 @@ import javax.persistence.PersistenceException;
 import javax.persistence.Query;
 import util.enumeration.RoomStatusEnum;
 import util.exception.AlreadyExistsException;
+import util.exception.BeanValidationException;
 import util.exception.DoesNotExistException;
 import util.exception.RoomRateDoesNotExistException;
 import util.exception.RoomTypeAlreadyExistsException;
@@ -72,9 +73,10 @@ public class RoomTypeSessionBean implements RoomTypeSessionBeanRemote, RoomTypeS
     }
 
     @Override
-    public void updateRoomType(RoomTypeEntity roomType) throws DoesNotExistException, AlreadyExistsException {
+    public void updateRoomType(RoomTypeEntity roomType) throws DoesNotExistException, AlreadyExistsException,BeanValidationException {
         BossHelper.requireNonNull(roomType, new RoomTypeDoesNotExistException());
         BossHelper.requireNonNull(roomType.getRoomTypeId(), new RoomTypeDoesNotExistException());
+        BossHelper.throwValidationErrorsIfAny(roomType);
 
         RoomTypeEntity roomTypeToUpdate = retrieveRoomTypeById(roomType.getRoomTypeId());
         if (!roomTypeToUpdate.getName().equals(roomType.getName()) && uniqueFieldAlreadyExists(roomType.getName())) {
@@ -99,7 +101,8 @@ public class RoomTypeSessionBean implements RoomTypeSessionBeanRemote, RoomTypeS
     }
 
     @Override
-    public RoomTypeEntity createRoomType(RoomTypeEntity roomType) throws DoesNotExistException, UnknownPersistenceException, AlreadyExistsException {
+    public RoomTypeEntity createRoomType(RoomTypeEntity roomType) throws DoesNotExistException, UnknownPersistenceException, AlreadyExistsException,BeanValidationException {
+        BossHelper.throwValidationErrorsIfAny(roomType);
         try {
             em.persist(roomType);
             em.flush();

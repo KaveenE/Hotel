@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import javax.ejb.Remote;
 import util.exception.AlreadyExistsException;
+import util.exception.BeanValidationException;
 import util.exception.DoesNotExistException;
 import util.exception.UnknownPersistenceException;
 
@@ -22,7 +23,7 @@ import util.exception.UnknownPersistenceException;
 @Remote
 public interface RoomTypeSessionBeanRemote {
 
-    public RoomTypeEntity createRoomType(RoomTypeEntity roomType) throws DoesNotExistException, UnknownPersistenceException, AlreadyExistsException;
+    public RoomTypeEntity createRoomType(RoomTypeEntity roomType) throws DoesNotExistException, UnknownPersistenceException, AlreadyExistsException,BeanValidationException;
 
     public List<RoomTypeEntity> retrieveAllRoomTypes();
 
@@ -30,7 +31,7 @@ public interface RoomTypeSessionBeanRemote {
 
     public void deleteRoomTypeByName(String name) throws DoesNotExistException;
 
-    public void updateRoomType(RoomTypeEntity roomType) throws DoesNotExistException, AlreadyExistsException;
+    public void updateRoomType(RoomTypeEntity roomType) throws DoesNotExistException, AlreadyExistsException,BeanValidationException;
 
     public Map<String, Integer> searchRoomTypeReservableQuantity(LocalDate checkIn, LocalDate checkOut) throws DoesNotExistException;
 

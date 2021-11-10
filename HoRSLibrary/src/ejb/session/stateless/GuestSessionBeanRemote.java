@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Set;
 import javax.ejb.Remote;
 import util.exception.AlreadyExistsException;
+import util.exception.BeanValidationException;
 import util.exception.DoesNotExistException;
 import util.exception.InvalidLoginException;
 import util.exception.UnknownPersistenceException;
@@ -24,7 +25,7 @@ public interface GuestSessionBeanRemote {
 
     public GuestEntity guestLogin(String username, String password) throws InvalidLoginException;
 
-    public GuestEntity createNewGuest(GuestEntity newGuestEntity) throws AlreadyExistsException, UnknownPersistenceException;
+    public GuestEntity createNewGuest(GuestEntity newGuestEntity) throws AlreadyExistsException, UnknownPersistenceException, BeanValidationException;
 
     public GuestEntity retrieveGuestByUsername(String username) throws DoesNotExistException;
     

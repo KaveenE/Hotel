@@ -19,6 +19,7 @@ import javax.jws.WebService;
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
 import javax.ejb.Stateless;
+import util.exception.BeanValidationException;
 import util.exception.DoesNotExistException;
 import util.exception.InvalidLoginException;
 import util.helper.BossHelper;
@@ -49,7 +50,7 @@ public class PartnerWebService {
     @WebMethod(operationName = "reserveRoomsByRoomType")
     public void reserveRoomsByRoomType(@WebParam(name = "checkIn") Date checkIn, @WebParam(name = "checkOut") Date checkOut,
             @WebParam(name = "roomType") String roomTypeName, @WebParam(name = "roomQuality") Long roomQuantity,
-            @WebParam(name = "username") String username) throws DoesNotExistException {
+            @WebParam(name = "username") String username) throws DoesNotExistException, BeanValidationException {
         ReservationEntity reservationEntity = new PartnerReservationEntity(checkIn, checkOut);
         reservationSessionBean.reserveRoomsByRoomType(reservationEntity, roomTypeName, roomQuantity, username);
     }

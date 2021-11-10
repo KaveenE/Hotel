@@ -8,6 +8,8 @@ package ejb.session.stateless;
 import entity.RoomRateAbsEntity;
 import java.util.List;
 import javax.ejb.Remote;
+import javax.enterprise.deploy.spi.exceptions.BeanNotFoundException;
+import util.exception.BeanValidationException;
 import util.exception.DoesNotExistException;
 
 /**
@@ -19,9 +21,9 @@ public interface RoomRateSessionBeanRemote {
 
     public List<RoomRateAbsEntity> retrieveAllRoomRates();
 
-    public RoomRateAbsEntity createRoomRateWithExistingRoomType(RoomRateAbsEntity roomRate, Long roomTypeId) throws DoesNotExistException;
+    public RoomRateAbsEntity createRoomRateWithExistingRoomType(RoomRateAbsEntity roomRate, Long roomTypeId) throws DoesNotExistException, BeanValidationException;
 
-    public void updateRoomRate(RoomRateAbsEntity roomRate) throws DoesNotExistException;
+    public void updateRoomRate(RoomRateAbsEntity roomRate) throws DoesNotExistException, BeanValidationException;
 
     public void deleteRoomRateById(Long id) throws DoesNotExistException;
 

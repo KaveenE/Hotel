@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Set;
 import javax.ejb.Local;
 import util.exception.AlreadyExistsException;
+import util.exception.BeanValidationException;
 import util.exception.DoesNotExistException;
 import util.exception.InvalidLoginException;
 import util.exception.UnknownPersistenceException;
@@ -22,7 +23,7 @@ import util.exception.UnknownPersistenceException;
 @Local
 public interface PartnerSessionBeanLocal {
 
-    public PartnerEntity createNewPartner(PartnerEntity newPartnerEntity) throws AlreadyExistsException, UnknownPersistenceException;
+    public PartnerEntity createNewPartner(PartnerEntity newPartnerEntity) throws AlreadyExistsException, UnknownPersistenceException, BeanValidationException;
 
     public PartnerEntity partnerLogin(String username, String password) throws InvalidLoginException;
 
