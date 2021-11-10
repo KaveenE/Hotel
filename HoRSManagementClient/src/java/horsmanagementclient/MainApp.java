@@ -71,7 +71,7 @@ public class MainApp {
                         doLogin();
                         System.out.println("Login successful!\n");
 
-                        hotelOperationModule = new HotelOperationModule(roomSessionBean, roomRateSessionBean, roomTypeSessionBean);
+                        hotelOperationModule = new HotelOperationModule(roomSessionBean, roomRateSessionBean, roomTypeSessionBean, reservationSessionBean);
                         systemAdministrationModule = new SystemAdministrationModule(employeeSessionBean, partnerSessionBean);
                         frontOfficeModule = new FrontOfficeModule(roomSessionBean, roomTypeSessionBean, roomRateSessionBean, reservationSessionBean);
 
@@ -135,7 +135,6 @@ public class MainApp {
                     hotelOperationModule.menuHotelOperation();
                 } else if (response == 3) {
                     frontOfficeModule.menuFrontOffice();
-//                    System.out.println("not implemented yet!");
                 } else if (response == 4) {
                     break;
                 } else {

@@ -23,6 +23,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayDeque;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
@@ -246,6 +247,14 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
         }
 
         return rateTolengthOfRate.lastEntry();
+    }
+
+    public List<ReservationEntity> viewExceptionReport(LocalDate reportDate) {
+        Set<ReservationEntity> reservaionEntities = retrieveReservationByCheckIn(reportDate);
+        return reservaionEntities
+                .stream()
+                .filter(res -> res.getExceptionReport() != null)
+                .collect(Collectors.toList());
     }
 
     private boolean isBeforeInclusive(LocalDate checkIn, LocalDate checkOut) {

@@ -27,4 +27,6 @@ public interface ReservationSessionBeanRemote {
 
     public Set<ReservationEntity> retrieveReservationByCheckInAndGuest(LocalDate checkIn, String username) throws DoesNotExistException;
 
+    public List<ReservationEntity> viewExceptionReport(LocalDate reportDate);
+
 }

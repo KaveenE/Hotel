@@ -18,7 +18,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -35,7 +34,7 @@ public class ReservationEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long reservationId;
-    
+
     @Temporal(TemporalType.DATE)
     @Column(nullable = false)
     private Date checkInDate;
@@ -65,7 +64,7 @@ public class ReservationEntity implements Serializable {
         this(checkInDate, checkOutDate, null);
 
     }
-    
+
     public ReservationEntity(Date checkInDate, Date checkOutDate, BigDecimal priceOfStay) {
         this();
         this.checkInDate = checkInDate;
@@ -88,7 +87,7 @@ public class ReservationEntity implements Serializable {
         hash += (reservationId != null ? reservationId.hashCode() : 0);
         return hash;
     }
-    
+
     @Override
     public boolean equals(Object object) {
 
@@ -110,6 +109,10 @@ public class ReservationEntity implements Serializable {
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
         return String.format("%s of id %d with checkin date: %s and checkout date: %s was paid with %.2f",
                 ReservationEntity.class.getSimpleName(), this.getReservationId(), sdf.format(checkInDate), sdf.format(checkOutDate), priceOfStay);
+    }
+
+    public ExceptionReport getExceptionReport() {
+        return exceptionReport;
     }
 
     public Date getCheckInDate() {
@@ -162,9 +165,9 @@ public class ReservationEntity implements Serializable {
 
     public String getExceptionReport(boolean isHotel) {
         StringBuffer sb = new StringBuffer(exceptionReport.getExceptionType() + " ");
-        
-        if(isHotel) {
-           return sb.append(exceptionReport.getMessageToHotel()).toString();
+
+        if (isHotel) {
+            return sb.append(exceptionReport.getMessageToHotel()).toString();
         }
         return sb.append(exceptionReport.getMessageToGuest()).toString();
     }
