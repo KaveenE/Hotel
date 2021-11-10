@@ -108,7 +108,8 @@ public final class BossHelper implements Serializable {
         StringBuilder sb = new StringBuilder();
 
         if (!errors.isEmpty()) {
-            errors.forEach(error -> sb.append(String.format("In %s: %s\n", error.getRootBean().toString(), error.getMessage())));
+            errors.forEach(error -> sb.append(String.format("In %s.%s: input %s %s\n",
+                    error.getRootBeanClass(), error.getPropertyPath(), error.getInvalidValue(), error.getMessage())));
             throw new BeanValidationException(sb.toString());
         }
     }

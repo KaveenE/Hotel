@@ -58,7 +58,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
 
     private void createReservaton(Collection<ReservationEntity> reservations) throws BeanValidationException {
         BossHelper.throwValidationErrorsIfAny(reservations.iterator().next());
-        
+       
         reservations.forEach(reservation -> em.persist(reservation));
         em.flush();
     }
@@ -197,7 +197,6 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
 
     //helper method of reserveRoomsByRoomType, associates every reservation entity with a allocatable room
     private void associateToPotentialFreeRooms(Set<ReservationEntity> reservations, String roomTypeName) throws DoesNotExistException, BeanValidationException { 
-        BossHelper.throwValidationErrorsIfAny(reservations.iterator().next());
         Queue<ReservationEntity> reservationQueue = new ArrayDeque<>(reservations);
 
         ReservationEntity reservation = reservations.iterator().next();
