@@ -10,6 +10,9 @@ import java.text.SimpleDateFormat;
 import java.time.DateTimeException;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.validation.ConstraintViolationException;
 import javax.xml.datatype.DatatypeConfigurationException;
 import util.helper.BossHelper;
 import ws.client.BeanValidationException_Exception;
@@ -55,8 +58,12 @@ public class MainApp {
                 response = scanner.nextInt();
 
                 if (response == 1) {
-                    doLogin();
-                    mainMenu();
+                    try {
+                        doLogin();
+                        mainMenu();
+                    } catch (InvalidLoginException_Exception ex) {
+                        bufferScreenForUser(ex.getMessage());
+                    }
                 } else if (response == 2) {
                     partnerSearchRoom();
                 } else if (response == 3) {
@@ -72,7 +79,7 @@ public class MainApp {
         }
     }
 
-    public void doLogin() {
+    public void doLogin() throws InvalidLoginException_Exception {
         String username;
         String password;
 
@@ -83,11 +90,7 @@ public class MainApp {
         password = scanner.nextLine().trim();
 
         if (username.length() > 0 && password.length() > 0) {
-            try {
-                this.partnerEntity = partnerLogin(username, password);
-            } catch (InvalidLoginException_Exception ex) {
-                System.out.println("Invalid login credential: " + ex.getMessage() + "\n");
-            }
+            this.partnerEntity = partnerLogin(username, password);
         } else {
             System.out.println("Missing login credential!");
         }
@@ -186,7 +189,7 @@ public class MainApp {
 
         try {
             reserveRoomsByRoomType(checkIn, checkOut, bookingRoomType, bookingRoomTypeQuantity, partnerEntity.getUsername());
-        } catch (DatatypeConfigurationException | DoesNotExistException_Exception | BeanValidationException_Exception ex) {
+        } catch (DatatypeConfigurationException | DoesNotExistException_Exception | BeanValidationException_Exception | ConstraintViolationException ex) {
             bufferScreenForUser(ex.getMessage());
         }
     }

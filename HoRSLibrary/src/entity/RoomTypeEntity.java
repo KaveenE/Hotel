@@ -50,15 +50,15 @@ public class RoomTypeEntity implements Serializable, Comparable<RoomTypeEntity> 
     private Boolean isDisabled;
 
     @OneToMany(mappedBy = "roomTypeEntity", cascade = CascadeType.ALL)
-    @NotEmpty
+    @NotNull
     private Set<RoomRateAbsEntity> roomRateAbsEntities;
     
     @OneToMany(mappedBy = "roomTypeEntity", cascade = CascadeType.ALL)
-    @NotEmpty
+    @NotNull
     private Set<RoomEntity> roomEntities;
     
     @OneToMany(mappedBy = "roomTypeEntity", cascade = CascadeType.ALL)
-    @NotEmpty
+    @NotNull
     private Set<ReservationEntity> reservationEntities;
 
     public RoomTypeEntity() {

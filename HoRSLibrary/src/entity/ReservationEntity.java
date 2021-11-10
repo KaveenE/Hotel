@@ -42,13 +42,11 @@ public class ReservationEntity implements Serializable {
     @Temporal(TemporalType.DATE)
     @Column(nullable = false)
     @NotNull
-    @FutureOrPresent
     private Date checkInDate;
     
     @Temporal(TemporalType.DATE)
     @Column(nullable = false)
     @NotNull
-    @FutureOrPresent
     private Date checkOutDate;
     
     @Column(nullable = false, scale = 2, precision = 8)

@@ -195,7 +195,7 @@ public class MainApp {
 
                 if (response == 1) {
                     Map<String, Integer> roomTypeResults = guestSearchRoom();
-                    if (!roomTypeResults.isEmpty()) {
+                    if (roomTypeResults != null && !roomTypeResults.isEmpty()) {
                         reserveHotelRoom(roomTypeResults);
                     }
                 } else if (response == 2) {

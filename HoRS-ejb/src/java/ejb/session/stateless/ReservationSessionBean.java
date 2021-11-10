@@ -218,6 +218,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
         }
     }
 
+    //does not work for same check in and check out dates
     @Override
     public Boolean checkRoomSchedule(RoomEntity potentialFreeRoom, LocalDate checkIn, LocalDate checkOut) {
         return potentialFreeRoom.getReservationEntities()
