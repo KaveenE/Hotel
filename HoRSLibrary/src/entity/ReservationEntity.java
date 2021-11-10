@@ -21,6 +21,10 @@ import javax.persistence.InheritanceType;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.Digits;
+import javax.validation.constraints.FutureOrPresent;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 
 /**
  *
@@ -37,15 +41,27 @@ public class ReservationEntity implements Serializable {
 
     @Temporal(TemporalType.DATE)
     @Column(nullable = false)
+    @NotNull
+    @FutureOrPresent
     private Date checkInDate;
+    
     @Temporal(TemporalType.DATE)
     @Column(nullable = false)
+    @NotNull
+    @FutureOrPresent
     private Date checkOutDate;
+    
     @Column(nullable = false, scale = 2, precision = 8)
+    @Digits(integer = 8,fraction = 2)
+    @NotNull
+    @Positive
     private BigDecimal priceOfStay;
+    
     @Column(nullable = false)
+    @NotNull
     private Boolean online;
     @Column(nullable = false)
+    @NotNull
     private Boolean isAllocated;
     @Embedded
     private ExceptionReport exceptionReport;

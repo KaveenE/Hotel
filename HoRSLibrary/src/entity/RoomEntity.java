@@ -20,6 +20,10 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.UniqueConstraint;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import util.enumeration.RoomStatusEnum;
 import util.helper.BossHelper;
 
@@ -36,16 +40,24 @@ public class RoomEntity implements Serializable {
     private Long roomId;
 
     @Column(nullable = false, unique = true)
+    @NotNull
+    @Size(min = 4,max=4)
     private String floorUnitNo;
+    
     @Enumerated(EnumType.STRING)
+    @NotNull
     private RoomStatusEnum roomStatusEnum;
+    
     @Column(nullable = false)
+    @NotNull
     private Boolean isDisabled;
 
     @JoinColumn(nullable = false)
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @NotNull
     private RoomTypeEntity roomTypeEntity;
     @OneToMany(mappedBy = "roomEntity")
+    @NotEmpty
     private Set<ReservationEntity> reservationEntities;
 
     public RoomEntity() {

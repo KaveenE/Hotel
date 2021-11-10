@@ -17,6 +17,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import util.helper.BossHelper;
 
 /**
@@ -32,12 +36,19 @@ public class GuestEntity implements Serializable {
     private Long guestId;
     
     @Column(nullable = false, length = BossHelper.NAME_LENGTH, unique = true)
+    @Email
+    @NotNull
+    @Size(min = 5,max = BossHelper.NAME_LENGTH)
     private String emailAddress;
+    
     @Column(nullable = false, length = BossHelper.PASSWORD_LENGTH)
+    @NotNull
+    @Size(min = 5,max = BossHelper.PASSWORD_LENGTH)
     private String password;
     
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "GUEST_ENTITY_FK")
+    @NotEmpty
     private Set<GuestReservationEntity> guestReservationEntities;
     
     public GuestEntity() {

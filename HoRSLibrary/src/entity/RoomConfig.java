@@ -8,6 +8,9 @@ package entity;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.Size;
 
 import util.helper.BossHelper;
 
@@ -21,16 +24,31 @@ public class RoomConfig implements Comparable<RoomConfig>, Serializable {
     private static final long serialVersionUID = 1L;
 
     @Column(nullable = false)
+    @NotNull
+    @Positive
     private Integer ranking;
+    
     @Column(nullable = false, length = BossHelper.NAME_LENGTH, unique = true)
+    @NotNull
+    @Size(min = 5, max = BossHelper.NAME_LENGTH)
     private String name;
+    
     @Column(nullable = false)
+    @NotNull
     private String description;
+    
     @Column(nullable = false)
+    @NotNull
+    @Positive
     private Long mySize;
-    @Column(nullable = false, length = 25)
-    private String bed;
+    
     @Column(nullable = false)
+    @NotNull
+    private String bed;
+    
+    @Column(nullable = false)
+    @NotNull
+    @Positive
     private Integer capacity;
 
     public RoomConfig() {

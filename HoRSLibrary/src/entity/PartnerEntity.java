@@ -17,6 +17,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import util.helper.BossHelper;
 
 /**
@@ -30,13 +33,20 @@ public class PartnerEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long partnerId;
+    
     @Column(nullable = false, length = BossHelper.NAME_LENGTH, unique = true)
+    @NotNull
+    @Size(min = 5, max = BossHelper.NAME_LENGTH)
     private String username;
+    
     @Column(nullable = false, length = BossHelper.PASSWORD_LENGTH)
+    @NotNull
+    @Size(min = 5, max = BossHelper.PASSWORD_LENGTH)
     private String password;
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "PARTNER_ENTITY_FK")
+    @NotEmpty
     private Set<PartnerReservationEntity> partnerReservationEntities;
 
     public PartnerEntity() {

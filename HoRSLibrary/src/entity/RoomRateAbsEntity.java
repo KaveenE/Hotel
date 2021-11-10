@@ -22,7 +22,12 @@ import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
+import javax.validation.constraints.Digits;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
+import javax.validation.constraints.Size;
 import util.helper.BossHelper;
 
 /**
@@ -39,17 +44,24 @@ public abstract class RoomRateAbsEntity implements Serializable, Comparable<Room
     private Long roomRateId;
 
     @Column(nullable = false, length = BossHelper.NAME_LENGTH)
+    @NotNull
+    @Size(min =4 , max = BossHelper.NAME_LENGTH)
     private String name;
     @Column(nullable = false, scale = 2, precision = 8)
+    @Digits(fraction = 2,integer = 8)
+    @PositiveOrZero
     private BigDecimal ratePerNight;
     @Column(nullable = false)
+    @NotNull
     private Boolean isDisabled;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
+    @NotNull
     private RoomTypeEntity roomTypeEntity;
 
     @ManyToMany(cascade = {CascadeType.PERSIST,CascadeType.DETACH,CascadeType.MERGE,CascadeType.REFRESH})
+    @NotEmpty
     private Set<ReservationEntity> reservations;
 
     public RoomRateAbsEntity() {

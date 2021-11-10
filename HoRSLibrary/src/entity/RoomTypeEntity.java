@@ -20,6 +20,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import util.helper.BossHelper;
 
 /**
@@ -35,18 +37,24 @@ public class RoomTypeEntity implements Serializable, Comparable<RoomTypeEntity> 
     private Long roomTypeId;
 
     @Embedded
+    @NotNull
     private RoomConfig roomConfig;
     @ElementCollection
     @Column(nullable = false)
+    @NotNull
     private List<String> amenities;
     @Column(nullable = false)
+    @NotNull
     private Boolean isDisabled;
 
     @OneToMany(mappedBy = "roomTypeEntity", cascade = CascadeType.ALL)
+    @NotEmpty
     private Set<RoomRateAbsEntity> roomRateAbsEntities;
     @OneToMany(mappedBy = "roomTypeEntity", cascade = CascadeType.ALL)
+    @NotEmpty
     private Set<RoomEntity> roomEntities;
     @OneToMany(mappedBy = "roomTypeEntity", cascade = CascadeType.ALL)
+    @NotEmpty
     private Set<ReservationEntity> reservationEntities;
 
     public RoomTypeEntity() {

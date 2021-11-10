@@ -12,6 +12,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.FutureOrPresent;
+import javax.validation.constraints.NotNull;
 
 /**
  *
@@ -24,10 +26,14 @@ public class PeakRateEntity extends RoomRateAbsEntity implements Serializable {
 
     @Temporal(TemporalType.DATE)
     @Column(nullable = false)
+    @NotNull
+    @FutureOrPresent
     private Date validFrom;
 
     @Temporal(TemporalType.DATE)
     @Column(nullable = false)
+    @NotNull
+    @FutureOrPresent
     private Date validTo;
 
     public PeakRateEntity() {

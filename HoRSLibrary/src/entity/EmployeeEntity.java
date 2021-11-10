@@ -13,6 +13,9 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import util.enumeration.EmployeeRoleEnum;
 import util.helper.BossHelper;
 
@@ -27,11 +30,19 @@ public class EmployeeEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long employeeId;
+    
     @Enumerated(EnumType.STRING)
+    @NotNull
     private EmployeeRoleEnum employeeRoleEnum;
+    
     @Column(nullable = false, length = BossHelper.NAME_LENGTH, unique = true)
+    @NotNull
+    @Size(min = 5, max = BossHelper.NAME_LENGTH)
     private String username;
+    
     @Column(nullable = false, length = BossHelper.PASSWORD_LENGTH)
+    @NotNull
+    @Size(min = 5, max = BossHelper.PASSWORD_LENGTH)
     private String password;
 
     public Long getEmployeeId() {

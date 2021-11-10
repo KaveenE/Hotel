@@ -155,7 +155,7 @@ public class FrontOfficeModule {
             System.out.println("*** HoRS :: Hotel Administration Client :: Check-in Guest ***\n");
 
             System.out.print("Enter Reservation Id to Check-in> ");
-            reservationId = Long.parseLong(scanner.nextLine());
+            reservationId = scanner.nextLong();
             ReservationEntity reservationEntity = reservationSessionBean.retrieveReservationById(reservationId);
             if (!reservationEntity.getIsAllocated()) {
                 System.out.println("An exception occured during room allocation: " + reservationEntity.getExceptionReport(false));

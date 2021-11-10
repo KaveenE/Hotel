@@ -340,7 +340,7 @@ public class RoomTypeSessionBean implements RoomTypeSessionBeanRemote, RoomTypeS
                 .forEach(res -> res.setExceptionReport(new ExceptionReport(
                 2,
                 "Exception 2 occured. No rooms available for " + res.getRoomTypeEntity().getName() + "!",
-                "Exception 1 occurred. You don't any room :)")
+                "You don't get any room :)")
         ));
 
     }
