@@ -10,11 +10,14 @@ import ejb.session.stateless.RoomRateSessionBeanRemote;
 import ejb.session.stateless.RoomSessionBeanRemote;
 import ejb.session.stateless.RoomTypeSessionBeanRemote;
 import entity.ReservationEntity;
+import entity.RoomEntity;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Date;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import util.exception.BeanValidationException;
 import util.exception.DoesNotExistException;
 import util.helper.BossHelper;
@@ -163,13 +166,29 @@ public class FrontOfficeModule {
                 System.out.printf("%15s%15s%20s\n", reservationEntity.getReservationId().toString(), reservationEntity.getRoomTypeEntity().getName(), reservationEntity.getRoomEntity().getFloorUnitNo());
             }
 
+            System.out.printf("Reservation %s checked-in successfully!\n", reservationEntity.getReservationId());
+
         } catch (DoesNotExistException ex) {
             bufferScreenForUser("An error has occurred while retrieving Reservation details" + ex.getMessage() + "\n");
         }
     }
 
-    //TODO
     public void checkOutGuest() {
+        try {
+            Long reservationId;
+            System.out.println("*** HoRS :: Hotel Administration Client :: Check-out Guest ***\n");
+
+            System.out.print("Enter Reservation Id to Check-out> ");
+            reservationId = scanner.nextLong();
+
+            ReservationEntity reservationEntity = reservationSessionBean.retrieveReservationById(reservationId);
+            RoomEntity roomEntity = reservationEntity.getRoomEntity();
+            roomEntity.disassociateReservationEntities(reservationEntity);
+
+            System.out.printf("Reservation %s checked-out successfully!\n", reservationEntity.getReservationId());
+        } catch (DoesNotExistException ex) {
+            bufferScreenForUser(ex.getMessage());
+        }
 
     }
 

@@ -39,13 +39,13 @@ public class RoomEntity implements Serializable {
 
     @Column(nullable = false, unique = true)
     @NotNull
-    @Size(min = 4,max=4)
+    @Size(min = 4, max = 4)
     private String floorUnitNo;
-    
+
     @Enumerated(EnumType.STRING)
     @NotNull
     private RoomStatusEnum roomStatusEnum;
-    
+
     @Column(nullable = false)
     @NotNull
     private Boolean isDisabled;
@@ -54,7 +54,7 @@ public class RoomEntity implements Serializable {
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @NotNull
     private RoomTypeEntity roomTypeEntity;
-    
+
     @OneToMany(mappedBy = "roomEntity")
     @NotNull
     private Set<ReservationEntity> reservationEntities;
@@ -141,9 +141,8 @@ public class RoomEntity implements Serializable {
         this.disassociateReservationEntities(reservationEntitySet);
     }
 
-    //RoomEntity is compulsory for ReservationEntity, we may not have to disassociate as the only relevant delete UC is delete room where we can mark as disabled if not "used" or remove instead
     public void disassociateReservationEntities(Collection<ReservationEntity> reservationEntities) {
-        //reservationEntities.forEach(reservationEntity -> reservationEntity.setRoomEntity(null));
+        reservationEntities.forEach(reservationEntity -> reservationEntity.setRoomEntity(null));
         if (reservationEntities != this.reservationEntities) {
             this.reservationEntities.removeAll(reservationEntities);
         } else {
