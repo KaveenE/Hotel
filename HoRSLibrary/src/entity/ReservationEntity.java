@@ -22,6 +22,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.Digits;
+import javax.validation.constraints.Future;
 import javax.validation.constraints.FutureOrPresent;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
@@ -42,11 +43,13 @@ public class ReservationEntity implements Serializable {
     @Temporal(TemporalType.DATE)
     @Column(nullable = false)
     @NotNull
+    @FutureOrPresent
     private Date checkInDate;
     
     @Temporal(TemporalType.DATE)
     @Column(nullable = false)
     @NotNull
+    @Future
     private Date checkOutDate;
     
     @Column(nullable = false, scale = 2, precision = 8)
