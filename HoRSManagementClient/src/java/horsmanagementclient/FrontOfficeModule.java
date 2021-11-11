@@ -181,11 +181,9 @@ public class FrontOfficeModule {
             System.out.print("Enter Reservation Id to Check-out> ");
             reservationId = scanner.nextLong();
 
-            ReservationEntity reservationEntity = reservationSessionBean.retrieveReservationById(reservationId);
-            RoomEntity roomEntity = reservationEntity.getRoomEntity();
-            roomEntity.disassociateReservationEntities(reservationEntity);
+            reservationSessionBean.checkOut(reservationId);
 
-            System.out.printf("Reservation %s checked-out successfully!\n", reservationEntity.getReservationId());
+            System.out.printf("Reservation %s checked-out successfully!\n", reservationId);
         } catch (DoesNotExistException ex) {
             bufferScreenForUser(ex.getMessage());
         }

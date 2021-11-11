@@ -46,7 +46,7 @@ import util.helper.BossHelper;
  */
 @Stateless
 public class ReservationSessionBean implements ReservationSessionBeanRemote, ReservationSessionBeanLocal {
-    
+
     @EJB
     private PartnerSessionBeanLocal partnerSessionBean;
     @EJB
@@ -55,21 +55,21 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
     private RoomTypeSessionBeanLocal roomTypeSessionBean;
     @PersistenceContext(unitName = "HoRS-ejbPU")
     private EntityManager em;
-    
+
     private void createReservaton(Collection<ReservationEntity> reservations) throws BeanValidationException {
         BossHelper.throwValidationErrorsIfAny(reservations.iterator().next());
-        
+
         reservations.forEach(reservation -> em.persist(reservation));
         em.flush();
     }
-    
+
     @Override
     public ReservationEntity retrieveReservationById(Long resId) throws DoesNotExistException {
         ReservationEntity reservationEntity = em.find(ReservationEntity.class, resId);
         reservationEntity = BossHelper.requireNonNull(reservationEntity, new ReservationDoesNotExistException());
         reservationEntity.getRoomTypeEntity().getRoomConfig();
         reservationEntity.getRoomEntity();
-        
+
         return reservationEntity;
     }
 
@@ -87,7 +87,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
     @Override
     public Set<ReservationEntity> retrieveReservationByCheckInAndGuest(LocalDate checkIn, String username) throws DoesNotExistException {
         Set<ReservationEntity> allReservationsByGuest = guestSessionBean.retrieveAllReservationsByGuest(username);
-        
+
         return allReservationsByGuest.stream()
                 .filter(res -> BossHelper.dateToLocalDate(res.getCheckInDate())
                 .equals(checkIn))
@@ -97,9 +97,9 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
     //overloaded method to facilitate room reservations for walk in only
     @Override
     public void walkInReserveRoomsByRoomType(ReservationEntity reservation, String roomTypeName, Long roomQuantity) throws DoesNotExistException, BeanValidationException {
-        
+
         this.reserveRoomsByRoomType(reservation, roomTypeName, roomQuantity, null);
-        
+
     }
 
     //creates and associates reservations with room rate, room type and rooms
@@ -107,7 +107,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
     public void reserveRoomsByRoomType(ReservationEntity reservation, String roomTypeName, Long roomQuantity, String username) throws DoesNotExistException, BeanValidationException {
         boolean walkIn = !reservation.getOnline();
         Stream<ReservationEntity> reservationStream;
-        
+
         if (reservation instanceof GuestReservationEntity) {
             reservationStream = Stream.generate(() -> new GuestReservationEntity(reservation.getCheckInDate(), reservation.getCheckOutDate()));
         } else if (reservation instanceof PartnerReservationEntity) {
@@ -115,10 +115,10 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
         } else {
             reservationStream = Stream.generate(() -> new ReservationEntity(reservation.getCheckInDate(), reservation.getCheckOutDate()));
         }
-        
+
         Set<ReservationEntity> reservations = reservationStream.limit(roomQuantity)
                 .collect(Collectors.toSet());
-        
+
         ReservationEntity validateReservation = reservations.iterator().next();
         BossHelper.throwValidationErrorsIfAny(validateReservation);
 
@@ -131,7 +131,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
 
         //Associate Rooms
         associateToPotentialFreeRooms(reservations, roomTypeName);
-        
+
         if (!walkIn) {
             if (reservation instanceof GuestReservationEntity) {
                 GuestEntity guestEntity = guestSessionBean.retrieveGuestByUsername(username);
@@ -154,9 +154,9 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
                 roomTypeSessionBean.allocateRoomsToFutureReservations(checkInDateTime.toLocalDate());
             }
         }
-        
+
         this.createReservaton(reservations);
-        
+
     }
 
     //helper method of reserveRoomsByRoomType, sets the price for price of stay and associates reservation with room rate
@@ -165,49 +165,49 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
         LocalDate checkIn = BossHelper.dateToLocalDate(reservation.getCheckInDate());
         LocalDate checkOut = BossHelper.dateToLocalDate(reservation.getCheckOutDate());
         BigDecimal priceOfStay = BigDecimal.ZERO;
-        
+
         if (walkIn) {
             RoomRateAbsEntity publishedRate = roomTypeToReserve.getPublishedRate()
                     .orElseThrow(() -> new RoomRateDoesNotExistException("Published rate is not linked with RoomType, " + roomTypeToReserve.getName()));
             publishedRate.associateReservations(reservations);
-            
+
             priceOfStay = publishedRate.getRatePerNight()
                     .multiply(BigDecimal.valueOf(ChronoUnit.DAYS.between(checkIn, checkOut) + 1));
         } else {
-            
+
             LocalDate counterCheckIn = checkIn;
             Map.Entry<RoomRateAbsEntity, Long> rateToLengthOfRate;
-            
+
             while (isBeforeInclusive(counterCheckIn, checkOut)) {
                 rateToLengthOfRate = getPriceRateForNight(counterCheckIn, checkOut, roomTypeToReserve);
                 counterCheckIn = counterCheckIn.plusDays(rateToLengthOfRate.getValue());
-                
+
                 rateToLengthOfRate.getKey().associateReservations(reservations);
-                
+
                 priceOfStay = priceOfStay.add(rateToLengthOfRate.getKey().getRatePerNight()
                         .multiply(BigDecimal.valueOf(rateToLengthOfRate.getValue()))
                 );
             }
-            
+
         }
-        
+
         for (ReservationEntity re : reservations) {
             re.setPriceOfStay(priceOfStay);
         }
-        
+
     }
 
     //helper method of reserveRoomsByRoomType, associates every reservation entity with a allocatable room
-    private void associateToPotentialFreeRooms(Set<ReservationEntity> reservations, String roomTypeName) throws DoesNotExistException {        
+    private void associateToPotentialFreeRooms(Set<ReservationEntity> reservations, String roomTypeName) throws DoesNotExistException {
         Queue<ReservationEntity> reservationQueue = new ArrayDeque<>(reservations);
-        
+
         ReservationEntity reservation = reservations.iterator().next();
         LocalDate checkIn = BossHelper.dateToLocalDate(reservation.getCheckInDate());
         LocalDate checkOut = BossHelper.dateToLocalDate(reservation.getCheckOutDate());
-        
+
         RoomTypeEntity selectedRoomType = roomTypeSessionBean.retrieveRoomTypeByName(roomTypeName);
         Set<RoomEntity> availableAndEnabledRooms = roomTypeSessionBean.getAvailableAndEnabledRoomsByRoomType(selectedRoomType);
-        
+
         boolean free;
         for (RoomEntity potentialFreeRoom : availableAndEnabledRooms) {
             //Room is not free if any of its RLE coincides with guest's period of stay
@@ -215,7 +215,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
             if (free && !reservationQueue.isEmpty()) {
                 potentialFreeRoom.associateReservationEntities(reservationQueue.poll());
             }
-            
+
         }
     }
 
@@ -226,42 +226,42 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
                 .stream()
                 .allMatch(res -> isBeforeInclusive(res.getCheckOutDate(), checkIn) || isAfterInclusive(res.getCheckInDate(), checkOut));
     }
-    
+
     private Map.Entry<RoomRateAbsEntity, Long> getPriceRateForNight(LocalDate currentDateInHotel, LocalDate checkOut, RoomTypeEntity roomTypeToReserve) {
         PromoRateEntity promoRate;
         PeakRateEntity peakRate;
         LocalDate validFrom, validTo;
         TreeMap<RoomRateAbsEntity, Long> rateTolengthOfRate = new TreeMap<>();
-        
+
         for (RoomRateAbsEntity roomRate : roomTypeToReserve.getRoomRateAbsEntities()) {
-            
+
             if (roomRate instanceof PromoRateEntity && !roomRate.getIsDisabled()) {
                 promoRate = (PromoRateEntity) roomRate;
                 validFrom = BossHelper.dateToLocalDate(promoRate.getValidFrom());
                 validTo = BossHelper.dateToLocalDate(promoRate.getValidTo());
-                
+
                 if (isBeforeInclusive(currentDateInHotel, validTo) && isAfterInclusive(currentDateInHotel, validFrom)) {
                     rateTolengthOfRate.put(roomRate, 1L);
                     break;
                 }
-                
+
             } else if (roomRate instanceof PeakRateEntity && !roomRate.getIsDisabled()) {
                 peakRate = (PeakRateEntity) roomRate;
                 validFrom = BossHelper.dateToLocalDate(peakRate.getValidFrom());
                 validTo = BossHelper.dateToLocalDate(peakRate.getValidTo());
-                
+
                 if (isBeforeInclusive(currentDateInHotel, validTo) && isAfterInclusive(currentDateInHotel, validFrom)) {
                     rateTolengthOfRate.put(roomRate, 1L);
                 }
-                
+
             } else if (roomRate instanceof NormalRateEntity) {
                 rateTolengthOfRate.put(roomRate, 1L);
             }
         }
-        
+
         return rateTolengthOfRate.lastEntry();
     }
-    
+
     public List<ReservationEntity> viewExceptionReport(LocalDate reportDate) {
         Set<ReservationEntity> reservaionEntities = retrieveReservationByCheckIn(reportDate);
         return reservaionEntities
@@ -269,21 +269,28 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
                 .filter(res -> res.getExceptionReport() != null)
                 .collect(Collectors.toList());
     }
-    
+
+    @Override
+    public void checkOut(Long resId) throws DoesNotExistException {
+        ReservationEntity reservationEntity = retrieveReservationById(resId);
+        RoomEntity roomEntity = reservationEntity.getRoomEntity();
+        roomEntity.disassociateReservationEntities(reservationEntity);
+    }
+
     private boolean isBeforeInclusive(LocalDate checkIn, LocalDate checkOut) {
         return checkIn.compareTo(checkOut) <= 0;
     }
-    
+
     private boolean isAfterInclusive(LocalDate checkIn, LocalDate checkOut) {
         return checkIn.compareTo(checkOut) >= 0;
     }
-    
+
     private boolean isBeforeInclusive(Date basisDate, LocalDate otherDate) {
         return BossHelper.dateToLocalDate(basisDate).compareTo(otherDate) <= 0;
     }
-    
+
     private boolean isAfterInclusive(Date basisDate, LocalDate otherDate) {
         return BossHelper.dateToLocalDate(basisDate).compareTo(otherDate) >= 0;
     }
-    
+
 }

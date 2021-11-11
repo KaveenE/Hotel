@@ -30,4 +30,6 @@ public interface ReservationSessionBeanRemote {
 
     public List<ReservationEntity> viewExceptionReport(LocalDate reportDate);
 
+    public void checkOut(Long resId) throws DoesNotExistException;
+
 }
