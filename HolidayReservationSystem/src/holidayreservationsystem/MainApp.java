@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import javax.validation.ConstraintViolationException;
+//import javax.validation.ConstraintViolationException;
 import javax.xml.datatype.DatatypeConfigurationException;
 import util.helper.BossHelper;
 import ws.client.BeanValidationException_Exception;
@@ -120,7 +120,7 @@ public class MainApp {
                 return availableRoomsForRoomType;
             }
             for (Pair entry : availableRoomsForRoomType) {
-                System.out.printf("%12s rooms available: %12s\n", entry.getFirst(), entry.getSecond());
+                System.out.printf("%35s rooms available: %12s\n", entry.getFirst(), entry.getSecond());
             }
             bufferScreenForUser();
 
@@ -195,7 +195,7 @@ public class MainApp {
 
         try {
             reserveRoomsByRoomType(checkIn, checkOut, bookingRoomType, bookingRoomTypeQuantity, partnerEntity.getUsername());
-        } catch (DatatypeConfigurationException | DoesNotExistException_Exception | BeanValidationException_Exception | ConstraintViolationException ex) {
+        } catch (DatatypeConfigurationException | DoesNotExistException_Exception | BeanValidationException_Exception ex) {
             bufferScreenForUser(ex.getMessage());
         }
     }

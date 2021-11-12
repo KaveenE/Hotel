@@ -330,10 +330,10 @@ public class HotelOperationModule {
         System.out.println("*** HoRS :: Hotel Operation Module :: View All Room Type ***\n");
 
         List<RoomTypeEntity> roomTypes = roomTypeSessionBean.retrieveAllRoomTypes();
-        System.out.printf("%12s%20s%70s%6s%50s%10s%60s%10s\n", "Room Type Id", "Name", "Description", "Size", "Bed", "Capacity", "Amenities", "Disabled");
+        System.out.printf("%12s%35s%70s%6s%50s%10s%60s%10s\n", "Room Type Id", "Name", "Description", "Size", "Bed", "Capacity", "Amenities", "Disabled");
 
         for (RoomTypeEntity roomType : roomTypes) {
-            System.out.printf("%12s%20s%70s%6s%50s%10s%60s%10s\n", roomType.getRoomTypeId().toString(), roomType.getName(), roomType.getDescription(), roomType.getMySize(), roomType.getBed(), roomType.getCapacity(), roomType.getAmenities(), roomType.getIsDisabled());
+            System.out.printf("%12s%35s%70s%6s%50s%10s%60s%10s\n", roomType.getRoomTypeId().toString(), roomType.getName(), roomType.getDescription(), roomType.getMySize(), roomType.getBed(), roomType.getCapacity(), roomType.getAmenities(), roomType.getIsDisabled());
         }
 
         bufferScreenForUser();
@@ -415,9 +415,9 @@ public class HotelOperationModule {
         System.out.println("*** HoRS :: Hotel Operation Module :: View All Rooms ***\n");
 
         List<RoomEntity> rooms = roomSessionBean.retrieveAllRooms();
-        System.out.printf("%12s%12s%20s%20s\n", "Room Number", "Room Status", "Room Type", "Room Reservation Id");
+        System.out.printf("%12s%12s%35s\n", "Room Number", "Room Status", "Room Type");
         for (RoomEntity room : rooms) {
-            System.out.printf("%12s%12s%20s\n", room.getFloorUnitNo(), room.getRoomStatusEnum(),
+            System.out.printf("%12s%12s%35s\n", room.getFloorUnitNo(), room.getRoomStatusEnum(),
                     room.getRoomTypeEntity().getName());
         }
         bufferScreenForUser();
@@ -561,23 +561,23 @@ public class HotelOperationModule {
         List<RoomRateAbsEntity> roomRates = roomRateSessionBean.retrieveAllRoomRates();
 
         for (RoomRateAbsEntity roomRate : roomRates) {
-            System.out.printf("%12s%40s%16s%10s%15s%14s%14s\n", "Room Rate Id", "Name", "Rate Per Night", "Disabled", "Room Type", "Start Date", "End Date");
+            System.out.printf("%12s%60s%16s%10s%35s%14s%14s\n", "Room Rate Id", "Name", "Rate Per Night", "Disabled", "Room Type", "Start Date", "End Date");
             if (roomRate instanceof PromoRateEntity) {
                 PromoRateEntity promoRate = (PromoRateEntity) roomRate;
-                System.out.printf("%12s%40s%16s%10s%15s%14s%14s\n", roomRate.getRoomRateId().toString(), roomRate.getName(),
+                System.out.printf("%12s%60s%16s%10s%35s%14s%14s\n", roomRate.getRoomRateId().toString(), roomRate.getName(),
                         roomRate.getRatePerNight().toString(), roomRate.getIsDisabled(), roomRate.getRoomTypeEntity().getName(),
                         sdf.format(promoRate.getValidFrom()), sdf.format(promoRate.getValidTo()));
             } else if (roomRate instanceof PeakRateEntity) {
                 PeakRateEntity peakRate = (PeakRateEntity) roomRate;
-                System.out.printf("%12s%40s%16s%10s%15s%14s%14s\n", roomRate.getRoomRateId().toString(), roomRate.getName(),
+                System.out.printf("%12s%60s%16s%10s%35s%14s%14s\n", roomRate.getRoomRateId().toString(), roomRate.getName(),
                         roomRate.getRatePerNight().toString(), roomRate.getIsDisabled(), roomRate.getRoomTypeEntity().getName(),
                         sdf.format(peakRate.getValidFrom()), sdf.format(peakRate.getValidTo()));
             } else if (roomRate instanceof NormalRateEntity) {
-                System.out.printf("%12s%40s%16s%10s%15s%14s%14s\n", roomRate.getRoomRateId().toString(), roomRate.getName(),
+                System.out.printf("%12s%60s%16s%10s%35s%14s%14s\n", roomRate.getRoomRateId().toString(), roomRate.getName(),
                         roomRate.getRatePerNight().toString(), roomRate.getIsDisabled(), roomRate.getRoomTypeEntity().getName(),
                         "NA", "NA");
             } else if (roomRate instanceof PublishedRateEntity) {
-                System.out.printf("%12s%40s%16s%10s%15s%14s%14s\n", roomRate.getRoomRateId().toString(), roomRate.getName(),
+                System.out.printf("%12s%60s%16s%10s%35s%14s%14s\n", roomRate.getRoomRateId().toString(), roomRate.getName(),
                         roomRate.getRatePerNight().toString(), roomRate.getIsDisabled(), roomRate.getRoomTypeEntity().getName(),
                         "NA", "NA");
             }

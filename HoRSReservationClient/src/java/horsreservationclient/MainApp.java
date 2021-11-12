@@ -175,7 +175,7 @@ public class MainApp {
             }
 
             for (Map.Entry<String, Integer> entry : availableRoomsForRoomType.entrySet()) {
-                System.out.printf("%12s rooms available: %12s\n", entry.getKey(), entry.getValue());
+                System.out.printf("%35s rooms available: %12s\n", entry.getKey(), entry.getValue());
             }
 
             bufferScreenForUser();
@@ -259,18 +259,20 @@ public class MainApp {
 
     public void viewMyReservationDetails() {
         Long reservationId;
-        System.out.println("*** HoRS :: Hotel Reservation Client :: View Reservation Detail ***\n");
+        System.out.println("*** HoRS :: Hotel Reservation Client ::Reservation View Reservation Detail ***\n");
 
         System.out.print("Enter Reservation Id to View> ");
         reservationId = scanner.nextLong();
         try {
             ReservationEntity reservationEntity = guestSessionBean.retrieveReservationsByGuest(guestEntity.getEmailAddress(), reservationId);
             System.out.printf("%20s%20s%20s%20s%20s\n", "Reservation Id", "Check-In Date", "Check-Out Date", "Price of Stay", "Remarks");
-            System.out.printf("%20s%20s%20s%20s",
+            System.out.printf("%20s%20s%20s%20s\n",
                     reservationEntity.getReservationId(), BossHelper.dateToLocalDate(reservationEntity.getCheckInDate()),
                     BossHelper.dateToLocalDate(reservationEntity.getCheckOutDate()), reservationEntity.getPriceOfStay());
-            if (!reservationEntity.getIsAllocated()) {
+            if (reservationEntity.getExceptionReport() != null) {
                 System.out.println(reservationEntity.getExceptionReport(false));
+            } else {
+                System.out.println("-nil-");
             }
 
         } catch (DoesNotExistException ex) {

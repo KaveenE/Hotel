@@ -178,7 +178,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
             publishedRate.associateReservations(reservations);
 
             priceOfStay = publishedRate.getRatePerNight()
-                    .multiply(BigDecimal.valueOf(ChronoUnit.DAYS.between(checkIn, checkOut) + 1));
+                    .multiply(BigDecimal.valueOf(ChronoUnit.DAYS.between(checkIn, checkOut)));
         } else {
 
             LocalDate counterCheckIn = checkIn;

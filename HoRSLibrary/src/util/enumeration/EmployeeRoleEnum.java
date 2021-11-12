@@ -7,7 +7,7 @@ package util.enumeration;
 
 /**
  *
- * @author enkav
+ * @author PP42
  */
 public enum EmployeeRoleEnum {
     SYSTEM_OPERATOR,

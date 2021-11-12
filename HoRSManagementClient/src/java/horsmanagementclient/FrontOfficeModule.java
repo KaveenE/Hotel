@@ -10,14 +10,11 @@ import ejb.session.stateless.RoomRateSessionBeanRemote;
 import ejb.session.stateless.RoomSessionBeanRemote;
 import ejb.session.stateless.RoomTypeSessionBeanRemote;
 import entity.ReservationEntity;
-import entity.RoomEntity;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Date;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import util.exception.BeanValidationException;
 import util.exception.DoesNotExistException;
 import util.helper.BossHelper;
@@ -77,8 +74,7 @@ public class FrontOfficeModule {
                 } else if (response == 3) {
                     checkInGuest();
                 } else if (response == 4) {
-//                    checkOutGuest();
-                    System.out.println("not implemented yet!");
+                    checkOutGuest();
                 } else if (response == 5) {
                     break;
                 } else {
@@ -110,7 +106,7 @@ public class FrontOfficeModule {
             }
 
             for (Map.Entry<String, Integer> entry : availableRoomsForRoomType.entrySet()) {
-                System.out.printf("%12s rooms available: %12s\n", entry.getKey(), entry.getValue());
+                System.out.printf("%35s rooms available: %12s\n", entry.getKey(), entry.getValue());
             }
 
             bufferScreenForUser();
@@ -162,8 +158,8 @@ public class FrontOfficeModule {
             if (!reservationEntity.getIsAllocated()) {
                 System.out.println("An exception occured during room allocation: " + reservationEntity.getExceptionReport(false));
             } else {
-                System.out.printf("%15s%15s%20s\n", "Reservation Id", "Room Type", "Allocated Room");
-                System.out.printf("%15s%15s%20s\n", reservationEntity.getReservationId().toString(), reservationEntity.getRoomTypeEntity().getName(), reservationEntity.getRoomEntity().getFloorUnitNo());
+                System.out.printf("%15s%35s%20s\n", "Reservation Id", "Room Type", "Allocated Room");
+                System.out.printf("%15s%35s%20s\n", reservationEntity.getReservationId().toString(), reservationEntity.getRoomTypeEntity().getName(), reservationEntity.getRoomEntity().getFloorUnitNo());
             }
 
             System.out.printf("Reservation %s checked-in successfully!\n", reservationEntity.getReservationId());
