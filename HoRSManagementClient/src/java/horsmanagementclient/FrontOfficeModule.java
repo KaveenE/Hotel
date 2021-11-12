@@ -54,7 +54,7 @@ public class FrontOfficeModule {
     }
 
     public void menuFrontOffice() throws InvalidAccessRightException {
-        if (employeeEntity.getEmployeeRoleEnum() != EmployeeRoleEnum.GUEST_RELATION_OFFICER || employeeEntity.getEmployeeRoleEnum() != EmployeeRoleEnum.SYSTEM_ADMINISTRATOR) {
+        if (employeeEntity.getEmployeeRoleEnum() != EmployeeRoleEnum.GUEST_RELATION_OFFICER && employeeEntity.getEmployeeRoleEnum() != EmployeeRoleEnum.SYSTEM_ADMINISTRATOR) {
             throw new InvalidAccessRightException("You don't have GUEST RELATION OFFICER rights to access the system administration module.");
         }
         

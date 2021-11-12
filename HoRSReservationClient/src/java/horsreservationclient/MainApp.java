@@ -270,7 +270,7 @@ public class MainApp {
             if (reservationEntity.getExceptionReport() != null) {
                 System.out.println(reservationEntity.getExceptionReport(false));
             } else {
-                System.out.println("-nil-");
+                System.out.printf("%20s\n", "-nil-");
             }
 
         } catch (DoesNotExistException ex) {

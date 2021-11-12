@@ -181,7 +181,7 @@ public class HotelOperationModule {
         newRoomType.setName(scanner.nextLine());
         System.out.print("Enter Ranking (1 - [highest rank+1])> ");
         Integer inputRanking = scanner.nextInt();
-        if (!(inputRanking > 0 && inputRanking <= roomTypes.size()+1)) {
+        if (!(inputRanking > 0 && inputRanking <= roomTypes.size() + 1)) {
             bufferScreenForUser("Invalid Ranking!");
             return;
         }
@@ -314,12 +314,14 @@ public class HotelOperationModule {
 
         System.out.print("Enter Room Rank (1 - [highest rank+1]) (blank if no change)> ");
         input = scanner.nextLine();
-        Integer inputRanking = Integer.valueOf(input);
-        if (input.length() != 0 && inputRanking > 0 && inputRanking <= roomTypes.size()+1) {
-            roomType.setRanking(Integer.valueOf(input));
-        } else {
-            bufferScreenForUser("Invalid Ranking!");
-            return;
+
+        if (input.length() > 0) {
+            if (Integer.valueOf(input) > 0 && Integer.valueOf(input) <= roomTypes.size() + 1) {
+                roomType.setRanking(Integer.valueOf(input));
+            } else {
+                bufferScreenForUser("Invalid Ranking!");
+                return;
+            }
         }
 
         try {
@@ -469,10 +471,11 @@ public class HotelOperationModule {
             date = sdf.parse(scanner.nextLine());
 
             List<ReservationEntity> reservationEntities = reservationSessionBean.viewExceptionReport(BossHelper.dateToLocalDate(date));
-            System.out.printf("%15s%30s\n", "Reservation Id", "Message");
+            System.out.printf("%15s%80s\n", "Reservation Id", "Message");
             for (ReservationEntity reservationEntity : reservationEntities) {
-                System.out.printf("%15s%60s\n", reservationEntity.getReservationId().toString(), reservationEntity.getExceptionReport(true));
+                System.out.printf("%15s%80s\n", reservationEntity.getReservationId().toString(), reservationEntity.getExceptionReport(true));
             }
+            bufferScreenForUser();
         } catch (ParseException ex) {
             bufferScreenForUser("Invalid Date Format entered!" + "\n");
         }
@@ -736,7 +739,7 @@ public class HotelOperationModule {
     }
 
     private void checkSalesManagerRights() throws InvalidAccessRightException {
-        if (employeeEntity.getEmployeeRoleEnum() != EmployeeRoleEnum.SALES_MANAGER  /*&& employeeEntity.getEmployeeRoleEnum() != EmployeeRoleEnum.SYSTEM_ADMINISTRATOR*/) {
+        if (employeeEntity.getEmployeeRoleEnum() != EmployeeRoleEnum.SALES_MANAGER /*&& employeeEntity.getEmployeeRoleEnum() != EmployeeRoleEnum.SYSTEM_ADMINISTRATOR*/) {
             throw new InvalidAccessRightException("You don't have SALES MANAGER rights to access the system administration module.");
         }
     }
