@@ -105,6 +105,9 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
     //creates and associates reservations with room rate, room type and rooms
     @Override
     public void reserveRoomsByRoomType(ReservationEntity reservation, String roomTypeName, Long roomQuantity, String username) throws DoesNotExistException, BeanValidationException {
+        if (BossHelper.dateToLocalDate(reservation.getCheckInDate()).isBefore(LocalDate.now())) {
+            throw new BeanValidationException("Check-in is in the past!");
+        }
         boolean walkIn = !reservation.getOnline();
         Stream<ReservationEntity> reservationStream;
 
@@ -119,9 +122,13 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
         Set<ReservationEntity> reservations = reservationStream.limit(roomQuantity)
                 .collect(Collectors.toSet());
 
-        ReservationEntity validateReservation = reservations.iterator().next();
-        BossHelper.throwValidationErrorsIfAny(validateReservation);
-
+//        //to circumvent @FutureOrPresent checking for the very instant 
+//        ReservationEntity validateReservation = reservations.iterator().next();
+//        LocalDateTime dateTimeWithoutSec = BossHelper.dateToLocalDateTime(validateReservation.getCheckInDate());
+//        dateTimeWithoutSec = dateTimeWithoutSec.plusSeconds(30);
+//        validateReservation.setCheckInDate(BossHelper.localDateTimeToDate(dateTimeWithoutSec));
+//        BossHelper.throwValidationErrorsIfAny(validateReservation);
+//        validateReservation.setCheckInDate(reservation.getCheckInDate());
         //Associate RT
         RoomTypeEntity roomTypeToReserve = roomTypeSessionBean.retrieveRoomTypeByName(roomTypeName);
         roomTypeToReserve.associateReservationEntity(reservations);
@@ -146,17 +153,16 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
                                 .map(res -> (PartnerReservationEntity) res)
                                 .collect(Collectors.toSet()));
             }
-
-            //Incase customer books after 2, we have to manually allocate by using the allocateToFutureReservations
-            //but passing in current time
-            LocalDateTime checkInDateTime = BossHelper.dateToLocalDateTime(reservation.getCheckInDate());
-            if (checkInDateTime.toLocalDate().equals(LocalDate.now()) && checkInDateTime.getHour() > 2) {
-                roomTypeSessionBean.allocateRoomsToFutureReservations(checkInDateTime.toLocalDate());
-            }
         }
 
         this.createReservaton(reservations);
-
+        
+        //Incase customer books after 2, we have to manually allocate by using the allocateToFutureReservations
+        //but passing in current time
+        LocalDateTime checkInDateTime = BossHelper.dateToLocalDateTime(reservation.getCheckInDate());
+        if (checkInDateTime.toLocalDate().equals(LocalDate.now()) && checkInDateTime.getHour() > 2) {
+            roomTypeSessionBean.allocateRoomsToFutureReservations(checkInDateTime.toLocalDate());
+        }
     }
 
     //helper method of reserveRoomsByRoomType, sets the price for price of stay and associates reservation with room rate

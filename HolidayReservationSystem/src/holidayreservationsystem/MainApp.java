@@ -8,10 +8,10 @@ package holidayreservationsystem;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.DateTimeException;
+import java.time.LocalDateTime;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.validation.ConstraintViolationException;
 import javax.xml.datatype.DatatypeConfigurationException;
 import util.helper.BossHelper;
@@ -103,7 +103,13 @@ public class MainApp {
         try {
             System.out.println("*** HoRS :: Hotel Reservation Client :: Search Hotel Room ***\n");
             System.out.print("Enter Check In Date (dd-mm-yyyy)>");
+            
             checkIn = sdf.parse(scanner.nextLine());
+            Calendar cal = Calendar.getInstance(); 
+            cal.setTime(checkIn);
+            cal.add(Calendar.HOUR_OF_DAY, LocalDateTime.now().getHour());
+            checkIn = cal.getTime();
+            
             System.out.print("Enter Check Out Date (dd-mm-yyyy)>");
             checkOut = sdf.parse(scanner.nextLine());
 

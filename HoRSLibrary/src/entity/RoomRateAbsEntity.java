@@ -23,7 +23,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.Digits;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
@@ -35,7 +34,7 @@ import util.helper.BossHelper;
  */
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
-public abstract class RoomRateAbsEntity implements Serializable, Comparable<RoomRateAbsEntity>{
+public abstract class RoomRateAbsEntity implements Serializable, Comparable<RoomRateAbsEntity> {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -44,14 +43,14 @@ public abstract class RoomRateAbsEntity implements Serializable, Comparable<Room
 
     @Column(nullable = false, length = BossHelper.NAME_LENGTH)
     @NotNull
-    @Size(min =4 , max = BossHelper.NAME_LENGTH)
+    @Size(min = 4, max = BossHelper.NAME_LENGTH)
     private String name;
-    
+
     @Column(nullable = false, scale = 2, precision = 8)
-    @Digits(fraction = 2,integer = 8)
+    @Digits(fraction = 2, integer = 8)
     @PositiveOrZero
     private BigDecimal ratePerNight;
-    
+
     @Column(nullable = false)
     @NotNull
     private Boolean isDisabled;
@@ -61,7 +60,7 @@ public abstract class RoomRateAbsEntity implements Serializable, Comparable<Room
     @NotNull
     private RoomTypeEntity roomTypeEntity;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST,CascadeType.DETACH,CascadeType.MERGE,CascadeType.REFRESH})
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
     @NotNull
     private Set<ReservationEntity> reservations;
 
@@ -162,7 +161,7 @@ public abstract class RoomRateAbsEntity implements Serializable, Comparable<Room
     }
 
     public void disassociateReservations(Collection<ReservationEntity> reservationSet) {
-        
+
         if (reservationSet != this.reservations) {
             this.reservations.removeAll(reservationSet);
         } else {
@@ -173,21 +172,15 @@ public abstract class RoomRateAbsEntity implements Serializable, Comparable<Room
 
     @Override
     public int compareTo(RoomRateAbsEntity o) {
-        if(this.getClass() == o.getClass()) {
+        if (this.getClass() == o.getClass()) {
             return 0;
-        }
-        else if(this.getClass() == PromoRateEntity.class && o.getClass() != PromoRateEntity.class )
-        {
+        } else if (this.getClass() == PromoRateEntity.class && o.getClass() != PromoRateEntity.class) {
             return 1;
-        }
-        else if(this.getClass() == PeakRateEntity.class && (o.getClass() == NormalRateEntity.class || o.getClass() == PublishedRateEntity.class) )
-        {
+        } else if (this.getClass() == PeakRateEntity.class && (o.getClass() == NormalRateEntity.class || o.getClass() == PublishedRateEntity.class)) {
             return 1;
-        }
-        else if(o.getClass() == NormalRateEntity.class && o.getClass() == PublishedRateEntity.class){
+        } else if (o.getClass() == NormalRateEntity.class && o.getClass() == PublishedRateEntity.class) {
             return 1;
-        }
-        else {
+        } else {
             return -1;
         }
     }

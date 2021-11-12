@@ -13,9 +13,14 @@ import ejb.session.stateless.RoomTypeSessionBeanRemote;
 import entity.GuestEntity;
 import entity.GuestReservationEntity;
 import entity.ReservationEntity;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.DateTimeException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Map;
 import java.util.Set;
 import util.exception.AlreadyExistsException;
@@ -41,13 +46,14 @@ public class MainApp {
 
     private GuestEntity guestEntity;
     private final DateTimeFormatter dtf;
+//    private final SimpleDateFormat sdf;
     private LocalDate checkIn;
+    private Date checkInUtilDate;
     private LocalDate checkOut;
 
     public MainApp() {
         this.scanner = BossHelper.getSingleton();
         this.dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-
     }
 
     public MainApp(GuestSessionBeanRemote guestSessionBean, RoomSessionBeanRemote roomSessionBean, RoomTypeSessionBeanRemote roomTypeSessionBean, RoomRateSessionBeanRemote roomRateSessionBean, ReservationSessionBeanRemote reservationSessionBean) {
@@ -145,7 +151,16 @@ public class MainApp {
         try {
             System.out.println("*** HoRS :: Hotel Reservation Client :: Search Hotel Room ***\n");
             System.out.print("Enter Check In Date (dd-mm-yyyy)>");
-            checkIn = LocalDate.parse(scanner.nextLine(), dtf);
+
+            checkInUtilDate = new SimpleDateFormat("dd-MM-yyyy").parse(scanner.nextLine());
+
+            //to set the hour of checkInUtilDate because util date api sucks
+            Calendar cal = Calendar.getInstance(); 
+            cal.setTime(checkInUtilDate);
+            cal.add(Calendar.HOUR_OF_DAY, LocalDateTime.now().getHour());
+            checkInUtilDate = cal.getTime();
+            checkIn = BossHelper.dateToLocalDate(checkInUtilDate);
+           
             System.out.print("Enter Check Out Date (dd-mm-yyyy)>");
             checkOut = LocalDate.parse(scanner.nextLine(), dtf);
 
@@ -165,7 +180,7 @@ public class MainApp {
 
             bufferScreenForUser();
 
-        } catch (DateTimeException ex) {
+        } catch (DateTimeException | ParseException ex) {
             bufferScreenForUser("Invalid Date Format entered!" + "\n");
         } catch (DoesNotExistException ex) {
             bufferScreenForUser(ex.getMessage());
@@ -233,7 +248,7 @@ public class MainApp {
             return;
         }
 
-        ReservationEntity reservation = new GuestReservationEntity(BossHelper.localDatetoDate(checkIn), BossHelper.localDatetoDate(checkOut));
+        ReservationEntity reservation = new GuestReservationEntity(checkInUtilDate, BossHelper.localDatetoDate(checkOut));
         try {
             reservationSessionBean.reserveRoomsByRoomType(reservation, bookingRoomType, bookingRoomTypeQuantity, guestEntity.getEmailAddress());
         } catch (DoesNotExistException | BeanValidationException ex) {
@@ -250,10 +265,13 @@ public class MainApp {
         reservationId = scanner.nextLong();
         try {
             ReservationEntity reservationEntity = guestSessionBean.retrieveReservationsByGuest(guestEntity.getEmailAddress(), reservationId);
-            System.out.printf("%20s%20s%20s%20s\n", "Reservation Id", "Check-In Date", "Check-Out Date", "Price of Stay");
-            System.out.printf("%20s%20s%20s%20s\n",
+            System.out.printf("%20s%20s%20s%20s%20s\n", "Reservation Id", "Check-In Date", "Check-Out Date", "Price of Stay", "Remarks");
+            System.out.printf("%20s%20s%20s%20s",
                     reservationEntity.getReservationId(), BossHelper.dateToLocalDate(reservationEntity.getCheckInDate()),
                     BossHelper.dateToLocalDate(reservationEntity.getCheckOutDate()), reservationEntity.getPriceOfStay());
+            if (!reservationEntity.getIsAllocated()) {
+                System.out.println(reservationEntity.getExceptionReport(false));
+            }
 
         } catch (DoesNotExistException ex) {
             bufferScreenForUser(ex.getMessage());
