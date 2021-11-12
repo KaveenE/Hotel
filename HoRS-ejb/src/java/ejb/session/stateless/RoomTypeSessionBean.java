@@ -90,7 +90,7 @@ public class RoomTypeSessionBean implements RoomTypeSessionBeanRemote, RoomTypeS
         roomTypeToUpdate.setDescription(roomType.getDescription());
         roomTypeToUpdate.setMySize(roomType.getMySize());
         roomTypeToUpdate.setRanking(roomType.getRanking());
-        
+
         updateRanking(roomTypeToUpdate);
     }
 
@@ -111,7 +111,7 @@ public class RoomTypeSessionBean implements RoomTypeSessionBeanRemote, RoomTypeS
         } catch (PersistenceException persistenceExceptionThrown) {
             AlreadyExistsException.throwAlreadyExistsOrUnknownException(persistenceExceptionThrown, new RoomTypeAlreadyExistsException());
         }
-        
+
         return roomType;
     }
 
@@ -123,6 +123,7 @@ public class RoomTypeSessionBean implements RoomTypeSessionBeanRemote, RoomTypeS
         RoomTypeEntity potentialRoomTypeToDelete = retrieveRoomTypeByName(name);
 
         if (!potentialRoomTypeToDelete.getIsDisabled() && potentialRoomTypeToDelete.getRoomEntities().isEmpty()) {
+            updateRanking(potentialRoomTypeToDelete, false);
             em.remove(potentialRoomTypeToDelete);
         } else if (!potentialRoomTypeToDelete.getIsDisabled() && !potentialRoomTypeToDelete.getRoomEntities().isEmpty()) {
             potentialRoomTypeToDelete.setIsDisabled(true);
@@ -169,7 +170,6 @@ public class RoomTypeSessionBean implements RoomTypeSessionBeanRemote, RoomTypeS
 //    public Map<String, Integer> walkInSearchRoomTypeReservableQuantity(LocalDate checkOut) throws DoesNotExistException {
 //        return searchRoomTypeReservableQuantity(LocalDate.now(), checkOut);
 //    }
-
     //Gives you the mapping of the room type and the respective allocatable quantity
     @Override
     public Map<String, Integer> searchRoomTypeReservableQuantity(LocalDate checkIn, LocalDate checkOut) throws DoesNotExistException {
@@ -357,20 +357,25 @@ public class RoomTypeSessionBean implements RoomTypeSessionBeanRemote, RoomTypeS
     private boolean isAfterInclusive(Date basisDate, LocalDate otherDate) {
         return BossHelper.dateToLocalDate(basisDate).compareTo(otherDate) >= 0;
     }
-    
+
     private void updateRanking(RoomTypeEntity newOrUpdatedRoomType) {
+        updateRanking(newOrUpdatedRoomType, true);
+    }
+
+    private void updateRanking(RoomTypeEntity newOrUpdatedRoomType, boolean add) {
         int newOrUpdateRoomTypeRank = newOrUpdatedRoomType.getRanking();
-        
-        List<RoomTypeEntity> inOrderAllRoomTypes =  retrieveAllRoomTypes();
+
+        List<RoomTypeEntity> inOrderAllRoomTypes = retrieveAllRoomTypes();
         Collections.sort(inOrderAllRoomTypes);
-        
-        for(RoomTypeEntity roomTypeToUpdateRankingFrom : inOrderAllRoomTypes) {
-            if(roomTypeToUpdateRankingFrom.getRanking() == newOrUpdateRoomTypeRank) {
-                inOrderAllRoomTypes.stream()
-                                   .filter(rt -> rt.getRanking() >= newOrUpdateRoomTypeRank)
-                                   .forEach(rt -> rt.setRanking(rt.getCapacity() + 1));
-                
-                break;
+
+        for (RoomTypeEntity roomTypeToUpdateRankingFrom : inOrderAllRoomTypes) {
+            if (roomTypeToUpdateRankingFrom.getRanking() >= newOrUpdateRoomTypeRank) {
+
+                if (add) {
+                    roomTypeToUpdateRankingFrom.setRanking(roomTypeToUpdateRankingFrom.getRanking() + 1);
+                } else {
+                    roomTypeToUpdateRankingFrom.setRanking(roomTypeToUpdateRankingFrom.getRanking() - 1);
+                }
             }
         }
     }

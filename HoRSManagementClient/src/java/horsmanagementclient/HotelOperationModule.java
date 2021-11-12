@@ -171,18 +171,18 @@ public class HotelOperationModule {
 
     public void createRoomType() throws InvalidAccessRightException {
         checkOpManagerRights();
-        
+
         List<RoomTypeEntity> roomTypes = viewAllRoomTypes();
-        
+
         RoomTypeEntity newRoomType = new RoomTypeEntity();
 
         System.out.println("*** HoRS :: Hotel Operation Module :: Create New Room Type ***\n");
         System.out.print("Enter Name> ");
         newRoomType.setName(scanner.nextLine());
-        System.out.print("Enter Ranking (1 - highest rank)> ");
+        System.out.print("Enter Ranking (1 - [highest rank+1])> ");
         Integer inputRanking = scanner.nextInt();
-        if (!(inputRanking > 0 && inputRanking <= roomTypes.size())) {
-            System.out.println("Invalid Ranking!");
+        if (!(inputRanking > 0 && inputRanking <= roomTypes.size()+1)) {
+            bufferScreenForUser("Invalid Ranking!");
             return;
         }
         newRoomType.setRanking(inputRanking);
@@ -312,13 +312,13 @@ public class HotelOperationModule {
             roomType.setAmenities(amenities);
         }
 
-        System.out.print("Enter Room Rank (1 - highest rank) (blank if no change)> ");
+        System.out.print("Enter Room Rank (1 - [highest rank+1]) (blank if no change)> ");
         input = scanner.nextLine();
         Integer inputRanking = Integer.valueOf(input);
-        if (input.length() != 0 && inputRanking > 0 && inputRanking <= roomTypes.size()) {
+        if (input.length() != 0 && inputRanking > 0 && inputRanking <= roomTypes.size()+1) {
             roomType.setRanking(Integer.valueOf(input));
         } else {
-            System.out.println("Invalid Ranking!");
+            bufferScreenForUser("Invalid Ranking!");
             return;
         }
 
@@ -730,13 +730,13 @@ public class HotelOperationModule {
     }
 
     private void checkOpManagerRights() throws InvalidAccessRightException {
-        if (employeeEntity.getEmployeeRoleEnum() != EmployeeRoleEnum.OPERATION_MANAGER || employeeEntity.getEmployeeRoleEnum() != EmployeeRoleEnum.SYSTEM_ADMINISTRATOR) {
+        if (employeeEntity.getEmployeeRoleEnum() != EmployeeRoleEnum.OPERATION_MANAGER /*&& employeeEntity.getEmployeeRoleEnum() != EmployeeRoleEnum.SYSTEM_ADMINISTRATOR*/) {
             throw new InvalidAccessRightException("You don't have OPERATION MANAGER rights to access the system administration module.");
         }
     }
 
     private void checkSalesManagerRights() throws InvalidAccessRightException {
-        if (employeeEntity.getEmployeeRoleEnum() != EmployeeRoleEnum.SALES_MANAGER || employeeEntity.getEmployeeRoleEnum() != EmployeeRoleEnum.SYSTEM_ADMINISTRATOR) {
+        if (employeeEntity.getEmployeeRoleEnum() != EmployeeRoleEnum.SALES_MANAGER  /*&& employeeEntity.getEmployeeRoleEnum() != EmployeeRoleEnum.SYSTEM_ADMINISTRATOR*/) {
             throw new InvalidAccessRightException("You don't have SALES MANAGER rights to access the system administration module.");
         }
     }
