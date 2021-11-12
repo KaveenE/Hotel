@@ -90,7 +90,8 @@ public class RoomTypeSessionBean implements RoomTypeSessionBeanRemote, RoomTypeS
         roomTypeToUpdate.setDescription(roomType.getDescription());
         roomTypeToUpdate.setMySize(roomType.getMySize());
         roomTypeToUpdate.setRanking(roomType.getRanking());
-
+        
+        updateRanking(roomTypeToUpdate);
     }
 
     private boolean uniqueFieldAlreadyExists(String name) {
@@ -103,13 +104,14 @@ public class RoomTypeSessionBean implements RoomTypeSessionBeanRemote, RoomTypeS
     @Override
     public RoomTypeEntity createRoomType(RoomTypeEntity roomType) throws DoesNotExistException, UnknownPersistenceException, AlreadyExistsException, BeanValidationException {
         BossHelper.throwValidationErrorsIfAny(roomType);
+        updateRanking(roomType);
         try {
             em.persist(roomType);
             em.flush();
         } catch (PersistenceException persistenceExceptionThrown) {
             AlreadyExistsException.throwAlreadyExistsOrUnknownException(persistenceExceptionThrown, new RoomTypeAlreadyExistsException());
         }
-
+        
         return roomType;
     }
 

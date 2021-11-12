@@ -43,6 +43,7 @@ public class SystemAdministrationModule {
         if (employeeEntity.getEmployeeRoleEnum() != EmployeeRoleEnum.SYSTEM_ADMINISTRATOR) {
             throw new InvalidAccessRightException("You don't have SYSTEM ADMINISTRATOR rights to access this module.");
         }
+        
         Integer response = 0;
         while (true) {
             System.out.println("*** HoRS :: System Operation ***\n");

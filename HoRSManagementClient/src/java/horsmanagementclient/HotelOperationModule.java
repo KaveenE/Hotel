@@ -171,13 +171,21 @@ public class HotelOperationModule {
 
     public void createRoomType() throws InvalidAccessRightException {
         checkOpManagerRights();
+        
+        List<RoomTypeEntity> roomTypes = viewAllRoomTypes();
+        
         RoomTypeEntity newRoomType = new RoomTypeEntity();
 
         System.out.println("*** HoRS :: Hotel Operation Module :: Create New Room Type ***\n");
         System.out.print("Enter Name> ");
         newRoomType.setName(scanner.nextLine());
-        System.out.print("Enter Ranking> ");
-        newRoomType.setRanking(scanner.nextInt());
+        System.out.print("Enter Ranking (1 - highest rank)> ");
+        Integer inputRanking = scanner.nextInt();
+        if (!(inputRanking > 0 && inputRanking <= roomTypes.size())) {
+            System.out.println("Invalid Ranking!");
+            return;
+        }
+        newRoomType.setRanking(inputRanking);
         System.out.print("Enter Description> ");
         newRoomType.setDescription(scanner.nextLine());
         System.out.print("Enter Room Size (square meters)> ");
@@ -247,7 +255,10 @@ public class HotelOperationModule {
 
         String input;
 
+        List<RoomTypeEntity> roomTypes = viewAllRoomTypes();
+
         System.out.println("*** HoRS :: Hotel Operation Module :: Update Room Type ***\n");
+
         System.out.print("Enter Name (blank if no change)> ");
         input = scanner.nextLine();
         if (input.length() > 0) {
@@ -301,10 +312,14 @@ public class HotelOperationModule {
             roomType.setAmenities(amenities);
         }
 
-        System.out.print("Enter Room Rank (blank if no change)> ");
+        System.out.print("Enter Room Rank (1 - highest rank) (blank if no change)> ");
         input = scanner.nextLine();
-        if (input.length() != 0) {
+        Integer inputRanking = Integer.valueOf(input);
+        if (input.length() != 0 && inputRanking > 0 && inputRanking <= roomTypes.size()) {
             roomType.setRanking(Integer.valueOf(input));
+        } else {
+            System.out.println("Invalid Ranking!");
+            return;
         }
 
         try {
@@ -336,19 +351,20 @@ public class HotelOperationModule {
         }
     }
 
-    public void viewAllRoomTypes() throws InvalidAccessRightException {
+    public List<RoomTypeEntity> viewAllRoomTypes() throws InvalidAccessRightException {
         checkOpManagerRights();
 
         System.out.println("*** HoRS :: Hotel Operation Module :: View All Room Type ***\n");
 
         List<RoomTypeEntity> roomTypes = roomTypeSessionBean.retrieveAllRoomTypes();
-        System.out.printf("%12s%35s%70s%6s%50s%10s%60s%10s\n", "Room Type Id", "Name", "Description", "Size", "Bed", "Capacity", "Amenities", "Disabled");
+        System.out.printf("%12s%10s%35s%70s%6s%50s%10s%60s%10s\n", "Room Type Id", "Room Rank", "Name", "Description", "Size", "Bed", "Capacity", "Amenities", "Disabled");
 
         for (RoomTypeEntity roomType : roomTypes) {
-            System.out.printf("%12s%35s%70s%6s%50s%10s%60s%10s\n", roomType.getRoomTypeId().toString(), roomType.getName(), roomType.getDescription(), roomType.getMySize(), roomType.getBed(), roomType.getCapacity(), roomType.getAmenities(), roomType.getIsDisabled());
+            System.out.printf("%12s%10s%35s%70s%6s%50s%10s%60s%10s\n", roomType.getRoomTypeId().toString(), roomType.getRanking(), roomType.getName(), roomType.getDescription(), roomType.getMySize(), roomType.getBed(), roomType.getCapacity(), roomType.getAmenities(), roomType.getIsDisabled());
         }
 
         bufferScreenForUser();
+        return roomTypes;
     }
 
     public void createRoom() throws InvalidAccessRightException {
