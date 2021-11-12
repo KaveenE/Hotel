@@ -19,7 +19,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.ejb.EJB;
 import javax.ejb.Schedule;
 import javax.ejb.Stateless;
@@ -123,7 +125,7 @@ public class RoomTypeSessionBean implements RoomTypeSessionBeanRemote, RoomTypeS
         RoomTypeEntity potentialRoomTypeToDelete = retrieveRoomTypeByName(name);
 
         if (!potentialRoomTypeToDelete.getIsDisabled() && potentialRoomTypeToDelete.getRoomEntities().isEmpty()) {
-            updateRanking(potentialRoomTypeToDelete, false);
+            updateRanking(potentialRoomTypeToDelete, x->x-1);
             em.remove(potentialRoomTypeToDelete);
         } else if (!potentialRoomTypeToDelete.getIsDisabled() && !potentialRoomTypeToDelete.getRoomEntities().isEmpty()) {
             potentialRoomTypeToDelete.setIsDisabled(true);
@@ -359,24 +361,19 @@ public class RoomTypeSessionBean implements RoomTypeSessionBeanRemote, RoomTypeS
     }
 
     private void updateRanking(RoomTypeEntity newOrUpdatedRoomType) {
-        updateRanking(newOrUpdatedRoomType, true);
+        updateRanking(newOrUpdatedRoomType, x -> x + 1);
     }
 
-    private void updateRanking(RoomTypeEntity newOrUpdatedRoomType, boolean add) {
+    private void updateRanking(RoomTypeEntity newOrUpdatedRoomType, UnaryOperator<Integer> addOrMinus) {
         int newOrUpdateRoomTypeRank = newOrUpdatedRoomType.getRanking();
-
         List<RoomTypeEntity> inOrderAllRoomTypes = retrieveAllRoomTypes();
-        Collections.sort(inOrderAllRoomTypes);
-
-        for (RoomTypeEntity roomTypeToUpdateRankingFrom : inOrderAllRoomTypes) {
-            if (roomTypeToUpdateRankingFrom.getRanking() >= newOrUpdateRoomTypeRank) {
-
-                if (add) {
-                    roomTypeToUpdateRankingFrom.setRanking(roomTypeToUpdateRankingFrom.getRanking() + 1);
-                } else {
-                    roomTypeToUpdateRankingFrom.setRanking(roomTypeToUpdateRankingFrom.getRanking() - 1);
-                }
-            }
-        }
+        
+        inOrderAllRoomTypes.stream()
+                           .sorted()
+                           .forEach(roomTypeToUpdateRankingFrom -> {
+                               if (roomTypeToUpdateRankingFrom.getRanking() >= newOrUpdateRoomTypeRank) {
+                                   roomTypeToUpdateRankingFrom.setRanking(addOrMinus.apply(roomTypeToUpdateRankingFrom.getRanking()));
+                               }
+                           });
     }
 }
