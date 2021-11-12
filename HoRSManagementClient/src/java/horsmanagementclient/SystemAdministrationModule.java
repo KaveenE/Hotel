@@ -80,7 +80,7 @@ public class SystemAdministrationModule {
 
             EmployeeEntity newEmployee = new EmployeeEntity();
 
-            System.out.println("*** HoRS :: Hotel Administration System :: Create New Employee ***\n");
+            System.out.println("*** HoRS :: Hotel Management System :: Create New Employee ***\n");
             System.out.print("Enter Username> ");
             newEmployee.setUsername(scanner.nextLine());
             System.out.print("Enter Password> ");
@@ -108,7 +108,7 @@ public class SystemAdministrationModule {
 
     public void viewAllEmployees() {
 
-        System.out.println("*** HoRS :: Hotel Administration System :: View All Employees ***\n");
+        System.out.println("*** HoRS :: Hotel Management System :: View All Employees ***\n");
 
         List<EmployeeEntity> employeeEntities = employeeSessionBean.retrieveAllEmployees();
         System.out.printf("%12s%20s%30s\n", "Emplyoee Id", "Username", "Employee Role");
@@ -127,7 +127,7 @@ public class SystemAdministrationModule {
 
             PartnerEntity newPartner = new PartnerEntity();
 
-            System.out.println("*** HoRS :: Hotel Administration System :: Create New Partner ***\n");
+            System.out.println("*** HoRS :: Hotel Management System :: Create New Partner ***\n");
             System.out.print("Enter Username> ");
             newPartner.setUsername(scanner.nextLine());
             System.out.print("Enter Password> ");
@@ -142,7 +142,7 @@ public class SystemAdministrationModule {
     }
 
     public void viewAllPartners() {
-        System.out.println("*** HoRS :: Hotel Administration System :: View All Partners ***\n");
+        System.out.println("*** HoRS :: Hotel Management System :: View All Partners ***\n");
 
         List<PartnerEntity> partnerEntities = partnerSessionBean.retrieveAllPartners();
         System.out.printf("%12s%20s\n", "Partner Id", "Username");

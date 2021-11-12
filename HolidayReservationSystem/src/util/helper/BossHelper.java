@@ -9,6 +9,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Scanner;
@@ -98,6 +99,14 @@ public final class BossHelper {
     
     public static LocalDate XMLDateToLocalDate(XMLGregorianCalendar XMLDate) throws DatatypeConfigurationException {
         return dateToLocalDate(XMLDate.toGregorianCalendar().getTime());
+    }
+    
+    //Util Date Api sucks
+    public static Date addHoursToUtilDate(Date date, int hoursToAdd) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        cal.add(Calendar.HOUR_OF_DAY, hoursToAdd);
+        return cal.getTime();
     }
 
     //I'm creating this method so we only compare the date portion in case the time portion fucks us up

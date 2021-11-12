@@ -93,7 +93,7 @@ public class FrontOfficeModule {
         Map<String, Integer> availableRoomsForRoomType = null;
 
         try {
-            System.out.println("*** HoRS :: Hotel Administration Client :: Search Hotel Room ***\n");
+            System.out.println("*** HoRS :: Hotel Management Client :: Search Hotel Room ***\n");
             System.out.print("Enter Check Out Date (dd-mm-yyyy)> ");
             checkOut = LocalDate.parse(scanner.nextLine(), dtf);
 
@@ -123,7 +123,7 @@ public class FrontOfficeModule {
     public void walkInReserveRoom(Map<String, Integer> availableRoomsForRoomType) {
         String bookingRoomType;
         Long bookingRoomTypeQuantity;
-        System.out.println("*** HoRS :: Hotel Administration Client :: Reserve Hotel Room ***\n");
+        System.out.println("*** HoRS :: Hotel Management Client :: Reserve Hotel Room ***\n");
 
         System.out.print("Enter Room Type to book> ");
         bookingRoomType = scanner.nextLine();
@@ -150,7 +150,7 @@ public class FrontOfficeModule {
     public void checkInGuest() {
         try {
             Long reservationId;
-            System.out.println("*** HoRS :: Hotel Administration Client :: Check-in Guest ***\n");
+            System.out.println("*** HoRS :: Hotel Management Client :: Check-in Guest ***\n");
 
             System.out.print("Enter Reservation Id to Check-in> ");
             reservationId = scanner.nextLong();
@@ -172,7 +172,7 @@ public class FrontOfficeModule {
     public void checkOutGuest() {
         try {
             Long reservationId;
-            System.out.println("*** HoRS :: Hotel Administration Client :: Check-out Guest ***\n");
+            System.out.println("*** HoRS :: Hotel Management Client :: Check-out Guest ***\n");
 
             System.out.print("Enter Reservation Id to Check-out> ");
             reservationId = scanner.nextLong();

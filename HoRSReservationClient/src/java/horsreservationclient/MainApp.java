@@ -151,16 +151,11 @@ public class MainApp {
         try {
             System.out.println("*** HoRS :: Hotel Reservation Client :: Search Hotel Room ***\n");
             System.out.print("Enter Check In Date (dd-mm-yyyy)>");
+            
+            checkInUtilDate = BossHelper.addHoursToUtilDate(new SimpleDateFormat("dd-MM-yyyy").parse(scanner.nextLine()), LocalDateTime.now().getHour());
 
-            checkInUtilDate = new SimpleDateFormat("dd-MM-yyyy").parse(scanner.nextLine());
-
-            //to set the hour of checkInUtilDate because util date api sucks
-            Calendar cal = Calendar.getInstance(); 
-            cal.setTime(checkInUtilDate);
-            cal.add(Calendar.HOUR_OF_DAY, LocalDateTime.now().getHour());
-            checkInUtilDate = cal.getTime();
             checkIn = BossHelper.dateToLocalDate(checkInUtilDate);
-           
+
             System.out.print("Enter Check Out Date (dd-mm-yyyy)>");
             checkOut = LocalDate.parse(scanner.nextLine(), dtf);
 
@@ -196,35 +191,38 @@ public class MainApp {
             System.out.println("*** Hotel Reservation Client ***\n");
             System.out.println("You are logged in as " + guestEntity.getEmailAddress() + "\n");
 
-            System.out.println("1: Reserve Hotel Room");
-            System.out.println("2: View My Reservation Details");
-            System.out.println("3: View All My Reservations");
-            System.out.println("4: Logout\n");
+            System.out.println("1: Search Hotel Room");
+            System.out.println("2: Reserve Hotel Room");
+            System.out.println("3: View My Reservation Details");
+            System.out.println("4: View All My Reservations");
+            System.out.println("5: Logout\n");
 
             response = 0;
 
-            while (response < 1 || response > 4) {
+            while (response < 1 || response > 5) {
                 System.out.print("> ");
 
                 response = scanner.nextInt();
 
                 if (response == 1) {
+                    guestSearchRoom();
+                } else if (response == 2) {
                     Map<String, Integer> roomTypeResults = guestSearchRoom();
                     if (roomTypeResults != null && !roomTypeResults.isEmpty()) {
                         reserveHotelRoom(roomTypeResults);
                     }
-                } else if (response == 2) {
-                    viewMyReservationDetails();
                 } else if (response == 3) {
-                    viewAllMyReservations();
+                    viewMyReservationDetails();
                 } else if (response == 4) {
+                    viewAllMyReservations();
+                } else if (response == 5) {
                     break;
                 } else {
                     System.out.println("Invalid option, please try again!\n");
                 }
             }
 
-            if (response == 4) {
+            if (response == 5) {
                 break;
             }
         }

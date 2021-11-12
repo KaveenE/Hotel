@@ -355,5 +355,21 @@ public class RoomTypeSessionBean implements RoomTypeSessionBeanRemote, RoomTypeS
     private boolean isAfterInclusive(Date basisDate, LocalDate otherDate) {
         return BossHelper.dateToLocalDate(basisDate).compareTo(otherDate) >= 0;
     }
-
+    
+    private void updateRanking(RoomTypeEntity newOrUpdatedRoomType) {
+        int newOrUpdateRoomTypeRank = newOrUpdatedRoomType.getRanking();
+        
+        List<RoomTypeEntity> inOrderAllRoomTypes =  retrieveAllRoomTypes();
+        Collections.sort(inOrderAllRoomTypes);
+        
+        for(RoomTypeEntity roomTypeToUpdateRankingFrom : inOrderAllRoomTypes) {
+            if(roomTypeToUpdateRankingFrom.getRanking() == newOrUpdateRoomTypeRank) {
+                inOrderAllRoomTypes.stream()
+                                   .filter(rt -> rt.getRanking() >= newOrUpdateRoomTypeRank)
+                                   .forEach(rt -> rt.setRanking(rt.getCapacity() + 1));
+                
+                break;
+            }
+        }
+    }
 }

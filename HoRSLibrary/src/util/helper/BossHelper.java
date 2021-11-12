@@ -11,6 +11,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Objects;
@@ -155,6 +156,14 @@ public final class BossHelper implements Serializable {
 
     public static LocalDateTime dateToLocalDateTime(Date date) {
         return LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
+    }
+
+    //Util Date Api sucks
+    public static Date addHoursToUtilDate(Date date, int hoursToAdd) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        cal.add(Calendar.HOUR_OF_DAY, hoursToAdd);
+        return cal.getTime();
     }
 
     //I'm creating this method so we only compare the date portion in case the time portion fucks us up
