@@ -36,6 +36,7 @@ public class FrontOfficeModule {
 
     private final BossHelper scanner;
     private final DateTimeFormatter dtf;
+    private LocalDate checkIn;
     private LocalDate checkOut;
 
     public FrontOfficeModule() {
@@ -103,10 +104,12 @@ public class FrontOfficeModule {
 
         try {
             System.out.println("*** HoRS :: Hotel Management Client :: Search Hotel Room ***\n");
+            System.out.print("Enter Check In Date (dd-mm-yyyy)> ");
+            checkIn = LocalDate.parse(scanner.nextLine(), dtf);
             System.out.print("Enter Check Out Date (dd-mm-yyyy)> ");
             checkOut = LocalDate.parse(scanner.nextLine(), dtf);
 
-            availableRoomsForRoomType = roomTypeSessionBean.walkInSearchRoomTypeReservableQuantity(checkOut);
+            availableRoomsForRoomType = roomTypeSessionBean.searchRoomTypeReservableQuantity(checkIn, checkOut);
 
             if (availableRoomsForRoomType.values().isEmpty()) {
                 System.out.println("All rooms are fully booked! Please try again later");

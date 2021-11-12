@@ -37,7 +37,7 @@ public interface RoomTypeSessionBeanRemote {
 
     public RoomRateAbsEntity retrieveRoomRateFromRoomType(String roomTypeName, Class subclass) throws DoesNotExistException;
 
-    public Map<String, Integer> walkInSearchRoomTypeReservableQuantity(LocalDate checkOut) throws DoesNotExistException;
+//    public Map<String, Integer> walkInSearchRoomTypeReservableQuantity(LocalDate checkOut) throws DoesNotExistException;
     
     public void allocateRoomsToCurrentDayReservations() throws DoesNotExistException;
 

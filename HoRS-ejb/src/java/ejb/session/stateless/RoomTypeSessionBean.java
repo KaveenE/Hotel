@@ -165,10 +165,10 @@ public class RoomTypeSessionBean implements RoomTypeSessionBeanRemote, RoomTypeS
         }
     }
 
-    @Override
-    public Map<String, Integer> walkInSearchRoomTypeReservableQuantity(LocalDate checkOut) throws DoesNotExistException {
-        return searchRoomTypeReservableQuantity(LocalDate.now(), checkOut);
-    }
+//    @Override
+//    public Map<String, Integer> walkInSearchRoomTypeReservableQuantity(LocalDate checkOut) throws DoesNotExistException {
+//        return searchRoomTypeReservableQuantity(LocalDate.now(), checkOut);
+//    }
 
     //Gives you the mapping of the room type and the respective allocatable quantity
     @Override
