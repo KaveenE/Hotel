@@ -13,6 +13,7 @@ import ejb.session.stateless.RoomSessionBeanRemote;
 import ejb.session.stateless.RoomTypeSessionBeanRemote;
 import entity.EmployeeEntity;
 import java.util.Scanner;
+import util.exception.InvalidAccessRightException;
 import util.exception.InvalidLoginException;
 import util.helper.BossHelper;
 
@@ -71,9 +72,9 @@ public class MainApp {
                         doLogin();
                         System.out.println("Login successful!\n");
 
-                        hotelOperationModule = new HotelOperationModule(roomSessionBean, roomRateSessionBean, roomTypeSessionBean, reservationSessionBean);
-                        systemAdministrationModule = new SystemAdministrationModule(employeeSessionBean, partnerSessionBean);
-                        frontOfficeModule = new FrontOfficeModule(roomSessionBean, roomTypeSessionBean, roomRateSessionBean, reservationSessionBean);
+                        hotelOperationModule = new HotelOperationModule(roomSessionBean, roomRateSessionBean, roomTypeSessionBean, reservationSessionBean, employeeEntity);
+                        systemAdministrationModule = new SystemAdministrationModule(employeeSessionBean, partnerSessionBean, employeeEntity);
+                        frontOfficeModule = new FrontOfficeModule(roomSessionBean, roomTypeSessionBean, roomRateSessionBean, reservationSessionBean, employeeEntity);
 
                         menuMain();
                     } catch (InvalidLoginException ex) {
@@ -129,16 +130,20 @@ public class MainApp {
 
                 response = scanner.nextInt();
 
-                if (response == 1) {
-                    systemAdministrationModule.menuSystemOperation();
-                } else if (response == 2) {
-                    hotelOperationModule.menuHotelOperation();
-                } else if (response == 3) {
-                    frontOfficeModule.menuFrontOffice();
-                } else if (response == 4) {
-                    break;
-                } else {
-                    System.out.println("Invalid option, please try again!\n");
+                try {
+                    if (response == 1) {
+                        systemAdministrationModule.menuSystemOperation();
+                    } else if (response == 2) {
+                        hotelOperationModule.menuHotelOperation();
+                    } else if (response == 3) {
+                        frontOfficeModule.menuFrontOffice();
+                    } else if (response == 4) {
+                        break;
+                    } else {
+                        System.out.println("Invalid option, please try again!\n");
+                    }
+                } catch (InvalidAccessRightException ex) {
+                    bufferScreenForUser(ex.getMessage());
                 }
             }
 
@@ -146,5 +151,15 @@ public class MainApp {
                 break;
             }
         }
+    }
+
+    private void bufferScreenForUser(String message) {
+        System.out.println(message);
+        this.bufferScreenForUser();
+    }
+
+    private void bufferScreenForUser() {
+        System.out.print("Press any key to continue...> ");
+        scanner.nextLine();
     }
 }

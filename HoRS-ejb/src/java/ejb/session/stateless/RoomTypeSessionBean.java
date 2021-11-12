@@ -250,7 +250,7 @@ public class RoomTypeSessionBean implements RoomTypeSessionBeanRemote, RoomTypeS
             return null;
         } else {
             roomType = allRoomTypes.get(roomType.getRanking());
-            if (roomType.getIsDisabled()) {
+            if (!roomType.getIsDisabled()) {
                 return roomType.getName();
             }
         }

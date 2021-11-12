@@ -184,7 +184,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
             LocalDate counterCheckIn = checkIn;
             Map.Entry<RoomRateAbsEntity, Long> rateToLengthOfRate;
 
-            while (isBeforeInclusive(counterCheckIn, checkOut)) {
+            while (counterCheckIn.isBefore(checkOut)) {
                 rateToLengthOfRate = getPriceRateForNight(counterCheckIn, checkOut, roomTypeToReserve);
                 counterCheckIn = counterCheckIn.plusDays(rateToLengthOfRate.getValue());
 

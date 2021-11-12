@@ -135,26 +135,6 @@
 </xs:sequence>
 </xs:complexType>
 
-<xs:complexType name="reserveRoomsByRoomType">
-<xs:sequence>
-<xs:element name="checkIn" type="xs:dateTime" minOccurs="0"/>
-<xs:element name="checkOut" type="xs:dateTime" minOccurs="0"/>
-<xs:element name="roomType" type="xs:string" minOccurs="0"/>
-<xs:element name="roomQuality" type="xs:long" minOccurs="0"/>
-<xs:element name="username" type="xs:string" minOccurs="0"/>
-</xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="reserveRoomsByRoomTypeResponse">
-<xs:sequence/>
-</xs:complexType>
-
-<xs:complexType name="BeanValidationException">
-<xs:sequence>
-<xs:element name="message" type="xs:string" minOccurs="0"/>
-</xs:sequence>
-</xs:complexType>
-
 <xs:complexType name="partnerLogin">
 <xs:sequence>
 <xs:element name="username" type="xs:string" minOccurs="0"/>
@@ -177,6 +157,26 @@
 </xs:complexType>
 
 <xs:complexType name="InvalidLoginException">
+<xs:sequence>
+<xs:element name="message" type="xs:string" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="reserveRoomsByRoomType">
+<xs:sequence>
+<xs:element name="checkIn" type="xs:dateTime" minOccurs="0"/>
+<xs:element name="checkOut" type="xs:dateTime" minOccurs="0"/>
+<xs:element name="roomType" type="xs:string" minOccurs="0"/>
+<xs:element name="roomQuality" type="xs:long" minOccurs="0"/>
+<xs:element name="username" type="xs:string" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="reserveRoomsByRoomTypeResponse">
+<xs:sequence/>
+</xs:complexType>
+
+<xs:complexType name="BeanValidationException">
 <xs:sequence>
 <xs:element name="message" type="xs:string" minOccurs="0"/>
 </xs:sequence>

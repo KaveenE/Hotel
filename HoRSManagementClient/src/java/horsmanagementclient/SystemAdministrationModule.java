@@ -13,6 +13,7 @@ import java.util.List;
 import util.enumeration.EmployeeRoleEnum;
 import util.exception.AlreadyExistsException;
 import util.exception.BeanValidationException;
+import util.exception.InvalidAccessRightException;
 import util.exception.UnknownPersistenceException;
 import util.helper.BossHelper;
 
@@ -24,19 +25,24 @@ public class SystemAdministrationModule {
 
     private EmployeeSessionBeanRemote employeeSessionBean;
     private PartnerSessionBeanRemote partnerSessionBean;
+    private EmployeeEntity employeeEntity;
     private final BossHelper scanner;
 
     public SystemAdministrationModule() {
         this.scanner = BossHelper.getSingleton();
     }
 
-    public SystemAdministrationModule(EmployeeSessionBeanRemote employeeSessionBeanRemote, PartnerSessionBeanRemote partnerSessionBeanRemote) {
+    public SystemAdministrationModule(EmployeeSessionBeanRemote employeeSessionBeanRemote, PartnerSessionBeanRemote partnerSessionBeanRemote, EmployeeEntity employeeEntity) {
         this();
         this.employeeSessionBean = employeeSessionBeanRemote;
         this.partnerSessionBean = partnerSessionBeanRemote;
+        this.employeeEntity = employeeEntity;
     }
 
-    public void menuSystemOperation() {
+    public void menuSystemOperation() throws InvalidAccessRightException {
+        if (employeeEntity.getEmployeeRoleEnum() != EmployeeRoleEnum.SYSTEM_ADMINISTRATOR) {
+            throw new InvalidAccessRightException("You don't have SYSTEM ADMINISTRATOR rights to access this module.");
+        }
         Integer response = 0;
         while (true) {
             System.out.println("*** HoRS :: System Operation ***\n");

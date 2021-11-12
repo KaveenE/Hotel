@@ -74,7 +74,7 @@ public class DataInitSessionBean {
     }
 
     private void initializeData() throws AlreadyExistsException, UnknownPersistenceException, DoesNotExistException, BeanValidationException {
-        employeeSessionBean.createNewEmployee(new EmployeeEntity(EmployeeRoleEnum.SYSTEM_OPERATOR, "systems", "password"));
+        employeeSessionBean.createNewEmployee(new EmployeeEntity(EmployeeRoleEnum.SYSTEM_ADMINISTRATOR, "systems", "password"));
         employeeSessionBean.createNewEmployee(new EmployeeEntity(EmployeeRoleEnum.OPERATION_MANAGER, "operation", "password"));
         employeeSessionBean.createNewEmployee(new EmployeeEntity(EmployeeRoleEnum.SALES_MANAGER, "sales", "password"));
         employeeSessionBean.createNewEmployee(new EmployeeEntity(EmployeeRoleEnum.GUEST_RELATION_OFFICER, "guest", "password"));

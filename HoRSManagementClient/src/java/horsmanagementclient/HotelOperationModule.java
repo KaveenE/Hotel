@@ -9,6 +9,7 @@ import ejb.session.stateless.ReservationSessionBeanRemote;
 import ejb.session.stateless.RoomRateSessionBeanRemote;
 import ejb.session.stateless.RoomSessionBeanRemote;
 import ejb.session.stateless.RoomTypeSessionBeanRemote;
+import entity.EmployeeEntity;
 import entity.NormalRateEntity;
 import entity.PeakRateEntity;
 import entity.PromoRateEntity;
@@ -23,10 +24,12 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import util.enumeration.EmployeeRoleEnum;
 import util.enumeration.RoomStatusEnum;
 import util.exception.AlreadyExistsException;
 import util.exception.BeanValidationException;
 import util.exception.DoesNotExistException;
+import util.exception.InvalidAccessRightException;
 import util.exception.UnknownPersistenceException;
 import util.helper.BossHelper;
 
@@ -40,6 +43,7 @@ public class HotelOperationModule {
     private RoomTypeSessionBeanRemote roomTypeSessionBean;
     private RoomRateSessionBeanRemote roomRateSessionBean;
     private ReservationSessionBeanRemote reservationSessionBean;
+    private EmployeeEntity employeeEntity;
     private final BossHelper scanner;
     private final SimpleDateFormat sdf;
 
@@ -48,12 +52,13 @@ public class HotelOperationModule {
         sdf = new SimpleDateFormat("dd-MM-yyyy");
     }
 
-    HotelOperationModule(RoomSessionBeanRemote roomSessionBean, RoomRateSessionBeanRemote roomRateSessionBean, RoomTypeSessionBeanRemote roomTypeSessionBean, ReservationSessionBeanRemote reservationSessionBean) {
+    HotelOperationModule(RoomSessionBeanRemote roomSessionBean, RoomRateSessionBeanRemote roomRateSessionBean, RoomTypeSessionBeanRemote roomTypeSessionBean, ReservationSessionBeanRemote reservationSessionBean, EmployeeEntity employeeEntity) {
         this();
         this.roomSessionBean = roomSessionBean;
         this.roomTypeSessionBean = roomTypeSessionBean;
         this.roomRateSessionBean = roomRateSessionBean;
         this.reservationSessionBean = reservationSessionBean;
+        this.employeeEntity = employeeEntity;
     }
 
     public void menuHotelOperation() {
@@ -88,70 +93,73 @@ public class HotelOperationModule {
                 System.out.print("> ");
 
                 response = scanner.nextInt();
+                try {
+                    if (response == 1) {
+                        createRoomType();
+                    } else if (response == 2) {
+                        viewRoomTypeDetails();
+                    } else if (response == 3) {
+                        System.out.print("Enter Room Type Name> ");
+                        String name = scanner.nextLine();
+                        try {
+                            updateRoomType(roomTypeSessionBean.retrieveRoomTypeByName(name));
+                        } catch (DoesNotExistException ex) {
+                            System.out.println("An error has occurred while retrieving Room Type details: " + ex.getMessage() + "\n");
+                        }
+                    } else if (response == 4) {
+                        System.out.print("Enter Room Type Name> ");
+                        String name = scanner.nextLine();
+                        try {
+                            deleteRoomType(roomTypeSessionBean.retrieveRoomTypeByName(name));
+                        } catch (DoesNotExistException ex) {
+                            System.out.println("An error has occurred while retrieving Room Type details: " + ex.getMessage() + "\n");
+                        }
+                    } else if (response == 5) {
+                        viewAllRoomTypes();
+                    } else if (response == 6) {
+                        createRoom();
+                    } else if (response == 7) {
+                        updateRoom();
+                    } else if (response == 8) {
+                        deleteRoom();
+                    } else if (response == 9) {
+                        viewAllRooms();
+                    } else if (response == 10) {
+                        viewRoomAllocationExceptionReport();
+                    } else if (response == 11) {
+                        createRoomRate();
+                    } else if (response == 12) {
+                        viewRoomRateDetails();
+                    } else if (response == 13) {
+                        System.out.print("Enter Room Rate Id> ");
+                        Long rateId = scanner.nextLong();
+                        try {
+                            updateRoomRate(roomRateSessionBean.retrieveRoomRateById(rateId));
+                        } catch (DoesNotExistException ex) {
+                            System.out.println("An error has occurred while retrieving Room Rate details: " + ex.getMessage() + "\n");
+                        }
+                    } else if (response == 14) {
+                        System.out.print("Enter Room Rate Id> ");
+                        Long rateId = scanner.nextLong();
 
-                if (response == 1) {
-                    createRoomType();
-                } else if (response == 2) {
-                    viewRoomTypeDetails();
-                } else if (response == 3) {
-                    System.out.print("Enter Room Type Name> ");
-                    String name = scanner.nextLine();
-                    try {
-                        updateRoomType(roomTypeSessionBean.retrieveRoomTypeByName(name));
-                    } catch (DoesNotExistException ex) {
-                        System.out.println("An error has occurred while retrieving Room Type details: " + ex.getMessage() + "\n");
-                    }
-                } else if (response == 4) {
-                    System.out.print("Enter Room Type Name> ");
-                    String name = scanner.nextLine();
-                    try {
-                        deleteRoomType(roomTypeSessionBean.retrieveRoomTypeByName(name));
-                    } catch (DoesNotExistException ex) {
-                        System.out.println("An error has occurred while retrieving Room Type details: " + ex.getMessage() + "\n");
-                    }
-                } else if (response == 5) {
-                    viewAllRoomTypes();
-                } else if (response == 6) {
-                    createRoom();
-                } else if (response == 7) {
-                    updateRoom();
-                } else if (response == 8) {
-                    deleteRoom();
-                } else if (response == 9) {
-                    viewAllRooms();
-                } else if (response == 10) {
-                    viewRoomAllocationExceptionReport();
-                } else if (response == 11) {
-                    createRoomRate();
-                } else if (response == 12) {
-                    viewRoomRateDetails();
-                } else if (response == 13) {
-                    System.out.print("Enter Room Rate Id> ");
-                    Long rateId = scanner.nextLong();
-                    try {
-                        updateRoomRate(roomRateSessionBean.retrieveRoomRateById(rateId));
-                    } catch (DoesNotExistException ex) {
-                        System.out.println("An error has occurred while retrieving Room Rate details: " + ex.getMessage() + "\n");
-                    }
-                } else if (response == 14) {
-                    System.out.print("Enter Room Rate Id> ");
-                    Long rateId = scanner.nextLong();
+                        try {
+                            deleteRoomRate(roomRateSessionBean.retrieveRoomRateById(rateId));
+                        } catch (DoesNotExistException ex) {
+                            System.out.println("An error has occurred while retrieving Room Rate details: " + ex.getMessage() + "\n");
 
-                    try {
-                        deleteRoomRate(roomRateSessionBean.retrieveRoomRateById(rateId));
-                    } catch (DoesNotExistException ex) {
-                        System.out.println("An error has occurred while retrieving Room Rate details: " + ex.getMessage() + "\n");
+                        }
 
+                    } else if (response == 15) {
+                        viewAllRoomRates();
+                    } else if (response == 16) {
+                        allocateRooms();
+                    } else if (response == 17) {
+                        break;
+                    } else {
+                        System.out.println("Invalid option, please try again!\n");
                     }
-
-                } else if (response == 15) {
-                    viewAllRoomRates();
-                } else if (response == 16) {
-                    allocateRooms();
-                } else if (response == 17) {
-                    break;
-                } else {
-                    System.out.println("Invalid option, please try again!\n");
+                } catch (InvalidAccessRightException ex) {
+                    bufferScreenForUser(ex.getMessage());
                 }
             }
 
@@ -161,8 +169,8 @@ public class HotelOperationModule {
         }
     }
 
-    public void createRoomType() {
-
+    public void createRoomType() throws InvalidAccessRightException {
+        checkOpManagerRights();
         RoomTypeEntity newRoomType = new RoomTypeEntity();
 
         System.out.println("*** HoRS :: Hotel Operation Module :: Create New Room Type ***\n");
@@ -198,7 +206,8 @@ public class HotelOperationModule {
 
     }
 
-    public void viewRoomTypeDetails() {
+    public void viewRoomTypeDetails() throws InvalidAccessRightException {
+        checkOpManagerRights();
         Integer response = 0;
 
         System.out.println("*** HoRS :: Hotel Operation Module :: View Room Type Details ***\n");
@@ -233,7 +242,8 @@ public class HotelOperationModule {
         }
     }
 
-    public void updateRoomType(RoomTypeEntity roomType) {
+    public void updateRoomType(RoomTypeEntity roomType) throws InvalidAccessRightException {
+        checkOpManagerRights();
 
         String input;
 
@@ -305,7 +315,8 @@ public class HotelOperationModule {
         }
     }
 
-    public void deleteRoomType(RoomTypeEntity roomType) {
+    public void deleteRoomType(RoomTypeEntity roomType) throws InvalidAccessRightException {
+        checkOpManagerRights();
 
         String input;
 
@@ -325,7 +336,8 @@ public class HotelOperationModule {
         }
     }
 
-    public void viewAllRoomTypes() {
+    public void viewAllRoomTypes() throws InvalidAccessRightException {
+        checkOpManagerRights();
 
         System.out.println("*** HoRS :: Hotel Operation Module :: View All Room Type ***\n");
 
@@ -339,7 +351,8 @@ public class HotelOperationModule {
         bufferScreenForUser();
     }
 
-    public void createRoom() {
+    public void createRoom() throws InvalidAccessRightException {
+        checkOpManagerRights();
         try {
 
             RoomEntity newRoom = new RoomEntity();
@@ -358,7 +371,9 @@ public class HotelOperationModule {
         }
     }
 
-    public void updateRoom() {
+    public void updateRoom() throws InvalidAccessRightException {
+        checkOpManagerRights();
+
         try {
 
             String input;
@@ -388,7 +403,9 @@ public class HotelOperationModule {
         }
     }
 
-    public void deleteRoom() {
+    public void deleteRoom() throws InvalidAccessRightException {
+        checkOpManagerRights();
+
         try {
             String input;
 
@@ -410,7 +427,8 @@ public class HotelOperationModule {
         }
     }
 
-    public void viewAllRooms() {
+    public void viewAllRooms() throws InvalidAccessRightException {
+        checkOpManagerRights();
 
         System.out.println("*** HoRS :: Hotel Operation Module :: View All Rooms ***\n");
 
@@ -423,7 +441,9 @@ public class HotelOperationModule {
         bufferScreenForUser();
     }
 
-    public void viewRoomAllocationExceptionReport() {
+    public void viewRoomAllocationExceptionReport() throws InvalidAccessRightException {
+        checkOpManagerRights();
+
         try {
             String input;
             Date date;
@@ -442,7 +462,9 @@ public class HotelOperationModule {
         }
     }
 
-    public void createRoomRate() {
+    public void createRoomRate() throws InvalidAccessRightException {
+        checkSalesManagerRights();
+
         try {
 
             RoomRateAbsEntity newRoomRate;
@@ -509,7 +531,8 @@ public class HotelOperationModule {
         }
     }
 
-    public void viewRoomRateDetails() {
+    public void viewRoomRateDetails() throws InvalidAccessRightException {
+        checkSalesManagerRights();
 
         Integer response = 0;
 
@@ -554,7 +577,8 @@ public class HotelOperationModule {
         }
     }
 
-    public void viewAllRoomRates() {
+    public void viewAllRoomRates() throws InvalidAccessRightException {
+        checkSalesManagerRights();
 
         System.out.println("*** HoRS :: Hotel Operation Module :: View All Room Rates ***\n");
 
@@ -585,7 +609,9 @@ public class HotelOperationModule {
         bufferScreenForUser();
     }
 
-    public void updateRoomRate(RoomRateAbsEntity roomRateAbsEntity) {
+    public void updateRoomRate(RoomRateAbsEntity roomRateAbsEntity) throws InvalidAccessRightException {
+        checkSalesManagerRights();
+
         try {
 
             String input;
@@ -636,7 +662,9 @@ public class HotelOperationModule {
         }
     }
 
-    public void deleteRoomRate(RoomRateAbsEntity roomRate) {
+    public void deleteRoomRate(RoomRateAbsEntity roomRate) throws InvalidAccessRightException {
+        checkSalesManagerRights();
+
         String input;
 
         System.out.println("*** HoRS :: Hotel Operation Module :: Delete Room Rate ***\n");
@@ -683,5 +711,17 @@ public class HotelOperationModule {
     private void bufferScreenForUser() {
         System.out.print("Press any key to continue...> ");
         scanner.nextLine();
+    }
+
+    private void checkOpManagerRights() throws InvalidAccessRightException {
+        if (employeeEntity.getEmployeeRoleEnum() != EmployeeRoleEnum.OPERATION_MANAGER || employeeEntity.getEmployeeRoleEnum() != EmployeeRoleEnum.SYSTEM_ADMINISTRATOR) {
+            throw new InvalidAccessRightException("You don't have OPERATION MANAGER rights to access the system administration module.");
+        }
+    }
+
+    private void checkSalesManagerRights() throws InvalidAccessRightException {
+        if (employeeEntity.getEmployeeRoleEnum() != EmployeeRoleEnum.SALES_MANAGER || employeeEntity.getEmployeeRoleEnum() != EmployeeRoleEnum.SYSTEM_ADMINISTRATOR) {
+            throw new InvalidAccessRightException("You don't have SALES MANAGER rights to access the system administration module.");
+        }
     }
 }

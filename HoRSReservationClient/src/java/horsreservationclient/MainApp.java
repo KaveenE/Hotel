@@ -264,7 +264,7 @@ public class MainApp {
         try {
             ReservationEntity reservationEntity = guestSessionBean.retrieveReservationsByGuest(guestEntity.getEmailAddress(), reservationId);
             System.out.printf("%20s%20s%20s%20s%20s\n", "Reservation Id", "Check-In Date", "Check-Out Date", "Price of Stay", "Remarks");
-            System.out.printf("%20s%20s%20s%20s\n",
+            System.out.printf("%20s%20s%20s%20s",
                     reservationEntity.getReservationId(), BossHelper.dateToLocalDate(reservationEntity.getCheckInDate()),
                     BossHelper.dateToLocalDate(reservationEntity.getCheckOutDate()), reservationEntity.getPriceOfStay());
             if (reservationEntity.getExceptionReport() != null) {

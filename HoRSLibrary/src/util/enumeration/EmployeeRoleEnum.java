@@ -10,7 +10,7 @@ package util.enumeration;
  * @author PP42
  */
 public enum EmployeeRoleEnum {
-    SYSTEM_OPERATOR,
+    SYSTEM_ADMINISTRATOR,
     OPERATION_MANAGER,
     SALES_MANAGER,
     GUEST_RELATION_OFFICER;

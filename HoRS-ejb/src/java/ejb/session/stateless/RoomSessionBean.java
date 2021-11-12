@@ -39,7 +39,7 @@ public class RoomSessionBean implements RoomSessionBeanRemote, RoomSessionBeanLo
     private EntityManager em;
 
     @Override
-    public RoomEntity createRoomWithExistingRoomType(RoomEntity roomEntity, Long roomTypeId) throws DoesNotExistException, UnknownPersistenceException, AlreadyExistsException , BeanValidationException{
+    public RoomEntity createRoomWithExistingRoomType(RoomEntity roomEntity, Long roomTypeId) throws DoesNotExistException, UnknownPersistenceException, AlreadyExistsException, BeanValidationException {
         RoomTypeEntity roomType = roomTypeSessionBean.retrieveRoomTypeById(roomTypeId);
         roomType.associateRoomEntities(roomEntity);
         BossHelper.throwValidationErrorsIfAny(roomEntity);
@@ -56,12 +56,12 @@ public class RoomSessionBean implements RoomSessionBeanRemote, RoomSessionBeanLo
     @Override
     public RoomEntity retrieveRoomById(Long roomId) throws DoesNotExistException {
         RoomEntity room = em.find(RoomEntity.class, roomId);
-        
+
         BossHelper.requireNonNull(room, new RoomDoesNotExistException());
-        if(room.getIsDisabled()) {
+        if (room.getIsDisabled()) {
             throw new RoomDoesNotExistException();
         }
-        
+
         return room;
     }
 
@@ -81,16 +81,17 @@ public class RoomSessionBean implements RoomSessionBeanRemote, RoomSessionBeanLo
     public void updateRoom(RoomEntity room) throws DoesNotExistException, AlreadyExistsException, BeanValidationException {
         BossHelper.requireNonNull(room, new RoomDoesNotExistException());
         BossHelper.requireNonNull(room.getRoomId(), new RoomDoesNotExistException());
-        BossHelper.throwValidationErrorsIfAny(room);
-        
+
         RoomEntity roomToUpdate = retrieveRoomById(room.getRoomId());
-        
-        if(!roomToUpdate.getFloorUnitNo().equals(roomToUpdate.getFloorUnitNo())  && uniqueFieldAlreadyExists(room.getFloorUnitNo())) {
+
+        if (!roomToUpdate.getFloorUnitNo().equals(roomToUpdate.getFloorUnitNo()) && uniqueFieldAlreadyExists(room.getFloorUnitNo())) {
             throw new RoomAlreadyExistsException("This unique floor number already exists!");
         }
 
         roomToUpdate.setFloorUnitNo(room.getFloorUnitNo());
         roomToUpdate.setRoomStatusEnum(room.getRoomStatusEnum());
+        BossHelper.throwValidationErrorsIfAny(roomToUpdate);
+
     }
 
     private boolean uniqueFieldAlreadyExists(String floorUnitNo) {
@@ -123,13 +124,13 @@ public class RoomSessionBean implements RoomSessionBeanRemote, RoomSessionBeanLo
     @Override
     public RoomEntity retrieveRoomByFloorUnitNo(String floorUnitNo) throws DoesNotExistException {
         try {
-            RoomEntity room =(RoomEntity) em.createQuery("SELECT re FROM RoomEntity re WHERE re.floorUnitNo = :floorUnitNo")
+            RoomEntity room = (RoomEntity) em.createQuery("SELECT re FROM RoomEntity re WHERE re.floorUnitNo = :floorUnitNo")
                     .setParameter("floorUnitNo", floorUnitNo)
                     .getSingleResult();
-            if(room.getIsDisabled()) {
+            if (room.getIsDisabled()) {
                 throw new RoomDoesNotExistException();
             }
-            
+
             return room;
         } catch (NoResultException | NonUniqueResultException ex) {
             throw new RoomDoesNotExistException();

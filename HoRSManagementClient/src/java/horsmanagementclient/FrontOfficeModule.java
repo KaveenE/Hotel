@@ -9,14 +9,17 @@ import ejb.session.stateless.ReservationSessionBeanRemote;
 import ejb.session.stateless.RoomRateSessionBeanRemote;
 import ejb.session.stateless.RoomSessionBeanRemote;
 import ejb.session.stateless.RoomTypeSessionBeanRemote;
+import entity.EmployeeEntity;
 import entity.ReservationEntity;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Date;
 import java.util.Map;
+import util.enumeration.EmployeeRoleEnum;
 import util.exception.BeanValidationException;
 import util.exception.DoesNotExistException;
+import util.exception.InvalidAccessRightException;
 import util.helper.BossHelper;
 
 /**
@@ -29,6 +32,7 @@ public class FrontOfficeModule {
     private RoomTypeSessionBeanRemote roomTypeSessionBean;
     private RoomRateSessionBeanRemote roomRateSessionBean;
     private ReservationSessionBeanRemote reservationSessionBean;
+    private EmployeeEntity employeeEntity;
 
     private final BossHelper scanner;
     private final DateTimeFormatter dtf;
@@ -39,15 +43,20 @@ public class FrontOfficeModule {
         this.dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy");
     }
 
-    public FrontOfficeModule(RoomSessionBeanRemote roomSessionBean, RoomTypeSessionBeanRemote roomTypeSessionBean, RoomRateSessionBeanRemote roomRateSessionBean, ReservationSessionBeanRemote reservationSessionBean) {
+    public FrontOfficeModule(RoomSessionBeanRemote roomSessionBean, RoomTypeSessionBeanRemote roomTypeSessionBean, RoomRateSessionBeanRemote roomRateSessionBean, ReservationSessionBeanRemote reservationSessionBean, EmployeeEntity employeeEntity) {
         this();
         this.roomSessionBean = roomSessionBean;
         this.roomTypeSessionBean = roomTypeSessionBean;
         this.roomRateSessionBean = roomRateSessionBean;
         this.reservationSessionBean = reservationSessionBean;
+        this.employeeEntity = employeeEntity;
     }
 
-    public void menuFrontOffice() {
+    public void menuFrontOffice() throws InvalidAccessRightException {
+        if (employeeEntity.getEmployeeRoleEnum() != EmployeeRoleEnum.GUEST_RELATION_OFFICER || employeeEntity.getEmployeeRoleEnum() != EmployeeRoleEnum.SYSTEM_ADMINISTRATOR) {
+            throw new InvalidAccessRightException("You don't have GUEST RELATION OFFICER rights to access the system administration module.");
+        }
+        
         Integer response = 0;
 
         while (true) {
