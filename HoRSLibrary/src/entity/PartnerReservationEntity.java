@@ -30,8 +30,6 @@ public class PartnerReservationEntity extends ReservationEntity implements Seria
         super(checkInDate, checkOutDate, pricePaidForRLE);
     }
 
-   
-
     @Override
     public String toString() {
         return "entity.PartnerReservationEntity[ id=" + super.getReservationId() + " ]";

@@ -7,7 +7,7 @@ package util.exception;
 
 /**
  *
- * @author enkav
+ * @author PP42
  */
 public class ReservationDoesNotExistException extends DoesNotExistException{
 

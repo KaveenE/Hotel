@@ -64,9 +64,9 @@ public class PartnerWebService {
     public Set<ReservationEntity> retrieveAllReservationsByPartner(@WebParam(name = "emailAddress") String emailAddress) throws DoesNotExistException {
         return partnerSessionBean.retrieveAllReservationsByPartner(emailAddress);
     }
-    
+
     @WebMethod(operationName = "retrieveReservationsByPartner")
-    public ReservationEntity retrieveReservationsByPartner(@WebParam(name = "username") String username, @WebParam(name = "reservationId")Long reservationId) throws DoesNotExistException {
+    public ReservationEntity retrieveReservationsByPartner(@WebParam(name = "username") String username, @WebParam(name = "reservationId") Long reservationId) throws DoesNotExistException {
         return partnerSessionBean.retrieveReservationsByPartner(username, reservationId);
     }
 }

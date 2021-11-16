@@ -32,12 +32,12 @@ public class PartnerEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long partnerId;
-    
+
     @Column(nullable = false, length = BossHelper.NAME_LENGTH, unique = true)
     @NotNull
     @Size(min = 5, max = BossHelper.NAME_LENGTH)
     private String username;
-    
+
     @Column(nullable = false, length = BossHelper.PASSWORD_LENGTH)
     @NotNull
     @Size(min = 5, max = BossHelper.PASSWORD_LENGTH)

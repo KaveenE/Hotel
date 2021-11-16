@@ -16,7 +16,7 @@ import util.exception.UnknownPersistenceException;
 
 /**
  *
- * @author SCXY
+ * @author PP42
  */
 @Remote
 public interface EmployeeSessionBeanRemote {

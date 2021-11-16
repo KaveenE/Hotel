@@ -18,12 +18,12 @@ import util.exception.UnknownPersistenceException;
 
 /**
  *
- * @author enkav
+ * @author PP42
  */
 @Remote
 public interface RoomTypeSessionBeanRemote {
 
-    public RoomTypeEntity createRoomType(RoomTypeEntity roomType) throws DoesNotExistException, UnknownPersistenceException, AlreadyExistsException,BeanValidationException;
+    public RoomTypeEntity createRoomType(RoomTypeEntity roomType) throws DoesNotExistException, UnknownPersistenceException, AlreadyExistsException, BeanValidationException;
 
     public List<RoomTypeEntity> retrieveAllRoomTypes();
 
@@ -31,14 +31,12 @@ public interface RoomTypeSessionBeanRemote {
 
     public void deleteRoomTypeByName(String name) throws DoesNotExistException;
 
-    public void updateRoomType(RoomTypeEntity roomType) throws DoesNotExistException, AlreadyExistsException,BeanValidationException;
+    public void updateRoomType(RoomTypeEntity roomType) throws DoesNotExistException, AlreadyExistsException, BeanValidationException;
 
     public Map<String, Integer> searchRoomTypeReservableQuantity(LocalDate checkIn, LocalDate checkOut) throws DoesNotExistException;
 
     public RoomRateAbsEntity retrieveRoomRateFromRoomType(String roomTypeName, Class subclass) throws DoesNotExistException;
 
-//    public Map<String, Integer> walkInSearchRoomTypeReservableQuantity(LocalDate checkOut) throws DoesNotExistException;
-    
     public void allocateRoomsToCurrentDayReservations() throws DoesNotExistException;
 
     public void allocateRoomsToFutureReservations(LocalDate futureCheckIn) throws DoesNotExistException;

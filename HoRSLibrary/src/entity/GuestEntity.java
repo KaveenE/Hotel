@@ -33,27 +33,27 @@ public class GuestEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long guestId;
-    
+
     @Column(nullable = false, length = BossHelper.NAME_LENGTH, unique = true)
     @Email
     @NotNull
-    @Size(min = 5,max = BossHelper.NAME_LENGTH)
+    @Size(min = 5, max = BossHelper.NAME_LENGTH)
     private String emailAddress;
-    
+
     @Column(nullable = false, length = BossHelper.PASSWORD_LENGTH)
     @NotNull
-    @Size(min = 5,max = BossHelper.PASSWORD_LENGTH)
+    @Size(min = 5, max = BossHelper.PASSWORD_LENGTH)
     private String password;
-    
+
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "GUEST_ENTITY_FK")
     @NotNull
     private Set<GuestReservationEntity> guestReservationEntities;
-    
+
     public GuestEntity() {
         this.guestReservationEntities = new HashSet<>();
     }
-    
+
     public GuestEntity(String emailAddress, String password) {
         this();
         this.emailAddress = emailAddress;
@@ -108,7 +108,7 @@ public class GuestEntity implements Serializable {
     public void setPassword(String password) {
         this.password = password;
     }
-    
+
     public void associateGuestReservationEntities(GuestReservationEntity... guestReservationEntities) {
         Set<GuestReservationEntity> guestReservationEntitySet = BossHelper.convertArrayToSet(guestReservationEntities);
         this.associateGuestReservationEntities(guestReservationEntitySet);

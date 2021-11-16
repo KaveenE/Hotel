@@ -15,7 +15,7 @@ import util.exception.UnknownPersistenceException;
 
 /**
  *
- * @author enkav
+ * @author PP42
  */
 @Remote
 public interface RoomSessionBeanRemote {

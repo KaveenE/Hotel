@@ -7,12 +7,12 @@ package util.enumeration;
 
 /**
  *
- * @author enkav
+ * @author PP42
  */
 public enum RoomStatusEnum {
 
     /*
-    * Available = Not under maintenance. It is in inventory and can be reserved if and only if got no clashes with RLE.
+    * Available = Not under maintenance. It is in inventory and can be reserved if and only if got no clashes with Room schedule.
     * Unavailble = Under maintenance. Not in inventory at all
      */
     AVAILABLE,

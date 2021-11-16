@@ -14,7 +14,7 @@ import util.exception.DoesNotExistException;
 
 /**
  *
- * @author SCXY
+ * @author PP42
  */
 @Local
 public interface GuestSessionBeanLocal {
@@ -22,6 +22,7 @@ public interface GuestSessionBeanLocal {
     public List<GuestEntity> retrieveAllGuests();
 
     public Set<ReservationEntity> retrieveAllReservationsByGuest(String emailAddress) throws DoesNotExistException;
+
     public GuestEntity retrieveGuestByUsername(String emailAddress) throws DoesNotExistException;
-    
+
 }

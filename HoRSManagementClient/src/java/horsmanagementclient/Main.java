@@ -31,12 +31,7 @@ public class Main {
     private static RoomTypeSessionBeanRemote roomTypeSessionBean;
     @EJB
     private static RoomRateSessionBeanRemote roomRateSessionBean;
-    
-    
 
-    /**
-     * @param args the command line arguments
-     */
     public static void main(String[] args) {
         MainApp mainApp = new MainApp(employeeSessionBean, partnerSessionBean, roomSessionBean, roomTypeSessionBean, roomRateSessionBean, reservationSessionBean);
         mainApp.runApp();

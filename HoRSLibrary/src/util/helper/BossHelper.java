@@ -35,7 +35,7 @@ import util.exception.DoesNotExistException;
  * is alot(jk)
  * </ul>
  *
- * @author enkav
+ * @author PP42
  */
 public final class BossHelper implements Serializable {
 
@@ -70,7 +70,6 @@ public final class BossHelper implements Serializable {
     }
 
     public static <T> Set<T> convertArrayToSet(T[] arr) {
-
         //We can't do the typical Set.of(...) since not Java 9
         return Arrays.stream(arr)
                 .collect((Collectors.toCollection(() -> new HashSet<>())));
@@ -97,10 +96,6 @@ public final class BossHelper implements Serializable {
             errors.forEach(error -> System.out.println(error.getMessage()));
         }
 
-//      What we do in client
-//      if (printValidationErrorsIfAny(x))  {
-//            bufferScreen();
-//        }
         return !errors.isEmpty();
     }
 

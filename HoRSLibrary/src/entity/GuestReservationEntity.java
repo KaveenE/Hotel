@@ -30,8 +30,6 @@ public class GuestReservationEntity extends ReservationEntity implements Seriali
         super(checkInDate, checkOutDate, pricePaidForRLE);
     }
 
-    
-
     @Override
     public String toString() {
         return "entity.GuestReservationEntity[ id=" + super.getReservationId() + " ]";

@@ -11,7 +11,6 @@ import entity.NormalRateEntity;
 import entity.PartnerReservationEntity;
 import entity.PeakRateEntity;
 import entity.PromoRateEntity;
-
 import entity.ReservationEntity;
 import entity.RoomEntity;
 import entity.RoomRateAbsEntity;
@@ -122,13 +121,6 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
         Set<ReservationEntity> reservations = reservationStream.limit(roomQuantity)
                 .collect(Collectors.toSet());
 
-//        //to circumvent @FutureOrPresent checking for the very instant 
-//        ReservationEntity validateReservation = reservations.iterator().next();
-//        LocalDateTime dateTimeWithoutSec = BossHelper.dateToLocalDateTime(validateReservation.getCheckInDate());
-//        dateTimeWithoutSec = dateTimeWithoutSec.plusSeconds(30);
-//        validateReservation.setCheckInDate(BossHelper.localDateTimeToDate(dateTimeWithoutSec));
-//        BossHelper.throwValidationErrorsIfAny(validateReservation);
-//        validateReservation.setCheckInDate(reservation.getCheckInDate());
         //Associate RT
         RoomTypeEntity roomTypeToReserve = roomTypeSessionBean.retrieveRoomTypeByName(roomTypeName);
         roomTypeToReserve.associateReservationEntity(reservations);
@@ -156,8 +148,8 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
         }
 
         this.createReservaton(reservations);
-        
-        //Incase customer books after 2, we have to manually allocate by using the allocateToFutureReservations
+
+        //Incase customer books after 2, we have to immediately allocate by using the allocateToFutureReservations
         //but passing in current time
         LocalDateTime checkInDateTime = BossHelper.dateToLocalDateTime(reservation.getCheckInDate());
         if (checkInDateTime.toLocalDate().equals(LocalDate.now()) && checkInDateTime.getHour() > 2) {
@@ -225,7 +217,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
         }
     }
 
-    //does not work for same check in and check out dates
+    //does not work for same check in and check out dates (addressed in business policies)
     @Override
     public Boolean checkRoomSchedule(RoomEntity potentialFreeRoom, LocalDate checkIn, LocalDate checkOut) {
         return potentialFreeRoom.getReservationEntities()

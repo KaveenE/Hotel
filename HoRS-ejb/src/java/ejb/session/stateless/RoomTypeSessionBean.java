@@ -21,7 +21,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import javax.ejb.EJB;
 import javax.ejb.Schedule;
 import javax.ejb.Stateless;
@@ -117,15 +116,16 @@ public class RoomTypeSessionBean implements RoomTypeSessionBeanRemote, RoomTypeS
         return roomType;
     }
 
+    //Delete a particular room type record.
+    //A room type record can only be deleted if it is not used. 
+    //Otherwise, it should be marked as disabled and no new room should be created for disabled room type. 
     @Override
     public void deleteRoomTypeByName(String name) throws DoesNotExistException {
-        //Delete a particular room type record.
-        //A room type record can only be deleted if it is not used. 
-        //Otherwise, it should be marked as disabled and no new room should be created for disabled room type. 
+
         RoomTypeEntity potentialRoomTypeToDelete = retrieveRoomTypeByName(name);
 
         if (!potentialRoomTypeToDelete.getIsDisabled() && potentialRoomTypeToDelete.getRoomEntities().isEmpty()) {
-            updateRanking(potentialRoomTypeToDelete, x->x-1);
+            updateRanking(potentialRoomTypeToDelete, x -> x - 1);
             em.remove(potentialRoomTypeToDelete);
         } else if (!potentialRoomTypeToDelete.getIsDisabled() && !potentialRoomTypeToDelete.getRoomEntities().isEmpty()) {
             potentialRoomTypeToDelete.setIsDisabled(true);
@@ -168,10 +168,6 @@ public class RoomTypeSessionBean implements RoomTypeSessionBeanRemote, RoomTypeS
         }
     }
 
-//    @Override
-//    public Map<String, Integer> walkInSearchRoomTypeReservableQuantity(LocalDate checkOut) throws DoesNotExistException {
-//        return searchRoomTypeReservableQuantity(LocalDate.now(), checkOut);
-//    }
     //Gives you the mapping of the room type and the respective allocatable quantity
     @Override
     public Map<String, Integer> searchRoomTypeReservableQuantity(LocalDate checkIn, LocalDate checkOut) throws DoesNotExistException {
@@ -304,7 +300,6 @@ public class RoomTypeSessionBean implements RoomTypeSessionBeanRemote, RoomTypeS
 
         }
 
-        //ATP, I have reservations that are not allocated despite searching for new rooms for same room type
         //Search higher room type for each reservation
         String upgradedRoomTypeName;
         RoomTypeEntity upgradedRoomType;
@@ -367,13 +362,13 @@ public class RoomTypeSessionBean implements RoomTypeSessionBeanRemote, RoomTypeS
     private void updateRanking(RoomTypeEntity newOrUpdatedRoomType, UnaryOperator<Integer> addOrMinus) {
         int newOrUpdateRoomTypeRank = newOrUpdatedRoomType.getRanking();
         List<RoomTypeEntity> inOrderAllRoomTypes = retrieveAllRoomTypes();
-        
+
         inOrderAllRoomTypes.stream()
-                           .sorted()
-                           .forEach(roomTypeToUpdateRankingFrom -> {
-                               if (roomTypeToUpdateRankingFrom.getRanking() >= newOrUpdateRoomTypeRank) {
-                                   roomTypeToUpdateRankingFrom.setRanking(addOrMinus.apply(roomTypeToUpdateRankingFrom.getRanking()));
-                               }
-                           });
+                .sorted()
+                .forEach(roomTypeToUpdateRankingFrom -> {
+                    if (roomTypeToUpdateRankingFrom.getRanking() >= newOrUpdateRoomTypeRank) {
+                        roomTypeToUpdateRankingFrom.setRanking(addOrMinus.apply(roomTypeToUpdateRankingFrom.getRanking()));
+                    }
+                });
     }
 }

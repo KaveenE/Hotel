@@ -48,23 +48,23 @@ public class RoomRateSessionBean implements RoomRateSessionBeanRemote, RoomRateS
     @Override
     public RoomRateAbsEntity retrieveRoomRateById(Long roomRateId) throws DoesNotExistException {
         RoomRateAbsEntity roomRate = em.find(RoomRateAbsEntity.class, roomRateId);
-        
+
         roomRate = BossHelper.requireNonNull(roomRate, new RoomRateDoesNotExistException());
-        if(roomRate.getIsDisabled()) {
+        if (roomRate.getIsDisabled()) {
             throw new RoomRateDoesNotExistException();
         }
- 
+
         roomRate.getRoomTypeEntity();
 
         return roomRate;
     }
 
     @Override
-    public RoomRateAbsEntity createRoomRateWithExistingRoomType(RoomRateAbsEntity roomRate, Long roomTypeId) throws DoesNotExistException , BeanValidationException{
+    public RoomRateAbsEntity createRoomRateWithExistingRoomType(RoomRateAbsEntity roomRate, Long roomTypeId) throws DoesNotExistException, BeanValidationException {
         RoomTypeEntity roomType = roomTypeSessionBean.retrieveRoomTypeById(roomTypeId);
         roomType.associateRoomRateAbsEntity(roomRate);
         BossHelper.throwValidationErrorsIfAny(roomRate);
-        
+
         em.persist(roomRate);
         em.flush();
 
@@ -72,8 +72,8 @@ public class RoomRateSessionBean implements RoomRateSessionBeanRemote, RoomRateS
     }
 
     @Override
-    public void updateRoomRate(RoomRateAbsEntity roomRate) throws DoesNotExistException, BeanValidationException{
-        
+    public void updateRoomRate(RoomRateAbsEntity roomRate) throws DoesNotExistException, BeanValidationException {
+
         BossHelper.requireNonNull(roomRate, new RoomRateDoesNotExistException());
         BossHelper.requireNonNull(roomRate.getRoomRateId(), new RoomRateDoesNotExistException());
         BossHelper.throwValidationErrorsIfAny(roomRate);
@@ -96,11 +96,11 @@ public class RoomRateSessionBean implements RoomRateSessionBeanRemote, RoomRateS
 
     }
 
+    //Delete a particular room rate record.
+    //A room rate record can only be deleted if it is not used. (ie 0 RLE?)
+    //Otherwise, it should be marked as disabled and new reservation should not be made with the disabled room rate.
     @Override
     public void deleteRoomRateById(Long id) throws DoesNotExistException {
-        //Delete a particular room rate record.
-        //A room rate record can only be deleted if it is not used. (ie 0 RLE?)
-        //Otherwise, it should be marked as disabled and new reservation should not be made with the disabled room rate.
 
         RoomRateAbsEntity potentialRoomRateToDelete = retrieveRoomRateById(id);
 

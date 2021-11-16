@@ -28,7 +28,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
  * is alot(jk)
  * </ul>
  *
- * @author enkav
+ * @author PP42
  */
 public final class BossHelper {
 
@@ -91,16 +91,16 @@ public final class BossHelper {
         return LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
     }
 
-    public static XMLGregorianCalendar DateToXMLDate(Date date) throws DatatypeConfigurationException{
+    public static XMLGregorianCalendar DateToXMLDate(Date date) throws DatatypeConfigurationException {
         GregorianCalendar time = new GregorianCalendar();
         time.setTime(date);
         return DatatypeFactory.newInstance().newXMLGregorianCalendar(time);
     }
-    
+
     public static LocalDate XMLDateToLocalDate(XMLGregorianCalendar XMLDate) throws DatatypeConfigurationException {
         return dateToLocalDate(XMLDate.toGregorianCalendar().getTime());
     }
-    
+
     //Util Date Api sucks
     public static Date addHoursToUtilDate(Date date, int hoursToAdd) {
         Calendar cal = Calendar.getInstance();

@@ -8,7 +8,6 @@ package ejb.session.stateless;
 import entity.RoomEntity;
 import entity.RoomTypeEntity;
 import java.util.List;
-import java.util.Objects;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -101,12 +100,12 @@ public class RoomSessionBean implements RoomSessionBeanRemote, RoomSessionBeanLo
                 .isEmpty();
     }
 
-    //Placeholder for "Delete Room" (UC 14)
+    //Delete a particular room record.
+    //A room record can only be deleted if it is not used (ie 0 RLE?)
+    //Otherwise, it should be marked as disabled, excluded from the hotel room inventory for that particular room type and should not be allocated to a new reservation.
     @Override
     public void deleteRoomByFloorUnitNo(String floorUnitNo) throws DoesNotExistException {
-        //Delete a particular room record.
-        //A room record can only be deleted if it is not used (ie 0 RLE?)
-        //Otherwise, it should be marked as disabled, excluded from the hotel room inventory for that particular room type and should not be allocated to a new reservation.
+
         RoomEntity potentialRoomEntityToDelete = retrieveRoomByFloorUnitNo(floorUnitNo);
 
         if (!potentialRoomEntityToDelete.getIsDisabled() && potentialRoomEntityToDelete.getReservationEntities().isEmpty()) {

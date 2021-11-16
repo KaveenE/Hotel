@@ -38,12 +38,12 @@ public class RoomTypeEntity implements Serializable, Comparable<RoomTypeEntity> 
     @Embedded
     @NotNull
     private RoomConfig roomConfig;
-    
+
     @ElementCollection
     @Column(nullable = false)
     @NotNull
     private List<String> amenities;
-    
+
     @Column(nullable = false)
     @NotNull
     private Boolean isDisabled;
@@ -51,11 +51,11 @@ public class RoomTypeEntity implements Serializable, Comparable<RoomTypeEntity> 
     @OneToMany(mappedBy = "roomTypeEntity", cascade = CascadeType.ALL)
     @NotNull
     private Set<RoomRateAbsEntity> roomRateAbsEntities;
-    
+
     @OneToMany(mappedBy = "roomTypeEntity", cascade = CascadeType.ALL)
     @NotNull
     private Set<RoomEntity> roomEntities;
-    
+
     @OneToMany(mappedBy = "roomTypeEntity", cascade = CascadeType.ALL)
     @NotNull
     private Set<ReservationEntity> reservationEntities;
@@ -194,7 +194,6 @@ public class RoomTypeEntity implements Serializable, Comparable<RoomTypeEntity> 
     }
 
     public void disassociateRoomRateAbsEntity(Collection<RoomRateAbsEntity> roomRateAbsEntities) {
-        //roomRateAbsEntities.forEach(rrEntity -> rrEntity.setRoomTypeEntity(null));
         if (roomRateAbsEntities != this.roomRateAbsEntities) {
             this.roomRateAbsEntities.removeAll(roomRateAbsEntities);
         } else {
@@ -208,7 +207,7 @@ public class RoomTypeEntity implements Serializable, Comparable<RoomTypeEntity> 
     }
 
     public Optional<RoomRateAbsEntity> getPublishedRate() {
-        
+
         return roomRateAbsEntities.stream()
                 .filter(potentialPublishedRate -> potentialPublishedRate instanceof PublishedRateEntity)
                 .findFirst();

@@ -15,7 +15,7 @@ import util.exception.DoesNotExistException;
 
 /**
  *
- * @author enkav
+ * @author PP42
  */
 @Remote
 public interface ReservationSessionBeanRemote {

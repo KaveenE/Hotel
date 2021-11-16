@@ -7,7 +7,6 @@ package ejb.session.stateless;
 
 import entity.PartnerEntity;
 import entity.ReservationEntity;
-import java.util.List;
 import java.util.Set;
 import javax.ejb.Local;
 import util.exception.AlreadyExistsException;

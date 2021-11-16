@@ -8,13 +8,12 @@ package ejb.session.stateless;
 import entity.RoomRateAbsEntity;
 import java.util.List;
 import javax.ejb.Remote;
-import javax.enterprise.deploy.spi.exceptions.BeanNotFoundException;
 import util.exception.BeanValidationException;
 import util.exception.DoesNotExistException;
 
 /**
  *
- * @author enkav
+ * @author PP42
  */
 @Remote
 public interface RoomRateSessionBeanRemote {

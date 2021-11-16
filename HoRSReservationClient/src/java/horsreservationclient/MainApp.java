@@ -19,7 +19,6 @@ import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
 import java.util.Set;
@@ -46,7 +45,6 @@ public class MainApp {
 
     private GuestEntity guestEntity;
     private final DateTimeFormatter dtf;
-//    private final SimpleDateFormat sdf;
     private LocalDate checkIn;
     private Date checkInUtilDate;
     private LocalDate checkOut;
@@ -151,7 +149,7 @@ public class MainApp {
         try {
             System.out.println("*** HoRS :: Hotel Reservation Client :: Search Hotel Room ***\n");
             System.out.print("Enter Check In Date (dd-mm-yyyy)>");
-            
+
             checkInUtilDate = BossHelper.addHoursToUtilDate(new SimpleDateFormat("dd-MM-yyyy").parse(scanner.nextLine()), LocalDateTime.now().getHour());
 
             checkIn = BossHelper.dateToLocalDate(checkInUtilDate);
