@@ -1,4 +1,4 @@
-# HoRS
+# Hotel Booking
 - A system used by Singapore Hotel to manage its room inventory, price rates, room reservations and guests.
   - 3 tier architecture is adopted using Jakarta EE along side **JPA** to implement this with 2 frontends
 - Merlion Hotel has also formed a partnership with **StayAnyWhere.com** (external vendor)
