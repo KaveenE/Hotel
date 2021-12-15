@@ -1,9 +1,8 @@
-# HoRS (IS2103 Project)
-
-- A system used by Merlion Hotel to manage its room inventory, price rates, room reservations and guests.
+# HoRS
+- A system used by Singapore Hotel to manage its room inventory, price rates, room reservations and guests.
   - 3 tier architecture is adopted using Jakarta EE along side **JPA** to implement this with 2 frontends
-- Merlion Hotel has also formed a partnership with **Holiday.com** (external vendor)
-  - Web services, namely **SOAP** will be used to implement Holiday.com&#39;s Holiday Reservation System
+- Merlion Hotel has also formed a partnership with **StayAnyWhere.com** (external vendor)
+  - Web services, namely **SOAP** will be used to implement Holiday.com&#39;s StayAnyWhere's Reservation System
 
 # Note
 
